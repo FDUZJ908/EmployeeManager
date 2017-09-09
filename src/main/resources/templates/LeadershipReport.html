@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>领导报告提交</title>
+</head>
+
+<body>
+
+<div>
+    <div>
+        <label th:if="${errorUser!=null}">提交错误，以下成员非用户：</label>
+        <br/>
+        <div th:each="errorUser:${errorUser}">
+            <li th:text="${errorUser}"></li>
+        </div>
+    </div>
+    <form method="post">
+        <select name="UserId">
+            <option th:value="${UserId}" th:text="${UserId}"></option>
+        </select>
+
+        <label>报告内容:</label>
+        <input type="text" name="content">
+        <br/>
+        <label>文件选择:</label>>
+        <input type="file" name="file">
+        <br/>
+
+        <label>任务类型:</label>
+        <select name="type">
+            <option value="1">日常工作</option>
+            <option value="2">领导交办</option>
+            <option value="3">阶段汇总</option>
+            <option value="4">危难险重</option>
+            <option value="5">其他工作</option>
+        </select>
+        <br/>
+
+        <!--此处需要修改-->
+        <label>队伍成员:</label>
+        <input name="members" type="text">
+        <br/>
+
+        <label>得分/扣分:</label>
+        <select name="score_type">
+            <option value="1">得分</option>
+            <option value="0">扣分</option>
+        </select>
+        <br/>
+
+        <label>任务分值:</label>
+        <input type="number" name="score"/>
+        <br/>
+
+        <input type="submit" value="提交">
+    </form>
+</div>
+
+</body>
+
+</html>

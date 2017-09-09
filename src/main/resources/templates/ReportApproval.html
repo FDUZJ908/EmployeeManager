@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>报告审批</title>
+</head>
+
+<body>
+<div>
+    <h1>待审批列表</h1>
+</div>
+
+<div>
+    <form method="post">
+        <label>是否通过:</label>
+        <select name="reportStatus">
+            <option value="1">是</option>
+            <option value="0">否</option>
+        </select>
+        <br/>
+
+        <label>审批意见:</label>
+        <input type="text" name="reportComment"/>
+        <br/>
+
+        <label>报告列表:</label>
+        <!--此处需修改 动态 显示列表 -->
+        <br/>
+        <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
+        <div th:each="list:${list1}">
+            <hr/>
+            <p th:text="${list.userName}+ '提交的一般报告'"></p>
+            <p th:text="'内容:' + ${list.reportText}"></p>
+            <div th:switch="${list.category}">
+                <p th:case="1">日常工作
+                    <br/><br/>分值:1<br/>
+                </p>
+                <p th:case="2">领导交办
+                    <br/><br/>分值:2<br/>
+                </p>
+                <p th:case="3">阶段汇总
+                    <br/><br/>分值:2<br/>
+                </p>
+                <p th:case="4">急难危重
+                    <br/><br/>分值:2<br/>
+                </p>
+                <p th:case="5">其他工作</p>
+                <p th:text="'提交时间:' + ${list.submitTime}"></p>
+            </div>
+            <input type="checkbox" name="check1" th:value="${list.reportID}">
+        </div>
+
+        <div th:each="list:${list2}">
+            <hr/>
+            <p th:text="${list.userName} + '提交的个案报告'"></p>
+            <p th:text="'内容:' + ${list.reportText}"></p>
+            <p th:text="'小组成员:' + ${list.members}"></p>
+            <div th:switch="${list.category}">
+                <p th:case="1">日常工作</p>
+                <p th:case="2">领导交办</p>
+                <p th:case="3">阶段汇总</p>
+                <p th:case="4">急难危重</p>
+                <p th:case="5">其他工作</p>
+            </div>
+            <p th:text="'分值:' + ${list.singleScore}"></p>
+            <p th:text="'提交时间:' + ${list.submitTime}"></p>
+            <input type="checkbox" name="check2" th:value="${list.reportID}">
+        </div>
+        <input type="hidden" name="check1">
+        <input type="hidden" name="check2">
+        <input type="submit" value="审批"/>
+    </form>
+</div>
+</body>
+</html>

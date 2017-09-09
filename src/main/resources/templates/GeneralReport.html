@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>一般报告提交</title>
+</head>
+
+<body>
+
+<div>
+    <form method="post" enctype="multipart/form-data">
+
+        <select name="UserId">
+            <option th:value="${UserId}" th:text="${UserId}"></option>
+        </select>
+
+        <label>报告内容:</label>
+        <input type="text" name="content">
+        <br/>
+        <label>文件选择:</label>>
+        <input type="file" name="file">
+        <br/>
+
+        <label>任务类型</label>
+        <select name="type">
+            <option value="1">日常工作</option>
+            <option value="2">领导交办</option>
+            <option value="3">阶段汇总</option>
+            <option value="4">危难险重</option>
+            <option value="5">其他工作</option>
+        </select>
+        <br/>
+
+        <label>审批领导</label>
+        <br/>
+        <lable>请选择工作部门:</lable>
+        <select name="department">
+            <div th:each="everyDepartment:${Departments}">
+                <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span></option>
+            </div>
+        </select>
+
+        <select name="leader">
+            <div th:each="leader:${Leaders}">
+                <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
+            </div>
+        </select>
+        <br/>
+        <input type="submit" value="提交">
+    </form>
+</div>
+
+</body>
+</html>
