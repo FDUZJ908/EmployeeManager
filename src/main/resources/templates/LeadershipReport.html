@@ -17,7 +17,7 @@
             <li th:text="${errorUser}"></li>
         </div>
     </div>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <select name="UserId">
             <option th:value="${UserId}" th:text="${UserId}"></option>
         </select>
