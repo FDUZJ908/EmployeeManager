@@ -11,21 +11,72 @@
 
 <div>
     <h1>报告列表</h1>
+    <a href="HistoryReport.html">清空搜索结果</a>
     <br/>
 
-    <!--此处为根据关键字查询 需要仔细斟酌-->
-    <input type="text"/>
+    <form method="post">
+        <div>
+
+            <select name="UserID">
+                <option th:value="${UserID}" th:text="${UserID}"></option>
+            </select>
+            <select name="UserName">
+                <option th:value="${UserName}" th:text="${UserName}"></option>
+            </select>
+
+            <!--此处为根据关键字查询 需要仔细斟酌-->
+            <input type="text" name="search"/>
+            <input type="submit" value="搜索" name="button"/>
+            <br/>
 
 
-    <div>
-        <form>
+
+            <div>
+                <div th:each="report:${list}">
+                    <br/>
+                    <h6>于 <b th:text="${report.getSubmitTime()}"></b> 提交的 <b th:text="${report.getCategory()}"></b></h6>
+                    <h6>内容：<b th:text="${report.getReportText()}"></b></h6>
+                    <h6>状态：<b th:text="${report.getIsPass()}"></b></h6>
+                    <h6>分值：<b th:text="${report.getScore()}"></b></h6>
+                    <h6>点评：<b th:text="${report.getComment()}"></b></h6>
+                    <h6>审批：<b th:text="${report.getLeaderName()}"></b></h6>
+                    <br/>
+                </div>
+
+            </div>
+            <br/>
+
             <ul>
-                <li><input type="submit" value="我的得分" name="button"/></li>
-                <li><input type="submit" value="我的提交" name="button"/></li>
-                <li><input type="submit" value="我的审批" name="button"/></li>
+                <li>
+                    <a title="我提交的报告">我提交的报告</a>
+                    <ul>
+                        <li><input type="submit" value="我提交的报告" name="button"/></li>
+                        <li><input type="submit" value="我提交的已通过的报告" name="button"/></li>
+                        <li><input type="submit" value="我提交的未通过的报告" name="button"/></li>
+                    </ul>
+                </li>
+                <li>
+                    <a title="我审批的报告">我审批的报告</a>
+                    <ul>
+                        <li><input type="submit" value="我审批的报告" name="button"/></li>
+                        <li><input type="submit" value="我审批的已通过的报告" name="button"/></li>
+                        <li><input type="submit" value="我审批的未通过的报告" name="button"/></li>
+                    </ul>
+                </li>
+                <li>
+                    <ul>
+                        <li><input type="submit" value="日常工作" name="button"/></li>
+                        <li><input type="submit" value="领导交办" name="button"/></li>
+                        <li><input type="submit" value="阶段汇总" name="button"/></li>
+                        <li><input type="submit" value="考勤签到" name="button"/></li>
+                        <li><input type="submit" value="急难险重" name="button"/></li>
+                        <li><input type="submit" value="其他工作" name="button"/></li>
+                    </ul>
+                </li>
             </ul>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
 </div>
 
 </body>

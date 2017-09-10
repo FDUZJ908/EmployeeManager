@@ -39,7 +39,6 @@ public class BackgroundController {
         if (server.isUser(UserId) == false)
             return "failure";
         */
-        System.out.println(server.jdbcTemplate == null);
 
         String UserId = "1";
         List<Map<String, Object>> Departments = server.getDepartment(UserId);
@@ -58,8 +57,6 @@ public class BackgroundController {
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
                                     @RequestParam("UserId") String UserId) {
-        System.out.println("Enter GeneralReport");
-        System.out.println("UserId:" + UserId);
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -313,6 +310,8 @@ public class BackgroundController {
                 server.jdbcTemplate.update(updateSql);
                 updateSql = "delete from undealedgeneralreport where reportID=" + reports1[i];
                 server.jdbcTemplate.update(updateSql);
+
+                updateSql = "UPDATE ";
             }
         }
         if (!check2.isEmpty()) {
@@ -348,18 +347,384 @@ public class BackgroundController {
                 server.jdbcTemplate.update(updateSql);
             }
         }
-        return "ReportApproval";
+        return "success";
     }
-    /*
+
     @RequestMapping("/HistoryReport")
-    public String HistoryReport() {
+    public String HistoryReport(//@RequestParam("code") String CODE,
+                                //@RequestParam("state") String STATE,
+                                Model model) {
+        String UserID = "1";
+        String UserName = "潘";
+        model.addAttribute("UserID", UserID);
+        model.addAttribute("UserName",UserName);
         return "HistoryReport";
     }
 
     //添加查询与统计
     @PostMapping(value = "/HistoryReport")
-    public String HistoryReportPost() {
-        return "success";
+    public String HistoryReportPost(@RequestParam("button") String type,
+                                    @RequestParam("search") String search,
+                                    @RequestParam("UserID") String UserID,
+                                    @RequestParam("UserName") String UserName,
+                                    Model model) {
+
+        if (type.equals("日常工作") || type.equals("领导交办") || type.equals("阶段汇总") ||
+                type.equals("考勤签到") || type.equals("急难险重") || type.equals("其他工作")) {
+            String sqlSearchGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport " +
+                    "where (userID = '" + UserID + "' or " +
+                    "leaderName = '" + UserName + "') " +
+                    " order by submitTime desc";
+            List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
+            try {
+                listGeneralReport = server.jdbcTemplate.queryForList(sqlSearchGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : listGeneralReport) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+
+            String sqlSearchCaseReport = "select leaderName,category,reportText,submitTime,isPass,comment,singleScore,scoreType " +
+                    "from casereport " +
+                    "where (userID = '" + UserID + "' or " +
+                    "leaderName = '" + UserName + "') " +
+                    " order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlSearchCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+
+            String sqlSearchLeaaderReport = "select category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from leaderreport where userID = '" + UserID + "' " +
+                    " order by submitTime desc";
+            List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
+            try {
+                listLeaderReport = server.jdbcTemplate.queryForList(sqlSearchLeaaderReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listLeaderReport, UserID, UserName);
+
+            for (int i = 0; i < reports.size(); i++) {
+                HistoryReport rpt = reports.get(i);
+                if (!type.equals(rpt.getCategory())) {
+                    reports.remove(i);
+                    i--;
+                }
+            }
+
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+
+        if (type.equals("搜索")) {
+            search = "%" + search.toLowerCase() + "%";
+            String sqlSearchGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport " +
+                    "where (userID = '" + UserID + "' or " +
+                    "leaderName = '" + UserName + "') and " +
+                    "(lower(reportText) like '" + search + "' or " +
+                    "lower(comment) like '" + search + "' or " +
+                    "lower(submitTime) like '" + search + "' or " +
+                    "lower(leaderName) like '" + search + "') " +
+                    " order by submitTime desc";
+            List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
+            try {
+                listGeneralReport = server.jdbcTemplate.queryForList(sqlSearchGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : listGeneralReport) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+
+            String sqlSearchCaseReport = "select leaderName,category,reportText,submitTime,isPass,comment,singleScore,scoreType " +
+                    "from casereport " +
+                    "where (userID = '" + UserID + "' or " +
+                    "leaderName = '" + UserName + "') and " +
+                    "(lower(category) like '" + search + "' or " +
+                    "lower(reportText) like '" + search + "' or " +
+                    "lower(comment) like '" + search + "' or " +
+                    "lower(submitTime) like '" + search + "' or " +
+                    "lower(leaderName) like '" + search + "') " +
+                    " order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlSearchCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+
+            String sqlSearchLeaaderReport = "select category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from leaderreport where userID = '" + UserID + "' and (" +
+                    "lower(reportText) like '" + search + "' or " +
+                    "lower(submitTime) like '" + search + "' or " +
+                    "lower(comment) like '" + search + "') " +
+                    " order by submitTime desc";
+            List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
+            try {
+                listLeaderReport = server.jdbcTemplate.queryForList(sqlSearchLeaaderReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listLeaderReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+
+        if (type.equals("我提交的报告")) {
+            /* generalReport
+            * */
+            String sqlGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport where userID = '" + UserID + "' order by submitTime desc";
+            List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
+            try {
+                listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : listGeneralReport) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+
+            /* caseReport
+            * */
+            String sqlCaseReport = "select leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from casereport where userID = '" + UserID + "' order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+
+            /* leaderReport
+            * */
+            String sqlLeaderReport = "select category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from leaderreport where userID = '" + UserID + "' order by submitTime desc";
+            List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
+            try {
+                listLeaderReport = server.jdbcTemplate.queryForList(sqlLeaderReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listLeaderReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+        if (type.equals("我提交的已通过的报告")) {
+            /* generalReport
+            * */
+            String sqlGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport where userID = '" + UserID + "' and isPass = '1' order by submitTime desc";
+            List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
+            try {
+                listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : listGeneralReport) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+
+            /* caseReport
+            * */
+            String sqlCaseReport = "select leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from casereport where userID = '" + UserID + "' and isPass = '1' order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+
+            /* leaderReport
+            * */
+            String sqlLeaderReport = "select category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from leaderreport where userID = '" + UserID + "' and isPass = '1' order by submitTime desc";
+            List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
+            try {
+                listLeaderReport = server.jdbcTemplate.queryForList(sqlLeaderReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listLeaderReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+
+        if (type.equals("我提交的未通过的报告")) {
+            /* generalReport
+            * */
+            String sqlGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport where userID = '" + UserID + "' and isPass = '0' order by submitTime desc";
+            List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
+            try {
+                listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : listGeneralReport) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+
+            /* caseReport
+            * */
+            String sqlCaseReport = "select leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from casereport where userID = '" + UserID + "' and isPass = '0' order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+
+            /* leaderReport
+            * */
+            String sqlLeaderReport = "select category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from leaderreport where userID = '" + UserID + "' and isPass = '0' order by submitTime desc";
+            List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
+            try {
+                listLeaderReport = server.jdbcTemplate.queryForList(sqlLeaderReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listLeaderReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+
+        if (type.equals("我审批的报告")) {
+            String sqlGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport where leaderName = '" + UserName + "' order by submitTime desc";
+            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            try {
+                list = server.jdbcTemplate.queryForList(sqlGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : list) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+            String sqlCaseReport = "select leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from casereport where leaderName = '" + UserName + "' order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+        if (type.equals("我审批的已通过的报告")) {
+            String sqlGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport where leaderName = '" + UserName + "' and isPass = '1' order by submitTime desc";
+            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            try {
+                list = server.jdbcTemplate.queryForList(sqlGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : list) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+            String sqlCaseReport = "select leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from casereport where leaderName = '" + UserName + "' and isPass = '1' order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+        if (type.equals("我审批的未通过的报告")) {
+            String sqlGeneralReport = "select leaderName,category,reportText,submitTime,isPass,comment " +
+                    "from generalreport where leaderName = '" + UserName + "' and isPass = '0' order by submitTime desc";
+            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            try {
+                list = server.jdbcTemplate.queryForList(sqlGeneralReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            List<HistoryReport> reports = new ArrayList<HistoryReport>();
+            for (Map<String, Object> map : list) {
+                HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"));
+                reports.add(report_temp);
+            }
+            String sqlCaseReport = "select leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
+                    "from casereport where leaderName = '" + UserName + "' and isPass = '0' order by submitTime desc";
+            List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
+            try {
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+            } catch (Exception e) {
+                return e.toString();
+            }
+            server.getReports(reports, listCaseReport, UserID, UserName);
+            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserName",UserName);
+            model.addAttribute("list", reports);
+            return "HistoryReport";
+        }
+
+        return "failure";
     }
-*/
+
+
 }

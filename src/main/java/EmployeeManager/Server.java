@@ -121,7 +121,7 @@ public class Server {
 
     public boolean saveFile(MultipartFile file, String pathCurrent) {
         if (!file.isEmpty()) {
-            System.out.println(pathCurrent);
+
             File f = new File(pathCurrent);
             try {
                 if (!f.exists())
@@ -192,5 +192,20 @@ public class Server {
             return null;
         }
         return caseReport;
+    }
+
+    public void getReports(List<HistoryReport> reports,
+                           List<Map<String, Object>> listCaseReport,
+                           String UserID,
+                           String UserName) {
+        for (Map<String, Object> map : listCaseReport) {
+            HistoryReport report_temp = new HistoryReport(UserID, UserName, map.get("submitTime"), map.get("category"),
+                    map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), map.get("leaderName"));
+            if (String.valueOf(map.get("scoreType")) == "true")
+                report_temp.setScore(String.valueOf(Integer.parseInt(String.valueOf(map.get("singleScore")))));
+            else
+                report_temp.setScore(String.valueOf(-Integer.parseInt(String.valueOf(map.get("singleScore")))));
+            reports.add(report_temp);
+        }
     }
 }
