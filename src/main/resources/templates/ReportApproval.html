@@ -5,73 +5,77 @@
 <head>
     <meta charset="UTF-8">
     <title>报告审批</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
 <body>
-<div>
-    <h1>待审批列表</h1>
-</div>
-
-<div>
-    <form method="post">
-        <label>是否通过:</label>
-        <select name="reportStatus">
-            <option value="1">是</option>
-            <option value="0">否</option>
-        </select>
-        <br/>
-
-        <label>审批意见:</label>
-        <input type="text" name="reportComment"/>
-        <br/>
-
-        <label>报告列表:</label>
-        <!--此处需修改 动态 显示列表 -->
-        <br/>
+<div class="page">
+    <h3>待审批列表</h3>
+    <form method="post" class="submit-form" nctype="multipart/form-data">
         <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
-        <div th:each="list:${list1}">
-            <hr/>
-            <p th:text="${list.userName}+ '提交的一般报告'"></p>
-            <p th:text="'内容:' + ${list.reportText}"></p>
-            <div th:switch="${list.category}">
-                <p th:case="1">日常工作
-                    <br/><br/>分值:1<br/>
-                </p>
-                <p th:case="2">领导交办
-                    <br/><br/>分值:2<br/>
-                </p>
-                <p th:case="3">阶段汇总
-                    <br/><br/>分值:2<br/>
-                </p>
-                <p th:case="4">急难危重
-                    <br/><br/>分值:2<br/>
-                </p>
-                <p th:case="5">其他工作</p>
-                <p th:text="'提交时间:' + ${list.submitTime}"></p>
+        <div th:each="list:${list1}" class="approval_content">
+            <div class="approval_left">
+                <input type="checkbox" name="check1" th:value="${list.reportID}">
             </div>
-            <input type="checkbox" name="check1" th:value="${list.reportID}">
+            <div class="approval_right">
+                <div class="approval_right_title">
+                    <p th:text="'提交人'+${list.userName}+'('+${list.submitTime}+')'"></p>
+                </div>
+                <div class="approval_right_content">
+                    <p th:text="'内容:' + ${list.reportText}"></p>
+                    <div th:switch="${list.category}">
+                        <p th:case="1">一般报告-日常工作(1分)</p>
+                        <p th:case="2">一般报告-领导交办(2分</p>
+                        <p th:case="3">一般报告-阶段汇总(2分)</p>
+                        <p th:case="4">一般报告-急难危重(2分)</p>
+                        <p th:case="5">一般报告-其他工作(2分)</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div th:each="list:${list2}">
-            <hr/>
-            <p th:text="${list.userName} + '提交的个案报告'"></p>
-            <p th:text="'内容:' + ${list.reportText}"></p>
-            <p th:text="'小组成员:' + ${list.members}"></p>
-            <div th:switch="${list.category}">
-                <p th:case="1">日常工作</p>
-                <p th:case="2">领导交办</p>
-                <p th:case="3">阶段汇总</p>
-                <p th:case="4">急难危重</p>
-                <p th:case="5">其他工作</p>
+        <div th:each="list:${list2}" class="approval_content">
+            <div class="approval_left">
+                <input type="checkbox" name="check2" th:value="${list.reportID}">
             </div>
-            <p th:text="'分值:' + ${list.singleScore}"></p>
-            <p th:text="'提交时间:' + ${list.submitTime}"></p>
-            <input type="checkbox" name="check2" th:value="${list.reportID}">
+            <div class="approval_right">
+                <div class="aapproval_right_title">
+                    <p th:text="'提交人'+${list.userName}+'('+${list.submitTime}+')'"></p>
+                </div>
+                <div class="approval_right_content">
+                    <p th:text="'内容:' + ${list.reportText}"></p>
+                    <p th:text="'小组成员:' + ${list.members}"></p>
+                    <div th:switch="${list.category}">
+                        <p th:case="1" th:text="'个案报告-工作日常('+${list.singleScore}+'分)'">)</p>
+                        <p th:case="2" th:text="'个案报告-领导交办('+${list.singleScore}+'分)'"></p>
+                        <p th:case="3" th:text="'个案报告-阶段汇总('+${list.singleScore}+'分)'"></p>
+                        <p th:case="4" th:text="'个案报告-急难危重('+${list.singleScore}+'分)'"></p>
+                        <p th:case="5" th:text="'个案报告-其他工作('+${list.singleScore}+'分)'"></p>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div th:if="${list1!=null and list2!=null}" class="bottom_box">
+            <div class="approval_bottom_box">
+                <select name="reportStatus">
+                    <option value="1">通过</option>
+                    <option value="0">不通过</option>
+                </select>
+            </div>
+            <div class="approval_bottom_box">
+                <input type="text" name="reportComment" placeholder="请输入审批意见"/>
+            </div>
+            <div class="approval_bottom_box">
+                <input class="submit" type="submit" value="确定审批"/>
+
+            </div>
+        </div>
+
         <input type="hidden" name="check1">
         <input type="hidden" name="check2">
-        <input type="submit" value="审批"/>
     </form>
 </div>
+
 </body>
 </html>

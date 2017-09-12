@@ -5,29 +5,28 @@
 <head>
     <meta charset="UTF-8">
     <title>积分排行</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
 <body>
-<div>
+<div class="page">
+    <h3>积分榜</h3>
+    <div th:each="everyone:${list}" class="rank_box">
+        <div class="rank_box_c1">名次</div>
+        <div class="rank_box_c1">头像</div>
+        <div class="rank_box_c1" th:text="${everyone.username}"></div>
+        <div class="rank_box_c2" th:text="${everyone.score}"></div>
+    </div>
 
-    <div>
-        <div th:each="everyone:${list}">
-            <li th:text="${everyone.username}"></li>
-            <li th:text="${everyone.score}"></li>
+    <form method="post" nctype="multipart/form-data">
+        <div class="bottom_box">
+            <div class="rank_button"><input type="submit" value="领导干部" name="button"></div>
+            <div class="rank_button"><input type="submit" value="中层干部" name="button"></div>
+            <div class="rank_button"><input type="submit" value="总排行" name="button"></div>
+            <div class="rank_button"><input type="submit" value="一般干部" name="button"></div>
+            <div class="rank_button"><input type="submit" value="村级干部" name="button"></div>
         </div>
-    </div>
-
-    <div>
-        <form method="post">
-            <ul>
-                <li><input type="submit" value="所有干部" name="button"></li>
-                <li><input type="submit" value="领导干部" name="button"></li>
-                <li><input type="submit" value="中层干部" name="button"></li>
-                <li><input type="submit" value="一般干部" name="button"></li>
-                <li><input type="submit" value="村级干部" name="button"></li>
-            </ul>
-        </form>
-    </div>
+    </form>
 </div>
 </body>
 

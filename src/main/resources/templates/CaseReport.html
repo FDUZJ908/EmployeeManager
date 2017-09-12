@@ -5,76 +5,88 @@
 <head>
     <meta charset="UTF-8">
     <title>个案报告提交</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
 <body>
 
-<div>
-    <div>
+<div class="page">
+    <h3>个案报告</h3>
+    <div class="report_box">
         <label th:if="${errorUser!=null}">提交错误，以下成员非用户：</label>
         <br/>
         <div th:each="errorUser:${errorUser}">
             <li th:text="${errorUser}"></li>
         </div>
     </div>
-    <form method="post" enctype="multipart/form-data">
-        <div>
-            <select name="UserId">
+    <div class="submit-form">
+        <form method="post" enctype="multipart/form-data">
+            <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
 
-            <label>报告内容:</label>
-            <input type="text" name="content">
-            <br/>
-            <label>文件选择:</label>>
-            <input type="file" name="file">
-            <br/>
+            <div class="report_box">
+                <label>报告内容:</label>
 
-            <label>任务类型:</label>
-            <select name="type">
-                <option value="1">日常工作</option>
-                <option value="2">领导交办</option>
-                <option value="3">阶段汇总</option>
-                <option value="4">危难险重</option>
-                <option value="5">其他工作</option>
-            </select>
-            <br/>
+                <input type="file" name="file" id="file" class="inputfile"/>
+                <label for="file">上传文件</label>
 
-            <label>队伍成员:</label>
-            <input name="members" type="text">
-            <br/>
+                <input type="text" name="content">
+            </div>
 
-            <label>得分/扣分:</label>
-            <select name="score_type">
-                <option value="1">得分</option>
-                <option value="0">扣分</option>
-            </select>
-            <br/>
+            <div class="report_box">
+                <label>任务类型:</label>
+                <select name="type">
+                    <option value="1">日常工作</option>
+                    <option value="2">领导交办</option>
+                    <option value="3">阶段汇总</option>
+                    <option value="4">危难险重</option>
+                    <option value="5">其他工作</option>
+                </select>
+            </div>
 
-            <label>任务分值:</label>
-            <input type="number" name="score">
-            <br/>
+            <div class="report_box">
+                <label>队伍成员:</label>
+                <input name="members" type="text">
+            </div>
 
-            <label>审批领导</label>
-            <br/>
-            <lable>请选择工作部门;</lable>
-            <select name="department">
-                <div th:each="everyDepartment:${Departments}">
-                    <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span></option>
-                </div>
-            </select>
+            <div class="report_box">
+                <label>得分/扣分:</label>
+                <select name="score_type">
+                    <option value="1">得分</option>
+                    <option value="0">扣分</option>
+                </select>
+            </div>
 
-            <select name="leader">
-                <div th:each="leader:${Leaders}">
-                    <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
-                </div>
-            </select>
-            <br/>
+            <div class="report_box">
+                <label>任务分值:</label>
+                <input type="number" name="score">
+            </div>
 
-            <input type="submit" value="提交"/>
+            <div class="report_box">
+                <label>工作部门:</label>
+                <select name="department">
+                    <div th:each="everyDepartment:${Departments}">
+                        <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span>
+                        </option>
+                    </div>
+                </select>
+            </div>
 
-        </div>
-    </form>
+            <div class="report_box">
+                <label>审批领导:</label>
+                <select name="leader">
+                    <div th:each="leader:${Leaders}">
+                        <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
+                    </div>
+                </select>
+            </div>
+
+            <div class="report_box">
+                <input type="submit"  value="提交报告">
+            </div>
+        </form>
+    </div>
 </div>
 
 </body>
