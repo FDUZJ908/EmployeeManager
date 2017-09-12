@@ -279,7 +279,7 @@ public class BackgroundController {
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
 
-        if (reportStatus.equals("true"))
+        if (reportStatus.equals("1"))
             reportStatus = "1";
         else
             reportStatus = "0";
@@ -292,6 +292,7 @@ public class BackgroundController {
                 List<Map<String, Object>> generalReport;
                 generalReport = server.getUndealedGeneralReport(reports1[i]);
                 String sqlMessage = "";
+                int singleScore;
                 for (Map<String, Object> map : generalReport) {
                     sqlMessage = map.get("userID").toString() +
                             ",'" + map.get("leaderName").toString() + "'," +
@@ -302,6 +303,15 @@ public class BackgroundController {
                             ",'" + checkTime + "'," +
                             reportStatus +
                             ",'" + reportComment + "'";
+                    if(map.get("category").toString().equals("1"))
+                        singleScore =  1;
+                    else
+                        singleScore =  2;
+                    if(reportStatus.equals("0"))
+                        singleScore = 0;
+
+                    updateSql = "UPDATE user set s_score=s_score + " + singleScore + " where userID=" + map.get("userID").toString();
+                    server.jdbcTemplate.update(updateSql);
                 }
 
                 updateSql = "insert into generalreport " +
@@ -311,7 +321,7 @@ public class BackgroundController {
                 updateSql = "delete from undealedgeneralreport where reportID=" + reports1[i];
                 server.jdbcTemplate.update(updateSql);
 
-                updateSql = "UPDATE ";
+
             }
         }
         if (!check2.isEmpty()) {
@@ -319,12 +329,18 @@ public class BackgroundController {
                 List<Map<String, Object>> caseReport;
                 caseReport = server.getUndealedCaseReport(reports2[i]);
                 String sqlMessage = "";
+                int singleScore;
                 for (Map<String, Object> map : caseReport) {
                     String scoreType = "";
-                    if (map.get("scoreType").toString().equals("true"))
+                    if (reportStatus.equals("1")) {
                         scoreType = "1";
-                    else
+                        singleScore = Integer.parseInt(map.get("singleScore").toString());
+                    }
+                    else {
                         scoreType = "0";
+                        singleScore = -Integer.parseInt(map.get("singleScore").toString());
+
+                    }
                     sqlMessage = map.get("userID").toString() +
                             ",'" + map.get("leaderName").toString() + "'" +
                             ",'" + map.get("members").toString() + "'," +
@@ -337,6 +353,15 @@ public class BackgroundController {
                             ",'" + checkTime + "'," +
                             reportStatus +
                             ",'" + reportComment + "'";
+                    System.out.print(map.get("members").toString());
+                    if(!map.get("members").toString().isEmpty()) {
+                        String[] member = map.get("members").toString().split(",");
+
+                        for (int j = 0; j < member.length; j++) {
+                            updateSql = "update user set s_score = s_score + " + singleScore + " where userID=" + member[j];
+                            server.jdbcTemplate.update(updateSql);
+                        }
+                    }
                 }
                 updateSql = "insert into casereport " +
                         "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
