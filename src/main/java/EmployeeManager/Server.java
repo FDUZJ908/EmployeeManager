@@ -225,4 +225,40 @@ public class Server {
         }
         return allUsers;
     }
+
+    public List<DepartmentLeader> getUserDepartmentLeader(String UserId) {
+        List<DepartmentLeader> DLeader = new ArrayList<DepartmentLeader>();
+        String dIDSql = "select dID,dName from department where userID=" + UserId;
+        List<Map<String, Object>> department;
+        try {
+            department = jdbcTemplate.queryForList(dIDSql);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+
+        Object dID = "";
+        List<Map<String, Object>> dLeader;
+        String leaderSql;
+        for (Map<String, Object> map : department) {
+            dID = map.get("dID");
+            leaderSql = "select userName,userID,dName from department natural join user  where isLeader=1 and dID=\"" +
+                    dID + '"';
+            try {
+                dLeader = jdbcTemplate.queryForList(leaderSql);
+            } catch (Exception e) {
+                return null;
+            }
+            for (Map<String, Object> leader : dLeader) {
+                DepartmentLeader DLeader_temp = new DepartmentLeader(
+                        leader.get("dName"),
+                        leader.get("userName"),
+                        leader.get("userID"));
+                DLeader.add(DLeader_temp);
+            }
+        }
+
+
+        return  DLeader;
+    }
 }
