@@ -1,0 +1,221 @@
+html,body{
+	width: 100%;
+	height: 100%;
+}
+
+hr {
+    border-top:1px solid #f0f0f0;
+}
+
+h3{
+	text-align: center;
+}
+
+.page{
+	width: 80%;
+	height: 100%;
+	position: relative;
+	left: 10%;
+}
+
+.submit-form{
+	width: 100%;
+	height: 100%;
+
+}
+
+.submit-form label{
+	background: #fff;
+    border: none;
+    color: #00bbff;
+    letter-spacing: 1px;
+}
+
+/*submit report*/
+
+.report_box{
+	width: 100%;
+	height: 20%;
+	position: relative;
+	margin: 10px 0;
+	padding: 10px 0;
+}
+
+.report_box input{
+	width: 100%;
+	outline: none;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+    font-size: 30px;
+	padding: 10px 0;
+
+}
+
+.report_box select{
+	width: 100%;
+	outline: none;
+    border: 1px solid #ccc;
+	border-radius: 5px;
+    font-size: 30px;
+	padding: 10px 0;
+}
+
+.report_box input[type="submit"] {
+	border:none;
+	letter-spacing: 1px;
+	background: #28ece3;
+	color: #fff;
+    cursor: pointer;
+}
+
+/*approval report*/
+
+.bottom_box{
+	display: flex;
+	position: fixed;
+	bottom: 0;
+	width: 80%;
+}
+
+.approval_bottom_box{
+	width: 33.3%;
+	position: relative;
+}
+
+.approval_bottom_box input{
+	width: 90%;
+	outline: none;
+    font-size: 20px;
+    padding: 10px 10px 10px;
+    border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.approval_bottom_box input[type="submit"]{
+	border: none;
+	background: #28ece3;
+    color: #fff;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.approval_bottom_box select{
+	width: 90%;
+	outline: none;
+    font-size: 20px;
+    padding: 10px 10px 10px;
+    border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.approval_content{
+	display: flex;
+	width: 100%;
+	height: 30%;
+	position: relative;
+}
+
+.approval_left {
+	width: 10%;
+	padding: 2px 2px 2px 2px;
+	margin: 2px 2px 2px 2px;
+}
+
+.approval_right {
+	width: 90%;
+	padding: 2px 2px 2px 2px;
+	margin: 2px 2px 2px 2px;
+}
+
+.approval_right_title {
+	width: 100%;
+	height: 15%;
+}
+
+.approval_right_content {
+	width: 100%;
+	height: 80%;
+}
+
+/*ranking list*/
+
+.rank_button {
+	width: 20%;
+	margin: 0 10px 0 10px;
+}
+
+.rank_button input[type="submit"]{
+	width: 100%;
+	background: #28ece3;
+    border: none;
+    color: #fff;
+    padding: 10px 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+	font-size: 20px;
+}
+
+.rank_box{
+	width: 100%;
+	height: 60px;
+	position: relative;
+	text-align: center;
+}
+
+.rank_box_c1{
+	width: 10%;
+	height: 100%;
+	position: relative;
+	float: left;
+	margin: 2px 2px 2px 2px;
+	line-height: 60px;
+}
+
+.rank_box_c2{
+	width: 10%;
+	height: 100%;
+	position: relative;
+	float: right;
+	margin: 2px 2px 2px 2px;
+	line-height: 60px;
+}
+
+/*history report*/
+
+
+
+.history_button{
+	width: 50%;
+	margin: 0 10px 0 10px
+}
+
+.history_button input[type="submit"]{
+	width: 100%;
+	background: #28ece3;
+    border: none;
+    color: #fff;
+    padding: 10px 10px 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+	font-size: 20px;
+}
+
+.history_content{
+	width: 100%;
+	position: relative;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.history_line_content{
+	width: 100%;
+	height: 14%;
+	margin: 2px;
+	padding: 2px;
+}
+.history_line_content2{
+	width: 100%;
+	height: 28%;
+	margin: 2px;
+	padding: 2px;
+}
