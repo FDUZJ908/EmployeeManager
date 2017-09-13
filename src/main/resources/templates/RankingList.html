@@ -12,8 +12,8 @@
 <div class="page">
     <h3>积分榜</h3>
     <div th:each="everyone:${list}" class="rank_box">
-        <div class="rank_box_c1">名次</div>
-        <div class="rank_box_c1">头像</div>
+        <div class="rank_box_c1" th:text="${everyone.rank}"></div>
+        <div class="rank_box_c1" th:text="${everyone.avatarURL}"></div>
         <div class="rank_box_c1" th:text="${everyone.username}"></div>
         <div class="rank_box_c2" th:text="${everyone.score}"></div>
     </div>

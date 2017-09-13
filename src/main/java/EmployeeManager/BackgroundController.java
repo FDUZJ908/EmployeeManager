@@ -45,9 +45,15 @@ public class BackgroundController {
         if (Departments == null)
             return "failure";
         List<User> Leaders = server.getLeader(UserId, Departments);
+
+
+        // Department-Leader-LeaderID
+        List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
+
         model.addAttribute("UserId", UserId);
         model.addAttribute("Leaders", Leaders);
         model.addAttribute("Departments", Departments);
+        model.addAttribute("list", DLeaders);
         return "GeneralReport";
     }
 
@@ -87,10 +93,15 @@ public class BackgroundController {
         if (Departments == null)
             return "failure";
         List<User> Leaders = server.getLeader(UserId, Departments);
+
+        // Department-Leader-LeaderID
+        List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
+
         model.addAttribute("UserId", UserId);
         model.addAttribute("Leaders", Leaders);
         model.addAttribute("Departments", Departments);
         model.addAttribute("AllUsers", AllUsers);
+        model.addAttribute("list", DLeaders);
         return "CaseReport";
     }
 
@@ -183,8 +194,8 @@ public class BackgroundController {
     @PostMapping(value = "/RankingList")
     public String RankingListPost(@RequestParam("button") String type, Model model) {
 
-        if (type.equals("所有干部")) {
-            String sql = "select userName,s_score from user order by s_score desc";
+        if (type.equals("总排行")) {
+            String sql = "select userName,s_score,avatarPath from user order by s_score desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
             try {
                 list = server.jdbcTemplate.queryForList(sql);
@@ -192,10 +203,12 @@ public class BackgroundController {
                 return e.toString();
             }
             List<User> users = new ArrayList<User>();
+            int rank = 1;
             for (Map<String, Object> map : list) {
-                User user_temp = new User(map.get("userName"), map.get("s_score"));
+                User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarPath"));
                 users.add(user_temp);
             }
+
             model.addAttribute("list", users);
             return "RankingList";
         } else {
@@ -208,7 +221,7 @@ public class BackgroundController {
             else if (type.equals("一般干部"))
                 selectedType = "1";
             else selectedType = "0";
-            String sql = "select userName,s_score from user where position=" + selectedType + " order by s_score desc";
+            String sql = "select userName,s_score,avatarPath from user where position=" + selectedType + " order by s_score desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
             try {
                 list = server.jdbcTemplate.queryForList(sql);
@@ -216,8 +229,9 @@ public class BackgroundController {
                 return e.toString();
             }
             List<User> users = new ArrayList<User>();
+            int rank = 1;
             for (Map<String, Object> map : list) {
-                User user_temp = new User(map.get("userName"), map.get("s_score"));
+                User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarPath"));
                 users.add(user_temp);
             }
             model.addAttribute("list", users);
@@ -305,14 +319,15 @@ public class BackgroundController {
                             ",'" + checkTime + "'," +
                             reportStatus +
                             ",'" + reportComment + "'";
-                    if(map.get("category").toString().equals("1"))
-                        singleScore =  1;
+                    if (map.get("category").toString().equals("1"))
+                        singleScore = 1;
                     else
-                        singleScore =  2;
-                    if(reportStatus.equals("0"))
+                        singleScore = 2;
+                    if (reportStatus.equals("0"))
                         singleScore = 0;
 
-                    updateSql = "UPDATE user set s_score=s_score + " + singleScore + " where userID=" + map.get("userID").toString();
+                    updateSql = "UPDATE user set s_score=s_score + " + singleScore +
+                            " where userID=" + map.get("userID").toString();
                     server.jdbcTemplate.update(updateSql);
                 }
 
@@ -337,8 +352,7 @@ public class BackgroundController {
                     if (reportStatus.equals("1")) {
                         scoreType = "1";
                         singleScore = Integer.parseInt(map.get("singleScore").toString());
-                    }
-                    else {
+                    } else {
                         scoreType = "0";
                         singleScore = -Integer.parseInt(map.get("singleScore").toString());
 
@@ -356,14 +370,18 @@ public class BackgroundController {
                             reportStatus +
                             ",'" + reportComment + "'";
                     System.out.print(map.get("members").toString());
-                    if(!map.get("members").toString().isEmpty()) {
+                    if (!map.get("members").toString().isEmpty()) {
                         String[] member = map.get("members").toString().split(",");
 
                         for (int j = 0; j < member.length; j++) {
-                            updateSql = "update user set s_score = s_score + " + singleScore + " where userID=" + member[j];
+                            updateSql = "update user set s_score = s_score + " + singleScore +
+                                    " where userName='" + member[j] + "'";
                             server.jdbcTemplate.update(updateSql);
                         }
                     }
+                    updateSql = "update user set s_score = s_score + " + singleScore +
+                            " where userID=" + map.get("userID").toString();
+                    server.jdbcTemplate.update(updateSql);
                 }
                 updateSql = "insert into casereport " +
                         "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
@@ -384,7 +402,7 @@ public class BackgroundController {
         String UserID = "1";
         String UserName = "潘";
         model.addAttribute("UserID", UserID);
-        model.addAttribute("UserName",UserName);
+        model.addAttribute("UserName", UserName);
         return "HistoryReport";
     }
 
@@ -449,7 +467,7 @@ public class BackgroundController {
             }
 
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -511,7 +529,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listLeaderReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -559,7 +577,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listLeaderReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -606,7 +624,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listLeaderReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -654,7 +672,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listLeaderReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -685,7 +703,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listCaseReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -715,7 +733,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listCaseReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
@@ -745,7 +763,7 @@ public class BackgroundController {
             }
             server.getReports(reports, listCaseReport, UserID, UserName);
             model.addAttribute("UserID", UserID);
-            model.addAttribute("UserName",UserName);
+            model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
         }
