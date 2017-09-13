@@ -82,6 +82,7 @@ public class BackgroundController {
         */
 
         String UserId = "1";
+        List<String> AllUsers = server.getAllUsers();
         List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
             return "failure";
@@ -89,6 +90,7 @@ public class BackgroundController {
         model.addAttribute("UserId", UserId);
         model.addAttribute("Leaders", Leaders);
         model.addAttribute("Departments", Departments);
+        model.addAttribute("AllUsers", AllUsers);
         return "CaseReport";
     }
 

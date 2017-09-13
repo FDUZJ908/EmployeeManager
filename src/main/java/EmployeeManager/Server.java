@@ -208,4 +208,21 @@ public class Server {
             reports.add(report_temp);
         }
     }
+
+    public List<String> getAllUsers(){
+        String sql = "select userName from user";
+        List<Map<String,Object>> allUsersCursor;
+        try {
+            allUsersCursor = jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+        List<String> allUsers = new ArrayList<String>();
+        for(Map<String,Object>map: allUsersCursor ){
+            String user_temp = new String(map.get("userName").toString());
+            allUsers.add(user_temp);
+        }
+        return allUsers;
+    }
 }
