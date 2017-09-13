@@ -25,17 +25,18 @@
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
 
+            <label>报告内容:</label>
             <div class="report_box">
-                <label>报告内容:</label>
-
-                <input type="file" name="file" id="file" class="inputfile"/>
-                <label for="file">上传文件</label>
-
                 <input type="text" name="content">
             </div>
 
             <div class="report_box">
-                <label>任务类型:</label>
+                <input type="file" name="file" id="file" class="inputfile"/>
+                <label for="file">上传文件</label>
+            </div>
+
+            <label>任务类型:</label>
+            <div class="report_box">
                 <select name="type">
                     <option value="1">日常工作</option>
                     <option value="2">领导交办</option>
@@ -45,26 +46,26 @@
                 </select>
             </div>
 
+            <label>队伍成员:</label>
             <div class="report_box">
-                <label>队伍成员:</label>
                 <input name="members" type="text">
             </div>
 
+            <label>得分/扣分:</label>
             <div class="report_box">
-                <label>得分/扣分:</label>
                 <select name="score_type">
                     <option value="1">得分</option>
                     <option value="0">扣分</option>
                 </select>
             </div>
 
+            <label>任务分值:</label>
             <div class="report_box">
-                <label>任务分值:</label>
                 <input type="number" name="score">
             </div>
 
+            <label>工作部门:</label>
             <div class="report_box">
-                <label>工作部门:</label>
                 <select name="department">
                     <div th:each="everyDepartment:${Departments}">
                         <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span>
@@ -73,8 +74,8 @@
                 </select>
             </div>
 
+            <label>审批领导:</label>
             <div class="report_box">
-                <label>审批领导:</label>
                 <select name="leader">
                     <div th:each="leader:${Leaders}">
                         <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
@@ -83,7 +84,7 @@
             </div>
 
             <div class="report_box">
-                <input type="submit"  value="提交报告">
+                <input type="submit" value="提交报告">
             </div>
         </form>
     </div>
