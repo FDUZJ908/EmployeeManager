@@ -15,7 +15,10 @@
         <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         <div th:each="list:${list1}" class="approval_content">
             <div class="approval_left">
-                <input type="checkbox" name="check1" th:value="${list.reportID}">
+                <div class="check_box">
+                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}"><span>√</span>
+                </div>
+                <label for="check"></label>
             </div>
             <div class="approval_right">
                 <div class="approval_right_title">
@@ -36,7 +39,10 @@
 
         <div th:each="list:${list2}" class="approval_content">
             <div class="approval_left">
-                <input type="checkbox" name="check2" th:value="${list.reportID}">
+                <div class="check_box">
+                    <input type="checkbox" name="check1" id="check2" th:value="${list.reportID}"><span>√</span>
+                </div>
+                <label for="check"></label>
             </div>
             <div class="approval_right">
                 <div class="approval_right_title">
