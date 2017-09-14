@@ -150,8 +150,10 @@ public class BackgroundController {
         if (isUser(UserId) == false)
             return "failure";
 */
+        List<String> AllUsers = server.getAllUsers();
         String UserId = "1";
         model.addAttribute("UserId", UserId);
+        model.addAttribute("AllUsers", AllUsers);
         return "LeadershipReport";
     }
 

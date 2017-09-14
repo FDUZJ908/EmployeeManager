@@ -140,7 +140,7 @@ public class Server {
 
     public List<String> checkMember(String members) {
         //分解队伍成员
-        String[] member = members.split(" ");
+        String[] member = members.split(",");
         List<Map<String, Object>> memberCursor = new ArrayList<Map<String, Object>>();
         String memberSql = "";
         List<String> errorUser = new ArrayList<String>();

@@ -1,6 +1,113 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function checkMemberDivToInput() {
+        var checkMemberDiv = document.getElementById("checkMemberDiv");
+        var members = document.getElementById("members");
+        var checkMember = checkMemberDiv.children;
+        for (i = 0; i < checkMember.length ; i++){
+            members.setAttribute("value", members.value.toString() + checkMember[i].value.toString() + ",");
+        }
+    }
+
+    function addDiv(value) {
+        var mydiv = document.getElementById("checkMemberDiv");
+        mydiv.appendChild(value);
+    }
+
+    function deleteObjCheckMemberDiv(value) {
+        var obj = document.getElementById(value.id);
+        var div = document.getElementById("checkMemberDiv");
+        div.removeChild(obj);
+        memberSearch();
+
+    }
+    function addCheckBox (value){
+        var b = document.createElement("input");
+        var delFunction = "deleteObjCheckMemberDiv(" +"checkMember" + value.toString() +")";
+        b.setAttribute("value", value);
+        b.setAttribute("type", "button");
+        b.setAttribute("id", "checkMember" + value.toString());
+        b.setAttribute("onclick", delFunction);
+        addDiv(b);
+    }
+
+    function addMembers(memberName) {
+        var member = document.getElementById(memberName.value);
+        addCheckBox(member.value);
+        var div = document.getElementById("memberList");
+        var delMember = document.getElementById(member.value);
+        div.removeChild(delMember);
+        memberSearch();
+    }
+
+    function  memberSearch() {
+        var userInput = document.getElementById('userInput').value;
+        var members_hide = document.getElementById('members_hide');
+        var checkMemberDiv = document.getElementById("checkMemberDiv");
+        var members;
+        var addMemberList = document.getElementById("memberList");
+        var memberID;
+        var delMember;
+        var matchedMembers = new Array();
+        var f = 0;
+        for (i=  0; i <members_hide.length; i++){
+            delMember = document.getElementById(members_hide[i].value);
+            if(delMember!=null) {
+                addMemberList.removeChild(delMember);
+            }
+        }
+
+        var checkMember = checkMemberDiv.children;
+        var count;
+        for (i = 0; i < members_hide.length; i++) {
+            var flag = members_hide[i].value.indexOf(userInput);
+            if (flag != -1) {
+                count = 0;
+                for(j = 0; j<checkMember.length; j++) {
+                    if (checkMember[j].value == members_hide[i].value)
+                        count++
+                }
+                    if(!count) {
+                        matchedMembers[f] = members_hide[i].value;
+                        f++;
+                    }
+            }
+        }
+        matchedMembers.sort();
+        for (j = 0; j <matchedMembers.length; j++) {
+                members = document.createElement("input");
+                members.setAttribute("type","button");
+                members.setAttribute("value",matchedMembers[j]);
+                memberID = "addMembers(" + matchedMembers[j] + ")";
+                members.setAttribute("onclick",memberID);
+                members.setAttribute("id",matchedMembers[j]);
+                addMemberList.appendChild(members);
+        }
+
+
+    }
+    /*function memberSearch() {
+        var userInput = document.getElementById('userInput').value;
+        var members_hide = document.getElementById('members_hide');
+        var members = document.getElementById("members");
+        for (j = 0; j < members.length;) {
+            members.options.remove(0)
+        }
+        for (i = 0; i < members_hide.length; i++) {
+            var flag = members_hide[i].value.indexOf(userInput);
+            if (flag != -1) {
+                members.options.add(new Option(members_hide[i].text, members_hide[i].value));
+            }
+        }
+        members.sort();
+
+    }*/
+
+    /*]]>*/
+</script>
 
 <head>
     <meta charset="UTF-8">
@@ -46,10 +153,6 @@
                 </select>
             </div>
 
-            <label>队伍成员:</label>
-            <div class="report_box">
-                <input name="members" type="text">
-            </div>
 
             <label>得分/扣分:</label>
             <div class="report_box">
@@ -83,8 +186,32 @@
                 </select>
             </div>
 
+            <label>队伍成员:</label>
+            <div name="checkMemberDiv" id="checkMemberDiv">
+
+            </div>
+
+            <input name="members" id="members" style="display:none" value="">
+
+            <div class="report_box" >
+                <select name = "members_hide" id="members_hide" style="display:none">
+                    <div th:each="AllUser:${AllUsers}">
+                        <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
+                    </div>
+                </select>
+
+                <input type="text"  autocomplete="off" name="userInput" id="userInput"  onkeyup="memberSearch()">
+
+
+            </div>
+
+
             <div class="report_box">
-                <input type="submit" value="提交报告">
+                <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
+            </div>
+
+            <div id="memberList">
+
             </div>
         </form>
     </div>
