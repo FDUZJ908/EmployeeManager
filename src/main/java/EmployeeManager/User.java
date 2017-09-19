@@ -9,6 +9,9 @@ public class User {
     private String rank;
     private String avatarURL;
 
+    static public String[] userKeys = {"userid", "gender", "avatar", "name", "position", "mobile", "email"};
+    static public String[] userAttrs = {"userID", "gender", "avatarURL", "userName", "duty", "tel", "email"};
+
     User(Object userName, Object Score, int rank, Object avatarURL) {
         this.username = String.valueOf(userName);
         this.score = String.valueOf(Score);

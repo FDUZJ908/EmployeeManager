@@ -1,17 +1,21 @@
 package EmployeeManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static EmployeeManager.User.*;
 
 /**
  * Created by lsh on 04/09/2017.
@@ -19,24 +23,28 @@ import java.util.*;
 @Component
 public class Server {
 
+    static final String corpid = "wx7635106ee1705d6d";
+    static final String PASecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
+    static final String SYNSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
+
     @Autowired
     public JdbcTemplate jdbcTemplate;
+
+    Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
 
     @Value("${web.upload-path}")
     private String path;
 
-    static final String PASecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
-    Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
         if (!newToken && tokenList.containsKey(corpsecret) && tokenList.get(corpsecret).expireTime < time) {
             return tokenList.get(corpsecret).value;
         }
-        HttpsGet http = new HttpsGet();
+        HTTPRequest http = new HTTPRequest();
         try {
-            JSONObject jsonObject = http.sendGet("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
-                    "corpid=wx7635106ee1705d6d&corpsecret=" + corpsecret);
+            JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
+                    "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
@@ -49,10 +57,11 @@ public class Server {
     public String getUserId(String code, String corpsecret) {
         String UserId;
         String token = getAccessToken(corpsecret, false);
-        HttpsGet http = new HttpsGet();
+        System.out.println(token);
+        HTTPRequest http = new HTTPRequest();
         try {
             String url = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + token + "&code=" + code;
-            JSONObject jsonObject = http.sendGet(url);
+            JSONObject jsonObject = http.sendGET(url);
             UserId = jsonObject.getString("UserId");
         } catch (Exception e) {
             return "failure";
@@ -62,12 +71,12 @@ public class Server {
 
     public boolean isUser(String UserId) {
         String token = getAccessToken(PASecret, false);
-        HttpsGet http = new HttpsGet();
+        HTTPRequest http = new HTTPRequest();
         int errcode;
         String errmsg;
         try {
             String url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=" + token + "&userid=" + UserId;
-            JSONObject jsonObject = http.sendGet(url);
+            JSONObject jsonObject = http.sendGET(url);
             errcode = jsonObject.getInt("errcode");
             errmsg = jsonObject.getString("errmsg");
         } catch (Exception e) {
@@ -209,9 +218,9 @@ public class Server {
         }
     }
 
-    public List<String> getAllUsers(){
+    public List<String> getAllUsers() {
         String sql = "select userName from user";
-        List<Map<String,Object>> allUsersCursor;
+        List<Map<String, Object>> allUsersCursor;
         try {
             allUsersCursor = jdbcTemplate.queryForList(sql);
         } catch (Exception e) {
@@ -219,8 +228,8 @@ public class Server {
             return null;
         }
         List<String> allUsers = new ArrayList<String>();
-        for(Map<String,Object>map: allUsersCursor ){
-            String user_temp = new String(map.get("userName").toString());
+        for (Map<String, Object> map : allUsersCursor) {
+            String user_temp = map.get("userName").toString();
             allUsers.add(user_temp);
         }
         return allUsers;
@@ -257,8 +266,99 @@ public class Server {
                 DLeader.add(DLeader_temp);
             }
         }
+        return DLeader;
+    }
 
+    public Map<Integer, String> syncDepartment() throws Exception {
+        HTTPRequest httpReq = new HTTPRequest();
+        String token = getAccessToken(SYNSecret, true);
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/department/list?access_token=" + token;
+        JSONObject jsonRes = httpReq.sendGET(url);
+        if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
+            return null;
+        }
 
-        return  DLeader;
+        Map<Integer, String> departName = new HashMap<Integer, String>();
+        JSONArray departList = jsonRes.getJSONArray("department");
+        int departNum = departList.length();
+        for (int i = 0; i < departNum; i++) {
+            JSONObject depart = departList.getJSONObject(i);
+            int dID = depart.getInt("id");
+            String dName = depart.getString("name");
+            String sql = "select * from department where dID=" + dID + " and dName='" + dName + "' limit 1";
+            List<Map<String, Object>> res = jdbcTemplate.queryForList(sql);
+            if (res.isEmpty()) {
+                jdbcTemplate.update("update department set dName='" + dName + "' where dID=" + dID);
+            }
+            departName.put(dID, dName);
+        }
+        return departName;
+    }
+
+    public void syncUser(Map<Integer, String> departName) throws Exception {
+        HTTPRequest httpReq = new HTTPRequest();
+        String token = getAccessToken(SYNSecret, true);
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=" + token + "&department_id=1&fetch_child=1";
+        JSONObject jsonRes = httpReq.sendGET(url);
+        if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
+            return;
+        }
+
+        JSONArray userList = jsonRes.getJSONArray("userlist");
+        int userNum = userList.length(), keyNum = userKeys.length, argc = 0;
+        Object[] args = new Object[userNum * keyNum];
+        String values = "values";
+        for (int i = 0; i < userNum; i++) {
+            JSONObject user = userList.getJSONObject(i);
+            if (i > 0) values += ",(";
+            else values += "(";
+            for (int j = 0; j < keyNum; j++) {
+                if (!user.has(userKeys[j])) args[argc++] = null;
+                else args[argc++] = user.get(userKeys[j]);
+                if (j > 0) values += ",?";
+                else values += "?";
+            }
+            values += ")";
+        }
+        String sql = "insert into user(";
+        String update = " on duplicate key update ";
+        for (int i = 0; i < keyNum; i++) {
+            if (i > 0) {
+                sql += ",";
+                update += ",";
+            }
+            sql += userAttrs[i];
+            update += userAttrs[i] + "=values(" + userAttrs[i] + ")";
+        }
+        sql += ") " + values + update;
+        jdbcTemplate.update(sql, args);
+
+        for (int i = 0; i < userNum; i++) {
+            JSONObject user = userList.getJSONObject(i);
+            String userID = user.getString("userid");
+            Set<Object> dIDs_sql = new HashSet<Object>();
+            sql = "select dID from department where userID='" + userID + "'";
+            List<Map<String, Object>> res = jdbcTemplate.queryForList(sql);
+            for (Map<String, Object> map : res) {
+                dIDs_sql.add(map.get("dID"));
+            }
+            Set<Object> dIDs_json = new HashSet<Object>();
+            JSONArray departs = user.getJSONArray("department");
+            int departNum = departs.length();
+            for (int j = 0; j < departNum; j++) {
+                dIDs_json.add(departs.getInt(j));
+            }
+            for (Object dID : dIDs_json) {
+                if (!dIDs_sql.contains(dID)) {
+                    sql = "insert into department(dID,userID,dName) values(?,?,?)";
+                    args = new Object[]{dID, userID, departName.get(dID)};
+                    jdbcTemplate.update(sql, args);
+                } else dIDs_sql.remove(dID);
+            }
+            for (Object dID : dIDs_sql) {
+                sql = "delete from department where userID='" + userID + "' and dID=" + dID;
+                jdbcTemplate.update(sql);
+            }
+        }
     }
 }

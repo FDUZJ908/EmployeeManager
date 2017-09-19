@@ -7,31 +7,21 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class HttpsGet {
-
-    private final String USER_AGENT = "Mozilla/5.0";
+public class HTTPRequest {
 
     // HTTPS GET请求
-    public JSONObject sendGet(String urlGet) throws Exception {
+    public JSONObject sendGET(String urlGet) throws Exception {
 
         URL obj = new URL(urlGet);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-        //默认值GET
         con.setRequestMethod("GET");
-        //添加请求头
-        con.setRequestProperty("User-Agent", USER_AGENT);
-        int responseCode = con.getResponseCode();
-        //System.out.println("\nSending 'GET' request to URL : " + urlGet);
-        //System.out.println("Response Code : " + responseCode);
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
         in.close();
-        //打印结果
         JSONObject jsonObject = new JSONObject(response.toString());
         return jsonObject;
     }

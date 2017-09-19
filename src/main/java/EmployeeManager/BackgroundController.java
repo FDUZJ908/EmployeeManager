@@ -2,13 +2,12 @@ package EmployeeManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateCustomizer;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -28,24 +27,18 @@ public class BackgroundController {
 
     @RequestMapping("/GeneralReport")
     public String GeneralReport(//@RequestParam("state") String STATE,
-                                //@RequestParam("code") String code,
+                                @RequestParam("code") String code,
                                 Model model) {
-
-        // 本地测试
-        /*
         System.out.println(code);
         String UserId = server.getUserId(code, PASecret);
         System.out.println(UserId);
         if (server.isUser(UserId) == false)
             return "failure";
-        */
 
-        String UserId = "1";
         List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
             return "failure";
         List<User> Leaders = server.getLeader(UserId, Departments);
-
 
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
@@ -773,5 +766,12 @@ public class BackgroundController {
         return "failure";
     }
 
+    @RequestMapping("/Synchronizer")
+    @ResponseBody
+    public String Synchronizer() throws Exception{
 
+            server.syncUser(server.syncDepartment());
+
+        return "Synchronization succeed!";
+    }
 }
