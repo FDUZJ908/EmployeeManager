@@ -336,26 +336,26 @@ public class Server {
         for (int i = 0; i < userNum; i++) {
             JSONObject user = userList.getJSONObject(i);
             String userID = user.getString("userid");
-            Set<Object> dIDs_sql = new HashSet<Object>();
+            Set<Integer> dIDs_sql = new HashSet<Integer>();
             sql = "select dID from department where userID='" + userID + "'";
             List<Map<String, Object>> res = jdbcTemplate.queryForList(sql);
             for (Map<String, Object> map : res) {
-                dIDs_sql.add(map.get("dID"));
+                dIDs_sql.add(Integer.parseInt(map.get("dID").toString()));
             }
-            Set<Object> dIDs_json = new HashSet<Object>();
+            Set<Integer> dIDs_json = new HashSet<Integer>();
             JSONArray departs = user.getJSONArray("department");
             int departNum = departs.length();
             for (int j = 0; j < departNum; j++) {
                 dIDs_json.add(departs.getInt(j));
             }
-            for (Object dID : dIDs_json) {
+            for (int dID : dIDs_json) {
                 if (!dIDs_sql.contains(dID)) {
                     sql = "insert into department(dID,userID,dName) values(?,?,?)";
                     args = new Object[]{dID, userID, departName.get(dID)};
                     jdbcTemplate.update(sql, args);
                 } else dIDs_sql.remove(dID);
             }
-            for (Object dID : dIDs_sql) {
+            for (int dID : dIDs_sql) {
                 sql = "delete from department where userID='" + userID + "' and dID=" + dID;
                 jdbcTemplate.update(sql);
             }
