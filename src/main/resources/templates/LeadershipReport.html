@@ -119,13 +119,6 @@
 
 <div class="page">
     <h3>领导报告</h3>
-    <div class="report_box">
-        <label th:if="${errorUser!=null}">提交错误，以下成员非用户：</label>
-        <br/>
-        <div th:each="errorUser:${errorUser}">
-            <li th:text="${errorUser}"></li>
-        </div>
-    </div>
     <div class="submit-form">
         <form method="post" enctype="multipart/form-data">
             <select name="UserId" style="display:none">
@@ -137,12 +130,12 @@
             <div class="report_box">
                 <input type="text" name="content">
             </div>
-
+<!--
             <div class="report_box">
                 <input type="file" name="file" id="file" class="inputfile"/>
                 <label for="file">上传文件</label>
             </div>
-
+-->
             <label>任务类型:</label>
             <div class="report_box">
                 <select name="type">
@@ -169,10 +162,8 @@
 
             <label>队伍成员:</label>
             <div name="checkMemberDiv" id="checkMemberDiv">
-
-            </div>
-
-            <input name="members" id="members" style="display:none" value="">
+			
+			</div>
 
             <div class="report_box" >
                 <select name = "members_hide" id="members_hide" style="display:none">
@@ -180,20 +171,21 @@
                         <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
                     </div>
                 </select>
-
                 <input type="text"  autocomplete="off" name="userInput" id="userInput"  onkeyup="memberSearch()">
-
-
             </div>
 
 
-            <div class="report_box">
-                <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
-            </div>
+
 
             <div id="memberList">
 
             </div>
+			
+            <div class="report_box">
+                <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
+            </div>
+			
+			<input name="members" id="members" style="display:none" value="">
 
         </form>
     </div>

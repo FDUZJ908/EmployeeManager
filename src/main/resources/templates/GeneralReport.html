@@ -21,11 +21,11 @@
             <div class="report_box">
                 <input type="text" name="content">
             </div>
-
+<!--
             <div class="report_box">
                 <input type="file" name="file" value="上传文件">
             </div>
-
+-->
             <label>任务类型:</label>
             <div class="report_box">
                 <select name="type">
@@ -40,9 +40,8 @@
             <label>工作部门:</label>
             <div class="report_box">
                 <select name="department">
-                    <option>请选择部门</option>
-                    <div th:each="department:${DLeaders}">
-                        <option th:value="${department.department}"><span th:text="${everyDepartment.dName}"></span>
+                    <div th:each="everyDepartment:${Departments}">
+                        <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span>
                         </option>
                     </div>
                 </select>
@@ -51,10 +50,10 @@
             <label>审批领导:</label>
             <div class="report_box">
                 <select name="leader">
-                    <option>请选择领导</option>
                     <div th:each="leader:${Leaders}">
                         <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
                     </div>
+                </select>
             </div>
 
             <div class="report_box">
