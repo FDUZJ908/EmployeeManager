@@ -7,9 +7,6 @@
     <groupId>org.springframework</groupId>
     <artifactId>EmployeeManager</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>Synchronizer</module>
-    </modules>
     <packaging>pom</packaging>
 
     <parent>
