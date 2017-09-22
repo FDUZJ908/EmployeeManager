@@ -2,6 +2,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
+<script th:inline="javascript">
+    function reportSearch() {
+        var userInPut = document.getElementById("userInPut").value;
+        var reportListDiv = document.getElementById("reportHideDiv");
+        var reportList = reportListDiv.children;
+        var report;
+        var flag;
+        var reportID;
+        var reportType;
+        var count;
+        var targetReport;
+       /* var targetP;*/
+        for (i=0 ; i<reportList.length ; i++) {
+            count = 0;
+            report = reportList[i].children;
+            report = report[0];
+            reportID = report[1].value;
+            reportType = report[0].value;
+            targetReport = document.getElementById(reportID.toString() + '_' + reportType.toString());
+         /*   targetP = targetReport.children;
+            var re = new RegExp(userInPut,"g");
+            targetP[0].setAttribute("text",targetP[0].text.Replace(re,""<span style="color:#F00">" + targetP[0].text + "</span>""));*/
+            for (j = 1; j < report.length; j++) {
+                flag = report[j].value.indexOf(userInPut);
+                if (flag != -1)
+                    count++;
+            }
+            if (!count)
+                targetReport.setAttribute("style", "display:none");
+            else
+                targetReport.setAttribute("style", "");
+
+        }
+    }
+
+</script>
 <head>
     <meta charset="UTF-8">
     <title>查询与统计</title>
@@ -21,13 +57,13 @@
                 <input type="submit" value="搜索" name="button"/>
                 <br/>
     -->
+    <input type="text" id="userInPut" placeholder="请输入搜索关键字" onkeyup="reportSearch()">
 
-
-    <div th:each="report:${list}" class="report_box">
+    <div th:each="report:${list}" class="report_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
         <div class="history_line_content">
             <p th:text="${report.getUserName()}+'提交的'+${report.getCategory()}+'('+${report.getSubmitTime()}+')'"></p>
         </div>
-        <div class="history_line_content2">
+        <div class="history_line_content">
             <p th:text="'内容：'+${report.getReportText()}"></p>
         </div>
         <div class="history_line_content">
@@ -44,10 +80,30 @@
         </div>
     </div>
 
+    <div id="reportHideDiv">
+        <div class="report_box" th:each="report:${list}">
+            <select th:value="${report.getReportID()}" th:id="'report_hide_' +${report.getReportID()} + '_' + ${report.getType()} " style="display: none">
+                <div>
+                    <option th:value="${report.getType()}"></option>
+                    <option th:value="${report.getReportID()}"></option>
+                    <option th:value="${report.getUserName()}"></option>
+                    <option th:value="${report.getCategory()}"></option>
+                    <option th:value="${report.getSubmitTime()}"</option>
+                    <option th:value="${report.getReportText()}"></option>
+                    <option th:value="${report.getSingleScore()}"></option>
+                    <option th:value="${report.getMembers()}"></option>
+                    <option th:value="${report.getLeaderName()}"></option>
+                    <option th:value="${report.getIsPass()}"></option>
+                </div>
+            </select>
+        </div>
+    </div>
+
     <form method="post" nctype="multipart/form-data">
         <select name="UserID" style="display:none">
             <option th:value="${UserID}" th:text="${UserID}"></option>
         </select>
+        <select name="UserName" style="display:none">
         <option th:value="${UserName}" th:text="${UserName}"></option>
         </select>
         <div class=" bottom_box">

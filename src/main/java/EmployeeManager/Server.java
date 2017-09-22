@@ -203,7 +203,7 @@ public class Server {
         return caseReport;
     }
 
-    public void getReports(List<HistoryReport> reports,
+    /*public void getReports(List<HistoryReport> reports,
                            List<Map<String, Object>> listCaseReport,
                            String UserID,
                            String UserName) {
@@ -216,7 +216,7 @@ public class Server {
                 report_temp.setScore(String.valueOf(-Integer.parseInt(String.valueOf(map.get("singleScore")))));
             reports.add(report_temp);
         }
-    }
+    }*/
 
     public List<String> getAllUsers() {
         String sql = "select userName from user";

@@ -1,25 +1,30 @@
 package EmployeeManager;
 
+import javax.validation.constraints.Null;
+
 public class HistoryReport {
 
+    private String reportID;
     private String userID;
     private String userName;
     private String submitTime;
     private String category;
     private String reportText;
     private String isPass;
-    private String score;
+    private String singleScore;
     private String scoreType;
     private String comment;
     private String leaderName;
+    private String members;
+    private String  type;
 
-    public HistoryReport(Object userID, Object userName, Object submitTime, Object category, Object reportText,
-                         Object isPass, Object scoreType, Object comment, Object leaderName) {
+    public HistoryReport(Object reportID,Object userID, Object userName, Object submitTime, Object category, Object reportText,
+                         Object isPass, Object scoreType, Object comment, Object leaderName, Object members, Object type) {
 
         int scoreTemp = 0;
         String categoryTmp = "";
         int categoryTemp = Integer.parseInt(String.valueOf(category));
-        switch (categoryTemp){
+        switch (categoryTemp) {
             default:
                 scoreTemp = 0;
                 categoryTmp = "";
@@ -49,38 +54,49 @@ public class HistoryReport {
                 categoryTmp = "其他工作";
                 break;
         }
-        if (scoreType == "1")
-            scoreTemp = -scoreTemp;
-
 
         if (String.valueOf(isPass) == "null")
             isPass = "";
+        else if (String.valueOf(isPass) == "true")
+            isPass = "通过";
         else
-            if (String.valueOf(isPass) == "true")
-                isPass = "通过";
-            else
-                isPass = "未通过";
+            isPass = "未通过";
+        if (String.valueOf(scoreType) == "0")
+            singleScore = "-" + String.valueOf(singleScore);
 
         if (String.valueOf(comment) == "null")
             comment = "";
         else
             comment = String.valueOf(comment);
 
+        if(members.toString() == "")
+            members = "无";
+        else
+            members = String.valueOf(members).substring(0,String.valueOf(members).length() - 1);
+
+        if(leaderName.toString() == "")
+            leaderName = "无";
+
+        this.reportID = String.valueOf(reportID);
         this.userID = String.valueOf(userID);
         this.userName = String.valueOf(userName);
         this.submitTime = String.valueOf(submitTime);
         this.category = String.valueOf(categoryTmp);
         this.reportText = String.valueOf(reportText);
         this.isPass = String.valueOf(isPass);
-        this.score = String.valueOf(scoreTemp);
+        this.singleScore = String.valueOf(scoreTemp);
         this.scoreType = String.valueOf(scoreType);
         this.comment = String.valueOf(comment);
         this.leaderName = String.valueOf(leaderName);
+        this.members = String.valueOf(members);
+        this.type = String.valueOf(type);
     }
 
-    public void setScore(String score) {
-        this.score = score;
+    /*public void setScore(String score) {
+        this.singleScore = score;
     }
+*/
+    public String getReportID() {return reportID;}
 
     public String getUserID() {
         return userID;
@@ -98,6 +114,7 @@ public class HistoryReport {
         return category;
     }
 
+
     public String getReportText() {
         return reportText;
     }
@@ -106,8 +123,8 @@ public class HistoryReport {
         return isPass;
     }
 
-    public String getScore() {
-        return score;
+    public String getSingleScore() {
+        return singleScore;
     }
 
     public String getScoreType() {
@@ -122,5 +139,9 @@ public class HistoryReport {
         return leaderName;
     }
 
+    public String getMembers() {
+        return members;
+    }
 
+    public String getType() {return type;}
 }
