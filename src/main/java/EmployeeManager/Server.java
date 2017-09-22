@@ -85,18 +85,37 @@ public class Server {
         return errcode == 0 && errmsg.equals("ok");
     }
 
-    public List<Map<String, Object>> getDepartment(String UserId) {
+    public List<Map<String, Object>> getDepartment(String userId) {
 
-        String dIDSql = "select dID,dName from department where userID=" + UserId;
-
+        String dIDSql = "select dID,dName from department where userID=?";
+        Object args[]=new Object[]{userId};
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql);
+            department = jdbcTemplate.queryForList(dIDSql,args);
         } catch (Exception e) {
             System.out.println(e.toString());
             return null;
         }
         return department;
+    }
+
+    public String getUserName(String userId) {
+
+        String dIDSql = "select userName from user where userID=?";
+        Object args[]=new Object[]{userId};
+        List<Map<String, Object>> userNameCursor;
+        try {
+            userNameCursor = jdbcTemplate.queryForList(dIDSql,args);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+        String userName="";
+        for (Map<String, Object> map : userNameCursor) {
+            userName = map.get("userName").toString();
+            break;
+        }
+        return userName;
     }
 
     public List<User> getLeader(String UserId, List<Map<String, Object>> department) {
@@ -106,10 +125,10 @@ public class Server {
         String leaderSql;
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
-            leaderSql = "select userName,userID from department natural join user  where isLeader=1 and dID=\"" +
-                    dID + '"';
+            leaderSql = "select userName,userID from department natural join user  where isLeader=1 and dID=?";
+            Object args[]=new Object[]{dID};
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql);
+                dLeader = jdbcTemplate.queryForList(leaderSql,args);
             } catch (Exception e) {
                 return null;
             }
@@ -155,9 +174,10 @@ public class Server {
         List<String> errorUser = new ArrayList<String>();
         //检验队伍成员
         for (int i = 0; i < member.length; i++) {
-            memberSql = "select * from user where userName=\"" + member[i] + "\"";
+            memberSql = "select * from user where userName=?";
+            Object args[]=new Object[]{member[i]};
             try {
-                memberCursor = jdbcTemplate.queryForList(memberSql);
+                memberCursor = jdbcTemplate.queryForList(memberSql,args);
             } catch (Exception e) {
                 ;
             }
@@ -235,12 +255,13 @@ public class Server {
         return allUsers;
     }
 
-    public List<DepartmentLeader> getUserDepartmentLeader(String UserId) {
+    public List<DepartmentLeader> getUserDepartmentLeader(String userId) {
         List<DepartmentLeader> DLeader = new ArrayList<DepartmentLeader>();
-        String dIDSql = "select dID,dName from department where userID=" + UserId;
+        String dIDSql = "select dID,dName from department where userID=?";
+        Object args1[]=new Object[]{userId};
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql);
+            department = jdbcTemplate.queryForList(dIDSql,args1);
         } catch (Exception e) {
             System.out.println(e.toString());
             return null;
@@ -251,10 +272,10 @@ public class Server {
         String leaderSql;
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
-            leaderSql = "select userName,userID,dName from department natural join user  where isLeader=1 and dID=\"" +
-                    dID + '"';
+            leaderSql = "select userName,userID,dName from department natural join user  where isLeader=1 and dID=?";
+            Object args2[]=new Object[]{dID};
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql);
+                dLeader = jdbcTemplate.queryForList(leaderSql,args2);
             } catch (Exception e) {
                 return null;
             }

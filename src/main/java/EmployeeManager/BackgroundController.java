@@ -26,7 +26,7 @@ public class BackgroundController {
     private String path;
 
     @RequestMapping("/GeneralReport")
-    public String GeneralReport(//@RequestParam("state") String STATE,
+    public String GeneralReport(@RequestParam("state") String STATE,
                                 @RequestParam("code") String code,
                                 Model model) {
         System.out.println(code);
@@ -71,16 +71,13 @@ public class BackgroundController {
 
 
     @RequestMapping("/CaseReport")
-    public String CaseReport(//@RequestParam("code") String CODE,
-                             //@RequestParam("state") String STATE,
+    public String CaseReport(@RequestParam("code") String CODE,
+                             @RequestParam("state") String STATE,
                              Model model) {
-        /*
-        String UserId = server.getUserId(CODE, "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY");
+
+        String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
-        */
-
-        String UserId = "1";
         List<String> AllUsers = server.getAllUsers();
         List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
@@ -135,16 +132,15 @@ public class BackgroundController {
     }
 
     @RequestMapping("/LeadershipReport")
-    public String Leadership(//@RequestParam("code") String CODE,
-                             //@RequestParam("state") String STATE,
+    public String Leadership(@RequestParam("code") String CODE,
+                             @RequestParam("state") String STATE,
                              Model model) {
-/*
-        String UserId = getUserId(CODE, "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY");
-        if (isUser(UserId) == false)
+
+        String UserId = server.getUserId(CODE, PASecret);
+        if (server.isUser(UserId) == false)
             return "failure";
-*/
+
         List<String> AllUsers = server.getAllUsers();
-        String UserId = "1";
         model.addAttribute("UserId", UserId);
         model.addAttribute("AllUsers", AllUsers);
         return "LeadershipReport";
@@ -181,7 +177,12 @@ public class BackgroundController {
     }
 
     @RequestMapping("/RankingList")
-    public String RankingList(Model model) {
+    public String RankingList(@RequestParam("code") String CODE,
+                              @RequestParam("state") String STATE,
+                              Model model) {
+        String UserId = server.getUserId(CODE, PASecret);
+        if (server.isUser(UserId) == false)
+            return "failure";
         return "RankingList";
     }
 
@@ -235,32 +236,32 @@ public class BackgroundController {
     }
 
     @RequestMapping("/ReportApproval")
-    public String ReportApproval(//@RequestParam("code") String CODE,
-                                 //@RequestParam("state") String STATE,
+    public String ReportApproval(@RequestParam("code") String CODE,
+                                 @RequestParam("state") String STATE,
                                  Model model) {
-        /*
-        String UserId = getUserId(CODE, "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E");
+
+        String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
-        */
-
-        String UserId = "1";
 
         String getGeneralReport = "select reportID,userID,category,reportText,submitTime,userName " +
                 "from undealedgeneralreport natural join user where leaderName=(select userName from user " +
-                "where userID=" + UserId + ")";
+                "where userID=?)";
+
         String getCaseReport = "select reportID,userID,category,reportText,submitTime,members,singleScore,userName " +
                 "from undealedcasereport natural join user " +
-                "where leaderName=(select userName from user where userID=" + UserId + ")";
+                "where leaderName=(select userName from user where userID=?)";
+
+        Object args[]=new Object[]{UserId};
         List<Map<String, Object>> generalReport;
         List<Map<String, Object>> caseReport;
         try {
-            generalReport = server.jdbcTemplate.queryForList(getGeneralReport);
+            generalReport = server.jdbcTemplate.queryForList(getGeneralReport,args);
         } catch (Exception e) {
             return e.toString();
         }
         try {
-            caseReport = server.jdbcTemplate.queryForList(getCaseReport);
+            caseReport = server.jdbcTemplate.queryForList(getCaseReport,args);
         } catch (Exception e) {
             return e.toString();
         }
@@ -322,8 +323,10 @@ public class BackgroundController {
                         singleScore = 0;
 
                     updateSql = "UPDATE user set s_score=s_score + " + singleScore +
-                            " where userID=" + map.get("userID").toString();
-                    server.jdbcTemplate.update(updateSql);
+                            " where userID=?";
+                    Object args[]=new Object[]{map.get("userID").toString()};
+
+                    server.jdbcTemplate.update(updateSql,args);
                 }
 
                 updateSql = "insert into generalreport " +
@@ -370,13 +373,16 @@ public class BackgroundController {
 
                         for (int j = 0; j < member.length; j++) {
                             updateSql = "update user set s_score = s_score + " + singleScore +
-                                    " where userName='" + member[j] + "'";
-                            server.jdbcTemplate.update(updateSql);
+                                    " where userName=?";
+                            Object args1[]=new Object[]{member[j]};
+                            server.jdbcTemplate.update(updateSql,args1);
                         }
                     }
+
                     updateSql = "update user set s_score = s_score + " + singleScore +
-                            " where userID=" + map.get("userID").toString();
-                    server.jdbcTemplate.update(updateSql);
+                            " where userID=?";
+                    Object args2[]=new Object[]{map.get("userID").toString()};
+                    server.jdbcTemplate.update(updateSql,args2);
                 }
                 updateSql = "insert into casereport " +
                         "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
@@ -391,12 +397,14 @@ public class BackgroundController {
     }
 
     @RequestMapping("/HistoryReport")
-    public String HistoryReport(//@RequestParam("code") String CODE,
-                                //@RequestParam("state") String STATE,
+    public String HistoryReport(@RequestParam("code") String CODE,
+                                @RequestParam("state") String STATE,
                                 Model model) {
-        String UserID = "1";
-        String UserName = "1";
-        model.addAttribute("UserID", UserID);
+        String UserId = server.getUserId(CODE, PASecret);
+        if (server.isUser(UserId) == false)
+            return "failure";
+        String UserName = server.getUserName(UserId);
+        model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
         return "HistoryReport";
     }
@@ -412,10 +420,11 @@ public class BackgroundController {
              /* generalReport
             * */
             String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime,isPass,comment " +
-                    "from generalreport where userID = '" + UserID + "' order by submitTime desc";
+                    "from generalreport where userID =? order by submitTime desc";
             List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
+            Object args[]=new Object[]{UserID};
             try {
-                listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport);
+                listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport,args);
             } catch (Exception e) {
                 return e.toString();
             }
@@ -429,10 +438,10 @@ public class BackgroundController {
             /* caseReport
             * */
             String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType, members " +
-                    "from casereport where userID = '" + UserID + "' order by submitTime desc";
+                    "from casereport where userID = ? order by submitTime desc";
             List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
             try {
-                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport,args);
             } catch (Exception e) {
                 return e.toString();
             }
@@ -445,10 +454,10 @@ public class BackgroundController {
             /* leaderReport
             * */
             String sqlLeaderReport = "select reportID,category, reportText, submitTime, isPass, comment, singleScore, scoreType " +
-                    "from leaderreport where userID = '" + UserID + "' order by submitTime desc";
+                    "from leaderreport where userID = ? order by submitTime desc";
             List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
             try {
-                listLeaderReport = server.jdbcTemplate.queryForList(sqlLeaderReport);
+                listLeaderReport = server.jdbcTemplate.queryForList(sqlLeaderReport,args);
             } catch (Exception e) {
                 return e.toString();
             }
@@ -464,10 +473,11 @@ public class BackgroundController {
         }
         if (type.equals("我的审批")) {
             String sqlGeneralReport = "select reportID, leaderName,category,reportText,submitTime,isPass,comment " +
-                    "from generalreport where leaderName = '" + UserName + "' order by submitTime desc";
+                    "from generalreport where leaderName = ? order by submitTime desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            Object args[]=new Object[]{UserName};
             try {
-                list = server.jdbcTemplate.queryForList(sqlGeneralReport);
+                list = server.jdbcTemplate.queryForList(sqlGeneralReport,args);
             } catch (Exception e) {
                 return e.toString();
             }
@@ -480,10 +490,10 @@ public class BackgroundController {
             }
 
             String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType,members " +
-                    "from casereport where leaderName = '" + UserName + "' order by submitTime desc";
+                    "from casereport where leaderName = ? order by submitTime desc";
             List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
             try {
-                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport);
+                listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport,args);
             } catch (Exception e) {
                 return e.toString();
             }
