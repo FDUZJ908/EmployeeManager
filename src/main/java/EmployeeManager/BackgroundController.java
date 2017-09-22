@@ -35,17 +35,15 @@ public class BackgroundController {
         if (server.isUser(UserId) == false)
             return "failure";
 
-        List<Map<String, Object>> Departments = server.getDepartment(UserId);
+       /* List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
             return "failure";
-        List<User> Leaders = server.getLeader(UserId, Departments);
+        List<User> Leaders = server.getLeader(UserId, Departments);*/
 
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
 
         model.addAttribute("UserId", UserId);
-        model.addAttribute("Leaders", Leaders);
-        model.addAttribute("Departments", Departments);
         model.addAttribute("list", DLeaders);
         return "GeneralReport";
     }

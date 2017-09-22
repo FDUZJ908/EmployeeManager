@@ -40,8 +40,9 @@
             <label>工作部门:</label>
             <div class="report_box">
                 <select name="department">
-                    <div th:each="everyDepartment:${Departments}">
-                        <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span>
+                    <option>请选择部门</option>
+                    <div th:each="department:${DLeaders}">
+                        <option th:value="${department.department}"><span th:text="${everyDepartment.dName}"></span>
                         </option>
                     </div>
                 </select>
@@ -50,10 +51,10 @@
             <label>审批领导:</label>
             <div class="report_box">
                 <select name="leader">
+                    <option>请选择领导</option>
                     <div th:each="leader:${Leaders}">
                         <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
                     </div>
-                </select>
             </div>
 
             <div class="report_box">
