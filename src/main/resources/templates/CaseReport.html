@@ -150,7 +150,7 @@
                 count = 0;
                 for(j = 0; j<checkMember.length; j++) {
                     if (checkMember[j].value == members_hide[i].value)
-                        count++
+                        count++;
                 }
                     if(!count) {
                         matchedMembers[f] = members_hide[i].value;
@@ -159,14 +159,17 @@
             }
         }
         matchedMembers.sort();
-        for (j = 0; j <matchedMembers.length; j++) {
+        alert(matchedMembers[0].toString() + matchedMembers.length.toString());
+        if (! (userInput == "")) {
+            for (j = 0; j < matchedMembers.length; j++) {
                 members = document.createElement("input");
-                members.setAttribute("type","button");
-                members.setAttribute("value",matchedMembers[j]);
+                members.setAttribute("type", "button");
+                members.setAttribute("value", matchedMembers[j]);
                 memberID = "addMembers(" + matchedMembers[j] + ")";
-                members.setAttribute("onclick",memberID);
-                members.setAttribute("id",matchedMembers[j]);
+                members.setAttribute("onclick", memberID);
+                members.setAttribute("id", matchedMembers[j]);
                 addMemberList.appendChild(members);
+            }
         }
 
 

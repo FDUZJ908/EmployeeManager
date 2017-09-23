@@ -481,7 +481,8 @@
         }, QRCode.CorrectLevel = d
     }();
     var timestamp = /*[[${timestamp}]]*/;
-    new QRCode(document.getElementById("qrcode"), "http://139.196.123.150:4908/redirectQR?state=" + timestamp);
+    var creator = /*[[${creator}]]*/;
+    new QRCode(document.getElementById("qrcode"), "http://139.196.123.150:4908/redirectQR?timestamp=" + timestamp + "&creator=" + creator);
     /*]]>*/
 </script>
 
