@@ -518,4 +518,9 @@ public class BackgroundController {
 
         return "Synchronization succeed!";
     }
+
+    @RequestMapping("/QRCode")
+    public String QRCode(){
+        return "QRCode";
+    }
 }
