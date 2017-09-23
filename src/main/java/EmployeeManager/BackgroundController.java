@@ -525,6 +525,7 @@ public class BackgroundController {
         return "QRCode";
     }
 
+
     @RequestMapping("/redirectQR")
     public String redirectQR(//@RequestParam("state") String STATE,
                            Model model) {
