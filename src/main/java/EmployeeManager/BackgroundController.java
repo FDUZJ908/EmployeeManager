@@ -521,11 +521,13 @@ public class BackgroundController {
 
     @RequestMapping("/QRCode")
     public String QRCode(){
+
         return "QRCode";
     }
 
     @RequestMapping("/redirectQR")
     public String reDirect(@RequestParam("state") String STATE,
+
                            Model model) {
         model.addAttribute("timeStamp", STATE);
         return "redirectQR";
