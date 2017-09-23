@@ -622,7 +622,7 @@ public class BackgroundController {
         System.out.println(MemberID);
         System.out.println(STATE);
 
-
+s
 
 
         model.addAttribute("code", MemberID);
