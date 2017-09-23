@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <title>个案报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
-
 <body>
-
 <div class="page">
     <h3>个案报告</h3>
     <div class="submit-form">
@@ -17,17 +14,15 @@
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
-
             <label>报告内容:</label>
-            <div class="report_box">
-                <input type="text" name="content">
+            <div class="inputfile">
+                <label for="file">上传附件
+                </label>
+                <input type="file" name="file" id="file" />
             </div>
-<!--
             <div class="report_box">
-                <input type="file" name="file" id="file" class="inputfile"/>
-                <label for="file">上传文件</label>
+                <input type="text" name="content" required="required">
             </div>
--->
             <label>任务类型:</label>
             <div class="report_box">
                 <select name="type">
@@ -38,8 +33,6 @@
                     <option value="5">其他工作</option>
                 </select>
             </div>
-
-
             <label>得分/扣分:</label>
             <div class="report_box">
                 <select name="score_type">
@@ -47,12 +40,10 @@
                     <option value="0">扣分</option>
                 </select>
             </div>
-
             <label>任务分值:</label>
             <div class="report_box">
-                <input type="number" name="score">
+                <input type="number" name="score" required="required">
             </div>
-
             <label>工作部门:</label>
             <div class="report_box">
                 <select name="department">
@@ -62,7 +53,6 @@
                     </div>
                 </select>
             </div>
-
             <label>审批领导:</label>
             <div class="report_box">
                 <select name="leader">
@@ -71,44 +61,28 @@
                     </div>
                 </select>
             </div>
-
             <label>队伍成员:</label>
-			
-            <div name="checkMemberDiv" id="checkMemberDiv">
-
+            <div class="selected-box">
+                <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                </div>
+                <input type="text" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
+                       onkeyup="memberSearch()">
             </div>
-
-            
-
-            <div class="report_box" >
-                <select name = "members_hide" id="members_hide" style="display:none">
-                    <div th:each="AllUser:${AllUsers}">
-                        <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
-                    </div>
-                </select>
-                <input type="text"  autocomplete="off" name="userInput" id="userInput"  onkeyup="memberSearch()">
-
+            <div id="memberList" class="unselected-members">
             </div>
-
-
- 
-			
-            <div id="memberList">
-
+            <div class="report_box">
+                <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
             </div>
-			
-			<div class="report_box">
-            <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
-            </div>
-			
-			<input name="members" id="members" style="display:none" value="">
-				
+            <select name="members_hide" id="members_hide" style="display:none">
+                <div th:each="AllUser:${AllUsers}">
+                    <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
+                </div>
+            </select>
+            <input name="members" id="members" style="display:none" value="">
         </form>
     </div>
 </div>
-
 </body>
-
 <script th:inline="javascript">
     /*<![CDATA[*/
     function checkMemberDivToInput() {
@@ -215,6 +189,8 @@
     }*/
 
     /*]]>*/
+
+
 </script>
 
 </html>
