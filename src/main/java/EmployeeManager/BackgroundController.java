@@ -529,7 +529,8 @@ public class BackgroundController {
     public String reDirect(@RequestParam("state") String STATE,
 
                            Model model) {
-        System.out.println("redirectQR"+STATE);
+        System.out.println("redirectQR!!!"+STATE);
+        System.out.println("/n");
         model.addAttribute("timeStamp", STATE);
         return "redirectQR";
     }
@@ -538,7 +539,9 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-        System.out.println("checkin"+CODE+STATE);
+        System.out.println("checkin#####################################3");
+        System.out.println(CODE);
+        System.out.println(STATE);
         model.addAttribute("code", CODE);
         model.addAttribute("state", STATE);
         return "checkinSuccess";
