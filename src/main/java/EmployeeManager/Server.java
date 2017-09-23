@@ -1,6 +1,7 @@
 package EmployeeManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,10 +39,15 @@ public class Server {
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
+<<<<<<< HEAD
         System.out.println("cor1:"+tokenList.containsKey(corpsecret));
         System.out.println("Time"+time);
         if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
             System.out.println("true");
+=======
+
+        if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
+>>>>>>> f1a3a33996f0a808641690cd091fb55665c16e54
             return tokenList.get(corpsecret).value;
         }
         HTTPRequest http = new HTTPRequest();
@@ -49,11 +55,19 @@ public class Server {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
+<<<<<<< HEAD
             System.out.println("tokenlsh:"+jsonObject.toString());
+=======
+
+>>>>>>> f1a3a33996f0a808641690cd091fb55665c16e54
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
             System.out.println("cs:"+corpsecret);
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
+<<<<<<< HEAD
             System.out.println("cor2:"+tokenList.containsKey(corpsecret));
+=======
+
+>>>>>>> f1a3a33996f0a808641690cd091fb55665c16e54
             return value;
         } catch (Exception e) {
             return "failure";
@@ -63,7 +77,6 @@ public class Server {
     public String getUserId(String code, String corpsecret) {
         String UserId;
         String token = getAccessToken(corpsecret, false);
-        System.out.println(token);
         HTTPRequest http = new HTTPRequest();
         try {
             String url = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + token + "&code=" + code;
@@ -75,6 +88,13 @@ public class Server {
         return UserId;
     }
 
+    public boolean isUser(String UserId) {
+        String sql = "select * from user where userID=? limit 1";
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, new Object[]{UserId});
+        return res.size() > 0;
+    }
+
+    /*
     public boolean isUser(String UserId) {
         String token = getAccessToken(PASecret, false);
         HTTPRequest http = new HTTPRequest();
@@ -97,9 +117,9 @@ public class Server {
         }
         return errcode == 0 && errmsg.equals("ok");
     }
+    */
 
     public List<Map<String, Object>> getDepartment(String userId) {
-
         String dIDSql = "select dID,dName from department where userID=?";
         Object args[] = new Object[]{userId};
         List<Map<String, Object>> department;
@@ -395,4 +415,64 @@ public class Server {
             }
         }
     }
+
+
+
+    public void award(String userid, int score) {
+        String updatesql = "UPDATE user set s_score=s_score + " + score +
+                " where userID=?";
+        Object args[] = new Object[]{userid};
+        try {
+            jdbcTemplate.update(updatesql, args);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    public String name2id(String names) {
+        String IDs = "";
+        String[] namelist = names.split(",");
+
+        List<Map<String, Object>> memberCursor = new ArrayList<Map<String, Object>>();
+        String memberSql = "";
+
+        for (int i = 0; i < namelist.length; i++) {
+            memberSql = "select userID from user where userName=?";
+            Object args[] = new Object[]{namelist[i]};
+            try {
+                memberCursor = jdbcTemplate.queryForList(memberSql, args);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+            if (!memberCursor.isEmpty()) {
+                for (Map<String, Object> map : memberCursor) {
+                    IDs = IDs + map.get("userID").toString() + "|";
+                }
+            } else {
+                System.out.println("成员不存在");
+            }
+        }
+
+        IDs = IDs.substring(0, IDs.length() - 1);
+
+        return IDs;
+    }
+
+    public void postMessageToUser(String members, String text) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+
+        String users = name2id(members);
+
+
+        /* 文本消息需要进一步修改
+         */
+        jsonObject.put("touser", users);
+        jsonObject.put("msgtype", "text");
+        jsonObject.put("agentid", corpid);
+        jsonObject.put("content", text);
+
+
+    }
+
+
 }

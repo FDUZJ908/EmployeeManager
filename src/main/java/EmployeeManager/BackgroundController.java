@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class BackgroundController {
 
     @Autowired
     Server server;
-
+    Map<String, Checkin> checkins = new HashMap<String, Checkin>();
     @Value("${web.upload-path}")
     private String path;
 
@@ -67,7 +67,6 @@ public class BackgroundController {
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
         return "success";
     }
-
 
     @RequestMapping("/CaseReport")
     public String CaseReport(@RequestParam("code") String CODE,
@@ -549,7 +548,6 @@ public class BackgroundController {
 
     }
 
-
     @RequestMapping("/Synchronizer")
     @ResponseBody
     public String Synchronizer() throws Exception {
@@ -559,11 +557,10 @@ public class BackgroundController {
         return "Synchronization succeed!";
     }
 
-    List<checkinRecord> checkinRecords = new ArrayList<checkinRecord>();
-
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          Model model) {
+<<<<<<< HEAD
         /*
         System.out.println("*******************************************");
         System.out.println("QRCode");
@@ -579,28 +576,36 @@ public class BackgroundController {
             int index = checkinRecords.indexOf(UserID);
             checkinRecords.get(index).deleteCheckinMember();
             checkinRecords.get(index).setTimeStamp(TimeStamp);
+=======
+        String UserID = server.getUserId(CODE, PASecret);
+        String timestamp = Long.toString(System.currentTimeMillis());
+        if (checkins.containsKey(UserID)) {
+            Checkin checkin = checkins.get(UserID);
+            checkin.deleteCheckinMember();
+            checkin.setTimestamp(timestamp);
+>>>>>>> f1a3a33996f0a808641690cd091fb55665c16e54
         } else {
             if (server.isUser(UserID)) {
-                checkinRecord checkinRecordTMP = new checkinRecord(UserID, TimeStamp);
-                checkinRecords.add(checkinRecordTMP);
+                Checkin checkin = new Checkin(timestamp);
+                checkins.put(UserID, checkin);
             } else
                 return "failure";
         }
-        /*
-        System.out.println("*******************************************");
-        */
-        model.addAttribute("timestamp", TimeStamp);
+        model.addAttribute("timestamp", timestamp);
+        model.addAttribute("creator", UserID);
         return "QRCode";
     }
 
     @RequestMapping("/redirectQR")
-    public String redirectQR(@RequestParam("state") Object STATE,
+    public String redirectQR(@RequestParam("timestamp") String timestamp,
+                             @RequestParam("creator") String creator,
                              Model model) {
-        //System.out.println("*******************************************");
-        //System.out.println("redirectQR!!!");
-        //System.out.println(STATE.toString());
-        //System.out.println("*******************************************");
-        model.addAttribute("timestamp", STATE);
+        //System.out.println(creator);
+        //System.out.println(checkins.get(creator).getTimestamp());
+        //System.out.println(timestamp);
+        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
+        model.addAttribute("timestamp", timestamp);
+        model.addAttribute("creator", creator);
         return "redirectQR";
     }
 
@@ -608,6 +613,7 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
+<<<<<<< HEAD
 
         System.out.println("leaders#####################################3");
         for (int i = 0; i < checkinRecords.size(); i++) {
@@ -627,6 +633,14 @@ public class BackgroundController {
 
         model.addAttribute("code", MemberID);
         //model.addAttribute("state", STATE);
+=======
+        String userID = server.getUserId(CODE, PASecret);
+        System.out.println("checkin:"+userID);
+        System.out.println(STATE);
+        if(checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
+
+        model.addAttribute("userID", userID);
+>>>>>>> f1a3a33996f0a808641690cd091fb55665c16e54
         return "checkinSuccess";
     }
 }

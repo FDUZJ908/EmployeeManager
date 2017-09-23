@@ -159,7 +159,8 @@
             }
         }
         matchedMembers.sort();
-        if (! (userInput.toString() == "")) {
+        alert(matchedMembers[0].toString() + matchedMembers.length.toString());
+        if (! (userInput == "")) {
             for (j = 0; j < matchedMembers.length; j++) {
                 members = document.createElement("input");
                 members.setAttribute("type", "button");
