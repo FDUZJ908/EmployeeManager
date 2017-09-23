@@ -14,17 +14,17 @@
     <hr>
     <div th:each="everyone:${list}" class="rank_box">
         <div class="rank_box_c1" th:text="${everyone.rank}"></div>
-        <div class="rank_box_c1" th:text="${everyone.avatarURL}"></div>
+        <div class="rank_box_c2"> <img src="@{${everyone.avatarURL}}" style="width:100%;height:100%;" /> </div>
         <div class="rank_box_c1" th:text="${everyone.username}"></div>
-        <div class="rank_box_c2" th:text="${everyone.score}"></div>
+        <div class="rank_box_c3" th:text="${everyone.score}"></div>
+    </div>
+    <div class="space">
+
     </div>
 
-
 </div>
 
-<div class="space">
 
-</div>
 
 <form method="post" nctype="multipart/form-data">
     <div class="bottom_box">

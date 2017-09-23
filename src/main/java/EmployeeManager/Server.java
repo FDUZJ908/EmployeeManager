@@ -49,10 +49,9 @@ public class Server {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
-
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
+            System.out.println("cs:"+corpsecret);
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
-
             return value;
         } catch (Exception e) {
             return "failure";
@@ -211,7 +210,7 @@ public class Server {
     }
 
     public List<Map<String, Object>> getUndealedGeneralReport(String reportID) {
-        String sql = "SELECT * FROM undealedgeneralreport WHERE reportID=" + reportID;
+        String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID;
         List<Map<String, Object>> generalReport;
         try {
             generalReport = jdbcTemplate.queryForList(sql);
@@ -223,7 +222,7 @@ public class Server {
     }
 
     public List<Map<String, Object>> getUndealedCaseReport(String reportID) {
-        String sql = "SELECT * FROM undealedcasereport WHERE reportID=" + reportID;
+        String sql = "SELECT * FROM undealedCaseReport WHERE reportID=" + reportID;
         List<Map<String, Object>> caseReport;
         try {
             caseReport = jdbcTemplate.queryForList(sql);
