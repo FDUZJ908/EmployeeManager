@@ -526,12 +526,12 @@ public class BackgroundController {
     }
 
     @RequestMapping("/redirectQR")
-    public String reDirect(@RequestParam("state") String STATE,
-
+    public String redirectQR(//@RequestParam("state") String STATE,
                            Model model) {
-        System.out.println("redirectQR!!!"+STATE);
+        System.out.println("*******************************************");
+        //System.out.println("redirectQR!!!"+STATE);
         System.out.println("/n");
-        model.addAttribute("timeStamp", STATE);
+        //model.addAttribute("timeStamp", STATE);
         return "redirectQR";
     }
 
