@@ -38,7 +38,10 @@ public class Server {
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
-        if (!newToken && tokenList.containsKey(corpsecret) && tokenList.get(corpsecret).expireTime < time) {
+        System.out.println("cor1:"+tokenList.containsKey(corpsecret));
+        System.out.println("Time"+time);
+        if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
+            System.out.println("true");
             return tokenList.get(corpsecret).value;
         }
         HTTPRequest http = new HTTPRequest();
@@ -46,8 +49,11 @@ public class Server {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
+            System.out.println("tokenlsh:"+jsonObject.toString());
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
+            System.out.println("cs:"+corpsecret);
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
+            System.out.println("cor2:"+tokenList.containsKey(corpsecret));
             return value;
         } catch (Exception e) {
             return "failure";
@@ -79,6 +85,13 @@ public class Server {
             JSONObject jsonObject = http.sendGET(url);
             errcode = jsonObject.getInt("errcode");
             errmsg = jsonObject.getString("errmsg");
+
+            /*
+            System.out.println("****************************\n");
+            System.out.println(UserId);
+            System.out.println(jsonObject.toString());
+            System.out.println("\n****************************");
+            */
         } catch (Exception e) {
             return false;
         }
@@ -88,10 +101,10 @@ public class Server {
     public List<Map<String, Object>> getDepartment(String userId) {
 
         String dIDSql = "select dID,dName from department where userID=?";
-        Object args[]=new Object[]{userId};
+        Object args[] = new Object[]{userId};
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql,args);
+            department = jdbcTemplate.queryForList(dIDSql, args);
         } catch (Exception e) {
             System.out.println(e.toString());
             return null;
@@ -102,15 +115,15 @@ public class Server {
     public String getUserName(String userId) {
 
         String dIDSql = "select userName from user where userID=?";
-        Object args[]=new Object[]{userId};
+        Object args[] = new Object[]{userId};
         List<Map<String, Object>> userNameCursor;
         try {
-            userNameCursor = jdbcTemplate.queryForList(dIDSql,args);
+            userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
         } catch (Exception e) {
             System.out.println(e.toString());
             return null;
         }
-        String userName="";
+        String userName = "";
         for (Map<String, Object> map : userNameCursor) {
             userName = map.get("userName").toString();
             break;
@@ -126,9 +139,9 @@ public class Server {
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
             leaderSql = "select userName,userID from department natural join user  where isLeader=1 and dID=?";
-            Object args[]=new Object[]{dID};
+            Object args[] = new Object[]{dID};
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql,args);
+                dLeader = jdbcTemplate.queryForList(leaderSql, args);
             } catch (Exception e) {
                 return null;
             }
@@ -175,9 +188,9 @@ public class Server {
         //检验队伍成员
         for (int i = 0; i < member.length; i++) {
             memberSql = "select * from user where userName=?";
-            Object args[]=new Object[]{member[i]};
+            Object args[] = new Object[]{member[i]};
             try {
-                memberCursor = jdbcTemplate.queryForList(memberSql,args);
+                memberCursor = jdbcTemplate.queryForList(memberSql, args);
             } catch (Exception e) {
                 ;
             }
@@ -200,7 +213,7 @@ public class Server {
     }
 
     public List<Map<String, Object>> getUndealedGeneralReport(String reportID) {
-        String sql = "SELECT * FROM undealedgeneralreport WHERE reportID=" + reportID;
+        String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID;
         List<Map<String, Object>> generalReport;
         try {
             generalReport = jdbcTemplate.queryForList(sql);
@@ -212,7 +225,7 @@ public class Server {
     }
 
     public List<Map<String, Object>> getUndealedCaseReport(String reportID) {
-        String sql = "SELECT * FROM undealedcasereport WHERE reportID=" + reportID;
+        String sql = "SELECT * FROM undealedCaseReport WHERE reportID=" + reportID;
         List<Map<String, Object>> caseReport;
         try {
             caseReport = jdbcTemplate.queryForList(sql);
@@ -258,10 +271,10 @@ public class Server {
     public List<DepartmentLeader> getUserDepartmentLeader(String userId) {
         List<DepartmentLeader> DLeader = new ArrayList<DepartmentLeader>();
         String dIDSql = "select dID,dName from department where userID=?";
-        Object args1[]=new Object[]{userId};
+        Object args1[] = new Object[]{userId};
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql,args1);
+            department = jdbcTemplate.queryForList(dIDSql, args1);
         } catch (Exception e) {
             System.out.println(e.toString());
             return null;
@@ -273,9 +286,9 @@ public class Server {
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
             leaderSql = "select userName,userID,dName from department natural join user  where isLeader=1 and dID=?";
-            Object args2[]=new Object[]{dID};
+            Object args2[] = new Object[]{dID};
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql,args2);
+                dLeader = jdbcTemplate.queryForList(leaderSql, args2);
             } catch (Exception e) {
                 return null;
             }
