@@ -523,4 +523,20 @@ public class BackgroundController {
     public String QRCode(){
         return "QRCode";
     }
+
+    @RequestMapping("/redirectQR")
+    public String reDirect(@RequestParam("state") String STATE,
+                           Model model) {
+        model.addAttribute("timeStamp", STATE);
+        return "redirectQR";
+    }
+
+    @RequestMapping("/checkin")
+    public String checkin(@RequestParam("code") String CODE,
+                          @RequestParam("state") String STATE,
+                          Model model) {
+        model.addAttribute("code", CODE);
+        model.addAttribute("state", STATE);
+        return "checkinSuccess";
+    }
 }
