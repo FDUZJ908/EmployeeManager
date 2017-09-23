@@ -36,7 +36,6 @@
                 </div>
             </div>
         </div>
-
         <div th:each="list:${list2}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">
@@ -70,17 +69,17 @@
                 </select>
             </div>
             <div class="approval_bottom_box">
-                <input type="text" name="reportComment" placeholder="请输入审批意见"/>
+                <input type="text" name="reportComment" placeholder="请输入审批意见" required="required" />
             </div>
             <div class="approval_bottom_box">
                 <input class="submit" type="submit" value="确定审批"/>
-
             </div>
         </div>
-
         <input type="hidden" name="check1">
         <input type="hidden" name="check2">
     </form>
+    <div class="space">
+    </div>
 </div>
 
 </body>

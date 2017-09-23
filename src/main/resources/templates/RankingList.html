@@ -11,6 +11,7 @@
 <body>
 <div class="page">
     <h3>积分榜</h3>
+    <hr>
     <div th:each="everyone:${list}" class="rank_box">
         <div class="rank_box_c1" th:text="${everyone.rank}"></div>
         <div class="rank_box_c1" th:text="${everyone.avatarURL}"></div>
@@ -18,16 +19,22 @@
         <div class="rank_box_c2" th:text="${everyone.score}"></div>
     </div>
 
-    <form method="post" nctype="multipart/form-data">
-        <div class="bottom_box">
-            <div class="rank_button"><input type="submit" value="领导干部" name="button"></div>
-            <div class="rank_button"><input type="submit" value="中层干部" name="button"></div>
-            <div class="rank_button"><input type="submit" value="总排行" name="button"></div>
-            <div class="rank_button"><input type="submit" value="一般干部" name="button"></div>
-            <div class="rank_button"><input type="submit" value="村级干部" name="button"></div>
-        </div>
-    </form>
+
 </div>
+
+<div class="space">
+
+</div>
+
+<form method="post" nctype="multipart/form-data">
+    <div class="bottom_box">
+        <div class="rank_button"><input type="submit" value="领导干部" name="button"></div>
+        <div class="rank_button"><input type="submit" value="中层干部" name="button"></div>
+        <div class="rank_button"><input type="submit" value="总排行" name="button"></div>
+        <div class="rank_button"><input type="submit" value="一般干部" name="button"></div>
+        <div class="rank_button"><input type="submit" value="村级干部" name="button"></div>
+    </div>
+</form>
 </body>
 
 </html>

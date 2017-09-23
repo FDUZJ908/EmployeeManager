@@ -6,9 +6,7 @@
     <title>一般报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
-
 <body>
-
 <div class="page">
     <h3>一般报告</h3>
     <div class="submit-form">
@@ -16,16 +14,15 @@
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
-
             <label>报告内容:</label>
-            <div class="report_box">
-                <input type="text" name="content">
+            <div class="inputfile">
+                <label for="file">上传附件
+                </label>
+                <input type="file" name="file" id="file" required="required"/>
             </div>
-<!--
             <div class="report_box">
-                <input type="file" name="file" value="上传文件">
+                <input type="text" name="content" required="required">
             </div>
--->
             <label>任务类型:</label>
             <div class="report_box">
                 <select name="type">
@@ -36,7 +33,6 @@
                     <option value="5">其他工作</option>
                 </select>
             </div>
-
             <label>工作部门:</label>
             <div class="report_box">
                 <select name="department">
@@ -46,7 +42,6 @@
                     </div>
                 </select>
             </div>
-
             <label>审批领导:</label>
             <div class="report_box">
                 <select name="leader">
@@ -55,13 +50,11 @@
                     </div>
                 </select>
             </div>
-
             <div class="report_box">
                 <input type="submit" value="提交报告">
             </div>
         </form>
     </div>
 </div>
-
 </body>
 </html>
