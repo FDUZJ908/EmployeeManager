@@ -30,9 +30,9 @@ public class BackgroundController {
     public String GeneralReport(@RequestParam("state") String STATE,
                                 @RequestParam("code") String code,
                                 Model model) {
-        System.out.println(code);
+        //System.out.println(code);
         String UserId = server.getUserId(code, PASecret);
-        System.out.println(UserId);
+        //System.out.println(UserId);
         if (server.isUser(UserId) == false)
             return "failure";
 
@@ -528,14 +528,14 @@ public class BackgroundController {
         /*
         System.out.println("*******************************************");
         System.out.println("QRCode");
-        System.out.println(CODE);
         */
+        System.out.println(CODE);
         String UserID = server.getUserId(CODE, PASecret);
         String TimeStamp = Long.toString(System.currentTimeMillis());
-        /*
+
         System.out.println(UserID);
         System.out.println(TimeStamp);
-        */
+
         if (checkinRecords.contains(UserID)) {
             int index = checkinRecords.indexOf(UserID);
             checkinRecords.get(index).deleteCheckinMember();
@@ -569,19 +569,25 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
+
         System.out.println("leaders#####################################3");
         for (int i = 0; i < checkinRecords.size(); i++) {
             System.out.println(checkinRecords.get(i).getLeaderID());
             System.out.println(checkinRecords.get(i).getTimeStamp());
         }
 
+
         String MemberID = server.getUserId(CODE, PASecret);
 
         System.out.println("checkin#####################################3");
         System.out.println(MemberID);
         System.out.println(STATE);
-        model.addAttribute("code", CODE);
-        model.addAttribute("state", STATE);
+
+
+
+
+        model.addAttribute("code", MemberID);
+        //model.addAttribute("state", STATE);
         return "checkinSuccess";
     }
 }
