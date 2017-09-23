@@ -39,11 +39,7 @@ public class Server {
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
-<<<<<<< HEAD
-        System.out.println("cor1:" + tokenList.containsKey(corpsecret));
-        System.out.println("Time" + time);
-=======
->>>>>>> e4029f740d02aa55f76b8395adcd1cbe95535ba5
+
         if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
             return tokenList.get(corpsecret).value;
         }
@@ -52,16 +48,10 @@ public class Server {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
-<<<<<<< HEAD
-            System.out.println("tokenlsh:" + jsonObject.toString());
-            int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
-            System.out.println("cs:" + corpsecret);
-            tokenList.put(corpsecret, new AccessToken(value, expireTime));
-            System.out.println("cor2:" + tokenList.containsKey(corpsecret));
-=======
+
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
->>>>>>> e4029f740d02aa55f76b8395adcd1cbe95535ba5
+
             return value;
         } catch (Exception e) {
             return "failure";
@@ -83,9 +73,9 @@ public class Server {
     }
 
     public boolean isUser(String UserId) {
-        String sql="select * from user where userID=? limit 1";
-        List<Map<String, Object>> res=jdbcTemplate.queryForList(sql,new Object[]{UserId});
-        return res.size()>0;
+        String sql = "select * from user where userID=? limit 1";
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, new Object[]{UserId});
+        return res.size() > 0;
     }
 
     /*
@@ -441,27 +431,16 @@ public class Server {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void award(String userid, int score) {
+        String updatesql = "UPDATE user set s_score=s_score + " + score +
+                " where userID=?";
+        Object args[] = new Object[]{userid};
+        try {
+            jdbcTemplate.update(updatesql, args);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
 
     public String name2id(String names) {
         String IDs = "";
@@ -486,16 +465,26 @@ public class Server {
                 System.out.println("成员不存在");
             }
         }
+
+        IDs = IDs.substring(0, IDs.length() - 1);
+
         return IDs;
     }
-
 
     public void postMessageToUser(String members, String text) throws JSONException {
         JSONObject jsonObject = new JSONObject();
 
         String users = name2id(members);
 
+
+        /* 文本消息需要进一步修改
+         */
         jsonObject.put("touser", users);
+        jsonObject.put("msgtype", "text");
+        jsonObject.put("agentid", corpid);
+        jsonObject.put("content", text);
+
+
     }
 
 
