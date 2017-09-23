@@ -395,42 +395,6 @@ public class Server {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void award(String userid, int score) {
         String updatesql = "UPDATE user set s_score=s_score + " + score +
                 " where userID=?";
