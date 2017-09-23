@@ -38,10 +38,7 @@ public class Server {
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
-        System.out.println("cor1:"+tokenList.containsKey(corpsecret));
-        System.out.println("Time"+time);
         if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
-            System.out.println("true");
             return tokenList.get(corpsecret).value;
         }
         HTTPRequest http = new HTTPRequest();
@@ -49,11 +46,8 @@ public class Server {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
-            System.out.println("tokenlsh:"+jsonObject.toString());
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
-            System.out.println("cs:"+corpsecret);
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
-            System.out.println("cor2:"+tokenList.containsKey(corpsecret));
             return value;
         } catch (Exception e) {
             return "failure";
@@ -63,7 +57,6 @@ public class Server {
     public String getUserId(String code, String corpsecret) {
         String UserId;
         String token = getAccessToken(corpsecret, false);
-        System.out.println(token);
         HTTPRequest http = new HTTPRequest();
         try {
             String url = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + token + "&code=" + code;
@@ -76,6 +69,13 @@ public class Server {
     }
 
     public boolean isUser(String UserId) {
+        String sql="select * from user where userID=? limit 1";
+        List<Map<String, Object>> res=jdbcTemplate.queryForList(sql,new Object[]{UserId});
+        return res.size()>0;
+    }
+
+    /*
+    public boolean isUser(String UserId) {
         String token = getAccessToken(PASecret, false);
         HTTPRequest http = new HTTPRequest();
         int errcode;
@@ -85,21 +85,14 @@ public class Server {
             JSONObject jsonObject = http.sendGET(url);
             errcode = jsonObject.getInt("errcode");
             errmsg = jsonObject.getString("errmsg");
-
-            /*
-            System.out.println("****************************\n");
-            System.out.println(UserId);
-            System.out.println(jsonObject.toString());
-            System.out.println("\n****************************");
-            */
         } catch (Exception e) {
             return false;
         }
         return errcode == 0 && errmsg.equals("ok");
     }
+    */
 
     public List<Map<String, Object>> getDepartment(String userId) {
-
         String dIDSql = "select dID,dName from department where userID=?";
         Object args[] = new Object[]{userId};
         List<Map<String, Object>> department;
