@@ -557,9 +557,10 @@ public class BackgroundController {
                           @RequestParam("state") String STATE,
                           Model model) {
         String userID = server.getUserId(CODE, PASecret);
-        System.out.println("checkin:"+userID);
+        server.award(userID,2);
+        System.out.println("checkin:" + userID);
         System.out.println(STATE);
-        if(checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
+        if (checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
 
         model.addAttribute("userID", userID);
         return "checkinSuccess";

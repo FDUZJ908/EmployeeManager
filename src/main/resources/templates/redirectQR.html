@@ -13,7 +13,7 @@
     var creator = /*[[${creator}]]*/;
     var timestamp = /*[[${timestamp}]]*/;
     var curtimestamp = (new Date()).valueOf();
-    if (curtimestamp - timestamp <= 30*60*1000)
+    if (curtimestamp - parseInt(timestamp) <= 30*60*1000)
         self.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Femployeemanager.ctrlshiftpan.com%3A4908%2Fcheckin&response_type=code&scope=snsapi_base&state="+creator+"#wechat_redirect";
     else
         alert("对不起，二维码已过期");
