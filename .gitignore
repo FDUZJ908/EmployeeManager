@@ -1,6 +1,7 @@
 .idea/
 target/
 */target/
+update.sh
 
 # Compiled class file
 *.class
