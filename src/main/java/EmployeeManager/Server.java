@@ -50,7 +50,6 @@ public class Server {
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
-            System.out.println("cs:"+corpsecret);
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
             return value;
         } catch (Exception e) {

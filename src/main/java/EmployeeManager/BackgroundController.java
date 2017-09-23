@@ -582,10 +582,11 @@ public class BackgroundController {
     public String redirectQR(@RequestParam("timestamp") String timestamp,
                              @RequestParam("creator") String creator,
                              Model model) {
-        //System.out.println(creator);
-        //System.out.println(checkins.get(creator).getTimestamp());
+        System.out.println("redirectQR:"+creator);
+        System.out.println(checkins.get(creator).getTimestamp().equals(timestamp));
         //System.out.println(timestamp);
-        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
+        if (!checkins.containsKey(creator) || !checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
+        System.out.println("success");
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", creator);
         return "redirectQR";
