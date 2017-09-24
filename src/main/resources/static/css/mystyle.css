@@ -123,28 +123,32 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	margin-top: 1.5em;
+	margin-bottom: 5em;
 	border:none;
 	letter-spacing: 1px;
     cursor: pointer;
+    -webkit-appearance: none;
 }
+
 .selected-box{
 	width: 100%;
-	height: 20%;
+	min-height: 20%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	border: 1px solid #ccc;
+    -webkit-box-sizing:border-box;
     font-size: 1em;
+    border: 1px solid;
 	margin: 3em 0;
-	display: block;
 	overflow: hidden;
 }
 
 .selected-box input[type="text"]{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
 	width: 30%;
 	height: 100%;
-	border: none;
+	border-left: 1px solid;
 	float: right;
 	font-size: 5em;
 }
@@ -152,24 +156,28 @@ h3{
 
 
 .selected-members{
-	min-width: 70%;
-	height: 100%;
+	min-width: 65%;
+	max-width: 65%;
+	min-height: 100%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
 	float: left;
 	font-size: 5em;
-	padding: 0.5em;
+	padding: auto 0;
 	display: flex;
 	overflow: scroll;
 }
 
 .selected-members input[type="button"]{
-	min-width: 25%;
+	min-width: 33%;
 	height: 100%;
-	border: none;
+	border: 1px solid;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	margin: 0 1px 0 0;
+    -webkit-box-sizing:border-box;
+    -webkit-appearance: none;
+    display: block;
 	font-size: 0.6em;
 	cursor: pointer;
 }
@@ -177,21 +185,24 @@ h3{
 
 .unselected-members{
 	width: 100%;
-	height: 20%;
+	min-height: 20%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	border: 1px solid #ccc;
+    -webkit-box-sizing:border-box;
     font-size: 1em;
 	margin-bottom: 3em 0;
+	border: 1px solid;
 }
 
 .unselected-members input[type="button"]{
 	width: 24%;
 	font-size: 3em;
-	border: none;
+	border: 1px solid;;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	margin: 0 1px 0 0;
+	-webkit-box-sizing:border-box;
+    -webkit-appearance: none;
+	margin: 0 0.1em 0 0;
 	cursor: pointer;
 }
 
@@ -234,6 +245,7 @@ h3{
 	height: 100%;
 	width: 100%;
     cursor: pointer;
+	-webkit-appearance: none;
 }
 
 .approval_bottom_box select{
@@ -335,6 +347,7 @@ h3{
 	font-size: 2em;
     border: none;
     cursor: pointer;
+    -webkit-appearance: none;
 }
 
 .rank_box{
@@ -402,6 +415,7 @@ h3{
     border: none;
     cursor: pointer;
 	font-size: 2em;
+	-webkit-appearance: none;
 }
 
 .history_title{
