@@ -16,7 +16,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static EmployeeManager.User.*;
+import static EmployeeManager.User.userAttrs;
+import static EmployeeManager.User.userKeys;
 
 /**
  * Created by lsh on 04/09/2017.
@@ -49,7 +50,6 @@ public class Server {
                     "corpid=" + corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
-            System.out.println("cs:"+corpsecret);
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
             return value;
         } catch (Exception e) {
@@ -393,10 +393,8 @@ public class Server {
     }
 
 
-
     public void award(String userid, int score) {
-        String updatesql = "UPDATE user set s_score=s_score + " + score +
-                " where userID=?";
+        String updatesql = "UPDATE user set s_score=s_score + " + score + " where userID=?";
         Object args[] = new Object[]{userid};
         try {
             jdbcTemplate.update(updatesql, args);
@@ -449,6 +447,5 @@ public class Server {
 
 
     }
-
 
 }

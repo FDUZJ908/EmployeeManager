@@ -582,10 +582,9 @@ public class BackgroundController {
     public String redirectQR(@RequestParam("timestamp") String timestamp,
                              @RequestParam("creator") String creator,
                              Model model) {
-        //System.out.println(creator);
-        //System.out.println(checkins.get(creator).getTimestamp());
-        //System.out.println(timestamp);
-        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
+        System.out.println(timestamp);
+        if (!checkins.containsKey(creator) || !checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
+        System.out.println("creator:"+creator);
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", creator);
         return "redirectQR";
@@ -595,11 +594,11 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
+        System.out.println(CODE);
         String userID = server.getUserId(CODE, PASecret);
-        System.out.println("checkin:"+userID);
-        System.out.println(STATE);
-        if(checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
-
+        server.award(userID,2);
+        System.out.println("checkin:" + userID);
+        if (checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }
