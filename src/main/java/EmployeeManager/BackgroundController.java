@@ -137,10 +137,11 @@ public class BackgroundController {
         String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
-
+        List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("UserId", UserId);
         model.addAttribute("AllUsers", AllUsers);
+        model.addAttribute("list",DLeaders);
         return "LeadershipReport";
     }
 
