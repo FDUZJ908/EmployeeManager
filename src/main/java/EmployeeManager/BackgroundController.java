@@ -509,10 +509,10 @@ public class BackgroundController {
             return "HistoryReport";
         }
         if (type.equals("我的审批")) {
-            String sqlGeneralReport = "select reportID, leaderName,category,reportText,submitTime,isPass,comment " +
+            String sqlGeneralReport = "select reportID, userID,category,reportText,submitTime,isPass,comment " +
                     "from generalReport where leaderName = ? order by submitTime desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-            Object args[] = new Object[]{UserName};
+            Object args[] = new Object[]{UserName};/* leader's name*/
             try {
                 list = server.jdbcTemplate.queryForList(sqlGeneralReport, args);
             } catch (Exception e) {
@@ -521,12 +521,13 @@ public class BackgroundController {
 
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : list) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("category"),
+                String posterName = server.getUserName(map.get("userID").toString());
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("category"),
                         map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"), "", 0);
                 reports.add(report_temp);
             }
 
-            String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, isPass, comment, singleScore, scoreType,members " +
+            String sqlCaseReport = "select reportID, userID, category, reportText, submitTime, isPass, comment, singleScore, scoreType,members " +
                     "from caseReport where leaderName = ? order by submitTime desc";
             List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
             try {
@@ -535,7 +536,8 @@ public class BackgroundController {
                 return e.toString();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("category"),
+                String posterName = server.getUserName(map.get("userID").toString());
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("category"),
                         map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), map.get("leaderName"), map.get("members"), 1);
                 reports.add(report_temp);
             }
