@@ -103,7 +103,7 @@ public class BackgroundController {
                                  @RequestParam("leader") String leader,
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
-      /*  List<String> errorUser = server.checkMember(members);
+       /* List<String> errorUser = server.checkMember(members);
         if (!errorUser.isEmpty()) {
             model.addAttribute("errorUser", errorUser);
             List<Map<String, Object>> Departments = server.getDepartment(UserId);

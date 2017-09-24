@@ -113,6 +113,7 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
     -webkit-appearance: none;
+    padding: 0 auto;
 	outline: none;
     font-size: 5em;
 }
