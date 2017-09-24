@@ -6,7 +6,7 @@
     <title>个案报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
-<body>
+<body onload="loadDepartment()">
 <div class="page">
     <h3>个案报告</h3>
     <div class="submit-form">
@@ -46,19 +46,19 @@
             </div>
             <label>工作部门:</label>
             <div class="report_box">
-                <select name="department" id="department">
+                <select name="department" id="department" onchange="departmentRedirect()">
                     <option>请选择部门</option>
-                    <div th:each="department:${DLeaders}">
-                        <option th:value="${department.userID}" th:text="${department.dName}"></option>
+                    <div th:each="department:${list}">
+                        <option th:value="${department.userName}" th:text="${department.dName}"></option>
                     </div>
                 </select>
             </div>
             <label>审批领导:</label>
             <div class="report_box">
-                <select name="leader" id="leader">
+                <select name="leader" id="leader" >
                     <option>请选择领导</option>
-                    <div th:each="leader:${DLeaders}">
-                        <option th:value="${leader.userID}" th:text="${leader.userName}"></option>
+                    <div th:each="leader:${list}">
+                        <option th:value="${leader.userName}" th:text="${leader.userName}"></option>
                     </div>
                 </select>
             </div>
@@ -123,6 +123,8 @@
         var div = document.getElementById("memberList");
         var delMember = document.getElementById(member.value);
         div.removeChild(delMember);
+        var userInput = document.getElementById('userInput');
+        userInput.setAttribute("value", "");
         memberSearch();
     }
 
@@ -136,9 +138,9 @@
         var delMember;
         var matchedMembers = new Array();
         var f = 0;
-        for (i=  0; i <members_hide.length; i++){
+        for (i = 0; i < members_hide.length; i++) {
             delMember = document.getElementById(members_hide[i].value);
-            if(delMember!=null) {
+            if (delMember != null) {
                 addMemberList.removeChild(delMember);
             }
         }
@@ -149,18 +151,18 @@
             var flag = members_hide[i].value.indexOf(userInput);
             if (flag != -1) {
                 count = 0;
-                for(j = 0; j<checkMember.length; j++) {
+                for (j = 0; j < checkMember.length; j++) {
                     if (checkMember[j].value == members_hide[i].value)
                         count++;
                 }
-                    if(!count) {
-                        matchedMembers[f] = members_hide[i].value;
-                        f++;
-                    }
+                if (!count) {
+                    matchedMembers[f] = members_hide[i].value;
+                    f++;
+                }
             }
         }
         matchedMembers.sort();
-        if (! (userInput.toString() == "")) {
+        if (!(userInput.toString() == "")) {
             for (j = 0; j < matchedMembers.length; j++) {
                 members = document.createElement("input");
                 members.setAttribute("type", "button");
@@ -171,14 +173,23 @@
                 addMemberList.appendChild(members);
             }
         }
-        }
 
-        function departmentRedirect() {
+    function departmentRedirect() {
             var department = document.getElementById("department");
             var leader = document.getElementById("leader");
-            var count;
             var selectedD = department.options[department.selectedIndex].text;
             for (i = 1 ; i<department.length ; i++) {
+                var flag2 = department[i].text.indexOf(selectedD);
+                if (flag2 == -1) {
+                    leader[i].setAttribute("style", "display:none");
+                }
+            }
+        }
+
+    function loadDepartment() {
+            var department = document.getElementById("department");
+            alert(department[1].text);
+            for (i = 1; i < department.length; i++) {
                 var j = i;
                 for (n = 1; n < j; n++) {
                     var flag1 = department[j].text.indexOf(department[n].text);
@@ -186,10 +197,6 @@
                         department[j].setAttribute("style", "display:none");
                         break;
                     }
-                }
-                var flag2 = department[i].text.indexOf(selectedD);
-                if (flag2 == -1) {
-                    leader[i].setAttribute("style", "display:none");
                 }
             }
         }
