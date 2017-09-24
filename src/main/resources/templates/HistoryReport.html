@@ -36,6 +36,12 @@
         }
     }
 
+    function setReport() {
+        var userInput = document.getElementById("userInput");
+        userInput.value = "";
+        reportSearch();
+    }
+
 
 
 </script>
@@ -48,8 +54,8 @@
 <div class="page">
     <h3>报告列表</h3>
     <div class="key-search">
-        <input type="text" id="userInPut" placeholder="请输入关键字搜索" onkeyup="reportSearch()">
-        <a href="HistoryReport.html">清空搜索结果</a>
+        <input type="text" id="userInPut" placeholder="请输入关键字搜索" oninput="reportSearch()">
+        <input type="button" onclick="setReport()">
     </div>
     <div th:each="report:${list}" class="report_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
         <div class="history_title">
