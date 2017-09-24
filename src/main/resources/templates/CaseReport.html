@@ -15,10 +15,10 @@
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
             <label>报告内容:</label>
-            <div class="inputfile">
+            <div class="select-file">
                 <label for="file">上传附件
                 </label>
-                <input type="file" name="file" id="file" />
+                <input type="file" name="file" id="file"/>
             </div>
             <div class="report_box">
                 <input type="text" name="content" required="required">
@@ -173,7 +173,6 @@
                 addMemberList.appendChild(members);
             }
         }
-    }
 
     function departmentRedirect() {
             var department = document.getElementById("department");
@@ -202,7 +201,6 @@
             }
         }
 
-
     /*function memberSearch() {
         var userInput = document.getElementById('userInput').value;
         var members_hide = document.getElementById('members_hide');
@@ -221,6 +219,7 @@
     }*/
 
     /*]]>*/
+
 
 
 </script>
