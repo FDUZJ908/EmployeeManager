@@ -123,6 +123,8 @@
         var div = document.getElementById("memberList");
         var delMember = document.getElementById(member.value);
         div.removeChild(delMember);
+        var userInput = document.getElementById('userInput');
+        userInput.setAttribute("value", "");
         memberSearch();
     }
 
@@ -136,9 +138,9 @@
         var delMember;
         var matchedMembers = new Array();
         var f = 0;
-        for (i=  0; i <members_hide.length; i++){
+        for (i = 0; i < members_hide.length; i++) {
             delMember = document.getElementById(members_hide[i].value);
-            if(delMember!=null) {
+            if (delMember != null) {
                 addMemberList.removeChild(delMember);
             }
         }
@@ -149,18 +151,18 @@
             var flag = members_hide[i].value.indexOf(userInput);
             if (flag != -1) {
                 count = 0;
-                for(j = 0; j<checkMember.length; j++) {
+                for (j = 0; j < checkMember.length; j++) {
                     if (checkMember[j].value == members_hide[i].value)
                         count++;
                 }
-                    if(!count) {
-                        matchedMembers[f] = members_hide[i].value;
-                        f++;
-                    }
+                if (!count) {
+                    matchedMembers[f] = members_hide[i].value;
+                    f++;
+                }
             }
         }
         matchedMembers.sort();
-        if (! (userInput.toString() == "")) {
+        if (!(userInput.toString() == "")) {
             for (j = 0; j < matchedMembers.length; j++) {
                 members = document.createElement("input");
                 members.setAttribute("type", "button");
@@ -171,8 +173,9 @@
                 addMemberList.appendChild(members);
             }
         }
+    }
 
-        function departmentRedirect() {
+    function departmentRedirect() {
             var department = document.getElementById("department");
             var leader = document.getElementById("leader");
             var selectedD = department.options[department.selectedIndex].text;
@@ -184,8 +187,9 @@
             }
         }
 
-        function loadDepartment() {
+    function loadDepartment() {
             var department = document.getElementById("department");
+            alert(department[1].text);
             for (i = 1; i < department.length; i++) {
                 var j = i;
                 for (n = 1; n < j; n++) {
@@ -198,7 +202,7 @@
             }
         }
 
-    }
+
     /*function memberSearch() {
         var userInput = document.getElementById('userInput').value;
         var members_hide = document.getElementById('members_hide');
