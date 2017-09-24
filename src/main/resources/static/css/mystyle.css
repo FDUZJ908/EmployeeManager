@@ -367,10 +367,9 @@ h3{
 	width: 100%;
 	min-height: 10%;
 	max-height: 10%;
-	display: flex;
 	font-size: 1em;
-	padding: 2em 0;
 	border-bottom: 1px solid;
+	display: flex;
 }
 
 .rank_box_left{
@@ -379,16 +378,14 @@ h3{
 	-webkit-box-sizing:border-box;
 	width: 15%;
 	height: 100%;
-	position: relative;
     float: left;
 	font-size: 1em;
-	display: block;
 }
 
 .rank_box_left p{
     height: 100%;
     width: 100%;
-    font-size: 3em;
+    font-size: 2em;
     text-align: center;
     vertical-align: middle;
 }
@@ -396,25 +393,26 @@ h3{
 .rank_box_left img{
     height: 100%;
     width: 100%;
+    display: block;
+    vertical-align: middle;
 }
 
 .rank_box_right{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	width: 15%;
+	width: 55%;
 	height: 100%;
-	position: relative;
     float: right;
 	font-size: 1em;
-	display: block;
+	padding-right: 3em;
 }
 
 .rank_box_right p{
     height: 100%;
     width: 100%;
     font-size: 3em;
-    text-align: center;
+    text-align: right;
     vertical-align: middle;
 }
 

@@ -10,7 +10,7 @@
 
 <body>
 <div class="page">
-    <h3 th:text="'积分榜-'+@{selected_type}"></h3>
+    <h3 th:text="'积分榜-'+${selected_type}"></h3>
     <hr>
     <div th:each="everyone:${list}" class="rank_box">
         <div class="rank_box_left"><p th:text="${everyone.rank}"></p></div>
