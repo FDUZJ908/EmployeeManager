@@ -46,18 +46,19 @@
             </div>
             <label>工作部门:</label>
             <div class="report_box">
-                <select name="department">
-                    <div th:each="everyDepartment:${Departments}">
-                        <option th:value="${everyDepartment.dName}"><span th:text="${everyDepartment.dName}"></span>
-                        </option>
+                <select name="department" id="department">
+                    <option>请选择部门</option>
+                    <div th:each="department:${DLeaders}">
+                        <option th:value="${department.userID}" th:text="${department.dName}"></option>
                     </div>
                 </select>
             </div>
             <label>审批领导:</label>
             <div class="report_box">
-                <select name="leader">
-                    <div th:each="leader:${Leaders}">
-                        <option th:value="${leader.username}"><span th:text="${leader.username}"></span></option>
+                <select name="leader" id="leader">
+                    <option>请选择领导</option>
+                    <div th:each="leader:${DLeaders}">
+                        <option th:value="${leader.userID}" th:text="${leader.userName}"></option>
                     </div>
                 </select>
             </div>
@@ -171,6 +172,26 @@
             }
         }
 
+        function departmentRedirect() {
+            var department = document.getElementById("department");
+            var leader = document.getElementById("leader");
+            var count;
+            var selectedD = department.options[department.selectedIndex].text;
+            for (i = 1 ; i<department.length ; i++) {
+                var j = i;
+                for (n = 1; n < j; n++) {
+                    var flag1 = department[j].text.indexOf(department[n].text);
+                    if (flag1 != -1) {
+                        department[j].setAttribute("style", "display:none");
+                        break;
+                    }
+                }
+                var flag2 = department[i].text.indexOf(selectedD);
+                if (flag2 == -1) {
+                    leader[i].setAttribute("style", "display:none");
+                }
+            }
+        }
 
     }
     /*function memberSearch() {
