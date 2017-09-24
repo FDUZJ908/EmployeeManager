@@ -141,9 +141,10 @@ h3{
 .selected-box input[type="text"]{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 100%;
+	width: 30%;
 	height: 100%;
 	border: none;
+	float: right;
 	font-size: 4em;
 	padding: 1em;
 }
@@ -155,6 +156,7 @@ h3{
 	height: 100%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	float: left;
 	font-size: 1em;
 	display: flex;
 	overflow: scroll;
@@ -167,7 +169,7 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	margin: 0 1px 0 0;
-	font-size: 4em;
+	font-size: 3em;
 	cursor: pointer;
 }
 
@@ -184,7 +186,7 @@ h3{
 
 .unselected-members input[type="button"]{
 	width: 24%;
-	font-size: 4em;
+	font-size: 3em;
 	border: none;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
