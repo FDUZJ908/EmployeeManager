@@ -94,6 +94,7 @@
         for (i = 0; i < checkMember.length ; i++){
             members.setAttribute("value", members.value.toString() + checkMember[i].value.toString() + ",");
         }
+        members.setAttribute("value",members.value.toString().substring(0,members.value.toString().length-1))
     }
 
     function addDiv(value) {

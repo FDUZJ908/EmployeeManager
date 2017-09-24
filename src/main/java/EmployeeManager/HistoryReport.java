@@ -77,8 +77,6 @@ public class HistoryReport {
 
         if(members.toString() == "")
             members = "无";
-        else
-            members = String.valueOf(members).substring(0,String.valueOf(members).length() - 1);
 
         if(leaderName.toString() == "")
             leaderName = "无";

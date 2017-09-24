@@ -304,7 +304,7 @@ public class BackgroundController {
                 String sqlMessage = "";
                 int singleScore;
                 for (Map<String, Object> map : generalReport) {
-                    sqlMessage = map.get("userID").toString() +
+                    sqlMessage = "'" + map.get("userID").toString() + "'" +
                             ",'" + map.get("leaderName").toString() + "'," +
                             map.get("category").toString() +
                             ",'" + map.get("reportText").toString() + "'" +
@@ -353,7 +353,7 @@ public class BackgroundController {
                         singleScore = -Integer.parseInt(map.get("singleScore").toString());
 
                     }
-                    sqlMessage = map.get("userID").toString() +
+                    sqlMessage = "'" + map.get("userID").toString() + "'" +
                             ",'" + map.get("leaderName").toString() + "'" +
                             ",'" + map.get("members").toString() + "'," +
                             map.get("category").toString() +
