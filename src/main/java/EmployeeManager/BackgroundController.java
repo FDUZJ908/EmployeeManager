@@ -203,11 +203,10 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-
+            model.addAttribute("selected_type",type);
             model.addAttribute("list", users);
             return "RankingList";
         } else {
-
             String selectedType = new String();
             if (type.equals("领导干部"))
                 selectedType = "3";
@@ -229,6 +228,7 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
+            model.addAttribute("selected_type",type);
             model.addAttribute("list", users);
             return "RankingList";
         }
