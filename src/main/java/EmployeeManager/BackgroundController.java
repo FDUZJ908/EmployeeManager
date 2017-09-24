@@ -103,7 +103,7 @@ public class BackgroundController {
                                  @RequestParam("leader") String leader,
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
-        List<String> errorUser = server.checkMember(members);
+      /*  List<String> errorUser = server.checkMember(members);
         if (!errorUser.isEmpty()) {
             model.addAttribute("errorUser", errorUser);
             List<Map<String, Object>> Departments = server.getDepartment(UserId);
@@ -114,7 +114,7 @@ public class BackgroundController {
             model.addAttribute("Leaders", Leaders);
             model.addAttribute("Departments", Departments);
             return "CaseReport";
-        }
+        }*/
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -155,12 +155,12 @@ public class BackgroundController {
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
         //判断是否领导自己提交?
-        List<String> errorUser = server.checkMember(members);
+       /* List<String> errorUser = server.checkMember(members);
         if (!errorUser.isEmpty()) {
             model.addAttribute("errorUser", errorUser);
             model.addAttribute("UserId", UserId);
             return "LeadershipReport";
-        }
+        }*/
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -416,7 +416,7 @@ public class BackgroundController {
                                     @RequestParam("UserName") String UserName,
                                     Model model) {
         if (type.equals("我的提交(未审批)")) {
-            String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime" +
+            String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
             List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
             Object args[] = new Object[]{UserID};
@@ -524,7 +524,7 @@ public class BackgroundController {
             for (Map<String, Object> map : list) {
                 String posterName = server.getUserName(map.get("userID").toString());
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), map.get("leaderName"), "", 0);
+                        map.get("reportText"), map.get("isPass"), 0, map.get("comment"), UserName, "", 0);
                 reports.add(report_temp);
             }
 
@@ -539,7 +539,7 @@ public class BackgroundController {
             for (Map<String, Object> map : listCaseReport) {
                 String posterName = server.getUserName(map.get("userID").toString());
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), map.get("leaderName"), map.get("members"), 1);
+                        map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), UserName, map.get("members"), 1);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserID);
