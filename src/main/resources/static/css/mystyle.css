@@ -112,6 +112,7 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
+    -webkit-appearance: none;
 	outline: none;
     font-size: 5em;
 }
@@ -140,15 +141,18 @@ h3{
     border: 1px solid;
 	margin: 3em 0;
 	overflow: hidden;
+	display: flex;
 }
 
-.selected-box input[type="text"]{
+.selected-box input[type="search"]{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
-	width: 30%;
-	height: 100%;
-	border-left: 1px solid;
+    -webkit-appearance: none;
+    display: block;
+	min-width: 29%;
+	max-width: 29%;
+	min-height: 100%;
 	float: right;
 	font-size: 5em;
 }
@@ -156,29 +160,30 @@ h3{
 
 
 .selected-members{
-	min-width: 65%;
-	max-width: 65%;
+	min-width: 70%;
+	max-width: 70%;
 	min-height: 100%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	float: left;
-	font-size: 5em;
-	padding: auto 0;
+	font-size: 1em;
 	display: flex;
 	overflow: scroll;
 }
 
 .selected-members input[type="button"]{
 	min-width: 33%;
-	height: 100%;
+	min-height: 100%;
 	border: 1px solid;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
     -webkit-appearance: none;
     display: block;
-	font-size: 0.6em;
+    text-align: center;
+	font-size: 3em;
+	padding: 0.9em 0;
 	cursor: pointer;
 }
 
@@ -191,18 +196,20 @@ h3{
     -webkit-box-sizing:border-box;
     font-size: 1em;
 	margin-bottom: 3em 0;
-	border: 1px solid;
 }
 
 .unselected-members input[type="button"]{
+	text-align: center;
+	min-height: 100%;
 	width: 24%;
 	font-size: 3em;
+	padding: 0.9em 0;
 	border: 1px solid;;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
     -webkit-appearance: none;
-	margin: 0 0.1em 0 0;
+	margin: 0.1em;
 	cursor: pointer;
 }
 
