@@ -180,13 +180,12 @@
             var department = document.getElementById("department");
             var leader = document.getElementById("leader");
             var selectedD = department.options[department.selectedIndex].text;
-            for (i = leader.length - 1; i > 1; i--)
+            for (i = leader.length - 1; i > 0; i--)
                 leader.options.remove(i);
             for (i = 1; i < department.length; i++) {
                 var flag2 = department[i].text.indexOf(selectedD);
                 if (flag2 != -1) {
                     leader.options.add(new Option(department[i].value.toString(), department[i].value.toString()));
-                    alert(i);
                 }
             }
         }

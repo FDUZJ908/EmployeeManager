@@ -170,7 +170,7 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	margin: 0 1px 0 0;
-	font-size: 0.8em;
+	font-size: 0.6em;
 	cursor: pointer;
 }
 
@@ -187,7 +187,7 @@ h3{
 
 .unselected-members input[type="button"]{
 	width: 24%;
-	font-size: 5em;
+	font-size: 3em;
 	border: none;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;

@@ -121,7 +121,7 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
-        String sqlMessage = UserId + ",'" + leader + "','" + members + "'," + type + ",'" + content + "','" +
+        String sqlMessage = "'"+UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
         server.jdbcTemplate.update("insert into undealedCaseReport " +
                 "(userID,leaderName,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
