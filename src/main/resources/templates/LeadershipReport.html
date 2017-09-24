@@ -75,6 +75,7 @@
         for (i = 0; i < checkMember.length ; i++){
             members.setAttribute("value", members.value.toString() + checkMember[i].value.toString() + ",");
         }
+        members.setAttribute("value",members.value.toString().substring(0,members.value.toString().length-1))
     }
 
     function addDiv(value) {
@@ -105,6 +106,8 @@
         var div = document.getElementById("memberList");
         var delMember = document.getElementById(member.value);
         div.removeChild(delMember);
+        var userInput = document.getElementById('userInput');
+        userInput.value="";
         memberSearch();
     }
 
@@ -118,9 +121,9 @@
         var delMember;
         var matchedMembers = new Array();
         var f = 0;
-        for (i=  0; i <members_hide.length; i++){
+        for (i = 0; i < members_hide.length; i++) {
             delMember = document.getElementById(members_hide[i].value);
-            if(delMember!=null) {
+            if (delMember != null) {
                 addMemberList.removeChild(delMember);
             }
         }
@@ -131,45 +134,29 @@
             var flag = members_hide[i].value.indexOf(userInput);
             if (flag != -1) {
                 count = 0;
-                for(j = 0; j<checkMember.length; j++) {
+                for (j = 0; j < checkMember.length; j++) {
                     if (checkMember[j].value == members_hide[i].value)
-                        count++
+                        count++;
                 }
-                if(!count) {
+                if (!count) {
                     matchedMembers[f] = members_hide[i].value;
                     f++;
                 }
             }
         }
         matchedMembers.sort();
-        for (j = 0; j <matchedMembers.length; j++) {
-            members = document.createElement("input");
-            members.setAttribute("type","button");
-            members.setAttribute("value",matchedMembers[j]);
-            memberID = "addMembers(" + matchedMembers[j] + ")";
-            members.setAttribute("onclick",memberID);
-            members.setAttribute("id",matchedMembers[j]);
-            addMemberList.appendChild(members);
+        if (!(userInput.toString() == "")) {
+            for (j = 0; j < matchedMembers.length; j++) {
+                members = document.createElement("input");
+                members.setAttribute("type", "button");
+                members.setAttribute("value", matchedMembers[j]);
+                memberID = "addMembers(" + matchedMembers[j] + ")";
+                members.setAttribute("onclick", memberID);
+                members.setAttribute("id", matchedMembers[j]);
+                addMemberList.appendChild(members);
+            }
         }
-
-
     }
-    /*function memberSearch() {
-     var userInput = document.getElementById('userInput').value;
-     var members_hide = document.getElementById('members_hide');
-     var members = document.getElementById("members");
-     for (j = 0; j < members.length;) {
-     members.options.remove(0)
-     }
-     for (i = 0; i < members_hide.length; i++) {
-     var flag = members_hide[i].value.indexOf(userInput);
-     if (flag != -1) {
-     members.options.add(new Option(members_hide[i].text, members_hide[i].value));
-     }
-     }
-     members.sort();
-
-     }*/
 
     /*]]>*/
 
