@@ -35,15 +35,11 @@
 
         }
     }
-
     function setReport() {
         var userInput = document.getElementById("userInPut");
         userInput.value = "";
         reportSearch();
     }
-
-
-
 </script>
 <head>
     <meta charset="UTF-8">
@@ -57,27 +53,33 @@
         <input type="text" id="userInPut" placeholder="请输入关键字搜索" oninput="reportSearch()">
         <input type="button" onclick="setReport()">
     </div>
-    <div th:each="report:${list}" class="report_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
-        <div class="history_title">
-            <p th:text="${report.getUserName()}+'提交的'+${report.getCategory()}+'('+${report.getSubmitTime()}+')'"></p>
+    <div th:each="report:${list}" class="history_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
+        <div style="display: flex; flex-direction:column;">
+            <div class="history_title">
+                <p th:text="${report.getUserName()}+'提交的'+${report.getCategory()}+'('+${report.getSubmitTime()}+')'"></p>
+            </div>
+            <div class="history_content">
+                <p th:text="'内容：'+${report.getReportText()}"></p>
+            </div>
+            <div class="history_members">
+                <p th:text="'成员：'+${report.getMembers()}"></p>
+            </div>
         </div>
-        <div class="history_line_content">
-            <p th:text="'内容：'+${report.getReportText()}"></p>
+        <div style="display: flex;">
+            <div class="history_score">
+                <p th:text="'分值：'+${report.getSingleScore()}"></p>
+            </div>
+            <div class="history_leader">
+                <p th:text="'领导：'+${report.getLeaderName()}"></p>
+            </div>
+            <div class="history_status">
+                <p th:text="'状态：'+${report.getIsPass()}"></p>
+            </div>
         </div>
-        <div class="history_line_content">
-            <p th:text="'分值：'+${report.getSingleScore()}"></p>
-        </div>
-        <div class="history_line_content">
-            <p th:text="'成员：'+${report.getMembers()}"></p>
-        </div>
-        <div class="history_line_content">
-            <p th:text="'领导：'+${report.getLeaderName()}"></p>
-        </div>
-        <div class="history_line_content">
-            <p th:text="'状态：'+${report.getIsPass()}"></p>
-        </div>
-        <div class="history_line_content">
-            <p th:text="'评语：'+${report.getComment()}"></p>
+        <div style="display: flex;">
+            <div class="history_comment">
+                <p th:text="'评语：'+${report.getComment()}"></p>
+            </div>
         </div>
     </div>
     <div id="reportHideDiv">
