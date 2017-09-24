@@ -174,11 +174,11 @@
             }
         }
 
-    function departmentRedirect() {
+        function departmentRedirect() {
             var department = document.getElementById("department");
             var leader = document.getElementById("leader");
             var selectedD = department.options[department.selectedIndex].text;
-            for (i = 1 ; i<department.length ; i++) {
+            for (i = 1; i < department.length; i++) {
                 var flag2 = department[i].text.indexOf(selectedD);
                 if (flag2 == -1) {
                     leader[i].setAttribute("style", "display:none");
@@ -186,7 +186,7 @@
             }
         }
 
-    function loadDepartment() {
+        function loadDepartment() {
             var department = document.getElementById("department");
             alert(department[1].text);
             for (i = 1; i < department.length; i++) {
@@ -200,6 +200,7 @@
                 }
             }
         }
+    }
 
     /*function memberSearch() {
         var userInput = document.getElementById('userInput').value;
