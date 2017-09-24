@@ -69,6 +69,7 @@
                 <input type="text" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
                        oninput="memberSearch()">
             </div>
+            <br/>
             <div id="memberList" class="unselected-members">
             </div>
             <div class="report_box">
@@ -173,6 +174,7 @@
                 addMemberList.appendChild(members);
             }
         }
+        }
 
         function departmentRedirect() {
             var department = document.getElementById("department");
@@ -200,7 +202,7 @@
                 }
             }
         }
-    }
+
 
     /*function memberSearch() {
         var userInput = document.getElementById('userInput').value;
