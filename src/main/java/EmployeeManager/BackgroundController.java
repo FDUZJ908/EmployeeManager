@@ -61,7 +61,7 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
-        String sqlMessage = UserId + ",'" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
+        String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
@@ -167,7 +167,7 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
-        String sqlMessage = UserId + ",'" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
+        String sqlMessage = "'" + UserId + "','" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
                 score + ",'" + server.currentTime() + "'," + score_type;
         server.jdbcTemplate.update("insert into leaderReport " +
                 "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +

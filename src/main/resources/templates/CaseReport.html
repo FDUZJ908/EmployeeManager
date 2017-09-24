@@ -56,9 +56,6 @@
             <div class="report_box">
                 <select name="leader" id="leader" >
                     <option>请选择领导</option>
-                    <div th:each="leader:${list}">
-                        <option th:value="${leader.leader}" th:text="${leader.leader}"></option>
-                    </div>
                 </select>
             </div>
             <label>队伍成员:</label>
@@ -87,6 +84,17 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     function checkMemberDivToInput() {
+        /* check the department and leader*/
+        var department = document.getElementById("department");
+        var leader = document.getElementById("leader");
+        if (department.options[department.selectedIndex].text = "请选择部门") {
+            alert("请选择部门！");
+            return false;
+        }
+        else if(leader.options[leader.selectedIndex].text = "请选择领导") {
+            alert("请选择领导！");
+            return false;
+        }
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
         var checkMember = checkMemberDiv.children;
