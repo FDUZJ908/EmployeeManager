@@ -354,7 +354,7 @@ h3{
 .rank_button input[type="submit"]{
 	width: 100%;
 	height: 100%;
-	font-size: 3em;
+	font-size: 2em;
     border: none;
     cursor: pointer;
     -webkit-appearance: none;
@@ -367,63 +367,56 @@ h3{
 	width: 100%;
 	min-height: 10%;
 	max-height: 10%;
-	position: relative;
-	float: left;
+	font-size: 1em;
+	border-bottom: 1px solid;
+	display: flex;
+}
+
+.rank_box_left{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	width: 15%;
+	height: 100%;
+    float: left;
 	font-size: 1em;
 }
 
-.rank_box_c1{
+.rank_box_left p{
+    height: 100%;
+    width: 100%;
+    font-size: 2em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.rank_box_left img{
+    height: 100%;
+    width: 100%;
+    display: block;
+    vertical-align: middle;
+}
+
+.rank_box_right{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	width: 15%;
-	min-height: 100%;
-	max-height: 100%;
-	position: relative;
-	float: left;
-	text-align: center;
-	vertical-align: middle;
-	font-size: 3em;
+	width: 55%;
+	height: 100%;
+    float: right;
+	font-size: 1em;
+	padding-right: 3em;
 }
 
-.rank_box_c2{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing:border-box;
-	width: 15%;
-	min-height: 100%;
-	max-height: 100%;
-	position: relative;
-	float: left;
-}
-
-.rank_box_c3{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing:border-box;
-	width: 30%;
-	min-height: 100%;
-	max-height: 100%;
-	position: relative;
-	float: left;
-	text-align: center;
-	vertical-align: middle;
-	font-size: 3em;
+.rank_box_right p{
+    height: 100%;
+    width: 100%;
+    font-size: 3em;
+    text-align: right;
+    vertical-align: middle;
 }
 
 
-.rank_box_c4{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	width: 15%;
-	min-height: 100%;
-	max-height: 100%;
-	position: relative;
-	float: right;
-	text-align: center;
-	vertical-align: middle;
-	font-size: 3em;
-}
 
 /*history report*/
 
