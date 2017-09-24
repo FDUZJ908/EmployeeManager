@@ -49,7 +49,7 @@
                 <select name="department" id="department" onchange="departmentRedirect()">
                     <option>请选择部门</option>
                     <div th:each="department:${list}">
-                        <option th:value="${department.userName}" th:text="${department.dName}"></option>
+                        <option th:value="${department.department}" th:text="${department.department}"></option>
                     </div>
                 </select>
             </div>
@@ -58,7 +58,7 @@
                 <select name="leader" id="leader" >
                     <option>请选择领导</option>
                     <div th:each="leader:${list}">
-                        <option th:value="${leader.userName}" th:text="${leader.userName}"></option>
+                        <option th:value="${leader.leader}" th:text="${leader.leader}"></option>
                     </div>
                 </select>
             </div>
