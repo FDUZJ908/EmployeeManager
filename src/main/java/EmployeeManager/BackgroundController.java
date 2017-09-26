@@ -198,7 +198,7 @@ public class BackgroundController {
             users.add(user_temp);
         }
         model.addAttribute("list", users);
-        model.addAttribute("selected_type","无");
+        model.addAttribute("selected_type","总排行");
         return "RankingList";
     }
 
