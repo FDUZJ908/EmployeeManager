@@ -43,7 +43,9 @@ public class BackgroundController {
 
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
+        String userName = server.getUserName(UserId);
 
+        model.addAttribute("userName",userName);
         model.addAttribute("UserId", UserId);
         model.addAttribute("list", DLeaders);
         return "GeneralReport";
