@@ -12,8 +12,7 @@
 <div class="page">
 
     <div class="page-title">
-        <h3 th:if="${selected_type = null}" th:text="'积分榜'"></h3>
-        <h3 th:if="${selected_type = null}" th:text="'积分榜-'+${selected_type}"></h3>
+        <h3 th:if="${selected_type}!='无'" th:text="'积分榜-'+${selected_type}"></h3>
     </div>
     <hr>
     <div th:each="everyone:${list}" class="rank_box">
