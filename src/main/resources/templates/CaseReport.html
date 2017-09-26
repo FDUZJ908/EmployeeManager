@@ -62,7 +62,7 @@
 
             <div class="report_box">
                 <label>审批领导:</label>
-                <select name="leader" id="leader" >
+                <select name="leader" id="leader">
                     <option>请选择领导</option>
                 </select>
             </div>
@@ -77,10 +77,12 @@
             <br/>
             <div id="memberList" class="unselected-members">
             </div>
-            <div class="bottom_box">
-            <div class="report_box">
-                <input type="submit" value="提交报告">
+            <div class="space">
             </div>
+            <div class="bottom_box">
+                <div class="submit_box">
+                    <input type="submit" value="提交报告">
+                </div>
             </div>
             <select name="members_hide" id="members_hide" style="display:none">
                 <div th:each="AllUser:${AllUsers}">
@@ -262,6 +264,7 @@
     }*/
 
     /*]]>*/
+
 
 
 

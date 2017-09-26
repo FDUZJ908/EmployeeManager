@@ -59,10 +59,12 @@
             </div>
             <div id="memberList" class="unselected-members">
             </div>
-            <div class="bottom_box">
-            <div class="report_box">
-                <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
+            <div class="space">
             </div>
+            <div class="bottom_box">
+                <div class="submit_box">
+                    <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
+                </div>
             </div>
             <select name="members_hide" id="members_hide" style="display:none">
                 <div th:each="AllUser:${AllUsers}">
@@ -167,6 +169,7 @@
     }
 
     /*]]>*/
+
 
 </script>
 
