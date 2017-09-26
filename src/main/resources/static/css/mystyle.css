@@ -244,8 +244,8 @@ h3{
     -webkit-box-sizing:border-box;
     -webkit-appearance: none;
     display: block;
-	min-width: 29%;
-	max-width: 29%;
+	min-width: 30%;
+	max-width: 30%;
 	min-height: 100%;
 	float: right;
 	font-size: 5em;
@@ -261,6 +261,7 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
+    display: block;
 	float: left;
 	font-size: 1em;
 	display: flex;
@@ -269,8 +270,8 @@ h3{
 
 .selected-members input[type="button"]{
 	min-width: 33%;
+	max-width: 33%;
 	min-height: 100%;
-	border: 1px solid;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
@@ -278,7 +279,7 @@ h3{
     display: block;
     text-align: center;
 	font-size: 3em;
-	padding: 0.9em 0;
+	padding: 1em 0;
 	cursor: pointer;
 }
 
