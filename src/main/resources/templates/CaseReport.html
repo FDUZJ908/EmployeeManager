@@ -238,7 +238,7 @@
                 leader.options.remove(i);
             for (i = 1; i < department_hide.length; i++) {
                 if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
-                        leader.options.add(new Option(department[i].value.toString(), department[i].value.toString()));
+                        leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
                 }
             }
         }
