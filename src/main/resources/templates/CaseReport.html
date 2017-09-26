@@ -60,6 +60,14 @@
                 </select>
             </div>
 
+            <div>
+                <select id="department_hide">
+                <option>请选择部门</option>
+                <div th:each="department:${list}">
+                    <option th:value="${department.leader}" th:text="${department.department}"></option>
+                </div>
+            </select>
+            </div>
             <div class="report_box">
                 <label>审批领导:</label>
                 <select name="leader" id="leader">
@@ -130,8 +138,6 @@
     }
     function checkMemberDivToInput() {
         /* check the department and leader*/
-        var department = document.getElementById("department");
-        var leader = document.getElementById("leader");
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
         var checkMember = checkMemberDiv.children;
@@ -222,16 +228,17 @@
     }
 
         function departmentRedirect() {
+            var department_hide = document.getElementById("department_hide");
             var department = document.getElementById("department");
             var leader = document.getElementById("leader");
             var userName = /*[[${session.user.name}]]*/ "";
             var selectedD = department.options[department.selectedIndex].text;
             for (i = leader.length - 1; i > 0; i--)
                 leader.options.remove(i);
-            for (i = 1; i < department.length; i++) {
-                var flag2 = department[i].text.indexOf(selectedD);
+            for (i = 1; i < department_hide.length; i++) {
+                var flag2 = department_hide[i].text.indexOf(selectedD);
                 if (flag2 != -1) {
-                    if (userName != department[i].text)
+                    if (userName != department_hide[i].text)
                         leader.options.add(new Option(department[i].value.toString(), department[i].value.toString()));
                 }
             }
@@ -240,13 +247,12 @@
 
         function loadDepartment() {
             var department = document.getElementById("department");
-            for (i = 1; i < department.length; i++) {
+            for (i = department.length; i >0 ; i--) {
                 var j = i;
                 for (n = 1; n < j; n++) {
                     var flag = department[j].text.indexOf(department[n].text);
                     if (flag != -1) {
-                        alert(n.toString() + " " + j.toString() + " " +flag.toString())
-                        department.options[j].setAttribute("style", "display:none");
+                        department.options.remove(j);
                         break;
                     }
                 }
