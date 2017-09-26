@@ -87,7 +87,7 @@ public class BackgroundController {
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
 
         model.addAttribute("UserId", UserId);
-        model.addAttribute("userName",userName);
+        model.addAttribute("userName", userName);
         model.addAttribute("Leaders", Leaders);
         model.addAttribute("Departments", Departments);
         model.addAttribute("AllUsers", AllUsers);
@@ -185,7 +185,7 @@ public class BackgroundController {
         if (server.isUser(UserId) == false)
             return "failure";
 
-        model.addAttribute("selected_type","无");
+        model.addAttribute("selected_type", "无");
         return "RankingList";
     }
 
@@ -567,19 +567,27 @@ public class BackgroundController {
     @RequestMapping("/QRCodeRefresh")
     public String QRCodeRefresh(@RequestParam("code") String CODE,
                                 Model model) {
-        System.out.println("***********************************************************************************");
-        System.out.println(CODE);
-        System.out.println("***********************************************************************************");
         String UserID = server.getUserId(CODE, PASecret);
         String timestamp = Long.toString(System.currentTimeMillis());
-        Checkin checkin = checkins.get(UserID);
-        checkin.deleteCheckinMember();
-        checkin.setTimestamp(timestamp);
+        if (checkins.containsKey(UserID)) {
+            Checkin checkin = checkins.get(UserID);
+
+            checkin.deleteCheckinMember();
+            checkin.setTimestamp(timestamp);
+
+            timestamp = checkin.getTimestamp();
+
+        } else {
+            Checkin checkin = new Checkin(timestamp);
+            checkins.put(UserID, checkin);
+        }
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", UserID);
         model.addAttribute("CODE", CODE);
         return "QRCode";
-    };
+    }
+
+    ;
 
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
@@ -623,11 +631,12 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-        System.out.println(CODE);
         String userID = server.getUserId(CODE, PASecret);
-        server.award(userID, 2);
+        Object user = userID;
+        if (checkins.get(STATE).getCheckinMember().contains(user)) return "failure";
+        System.out.println("-------------------------------------checkin---------------------------------------");
         System.out.println("checkin:" + userID);
-        if (checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
+        server.award(userID, 2);
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }

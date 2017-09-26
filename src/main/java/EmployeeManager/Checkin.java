@@ -9,7 +9,7 @@ public class Checkin {
 
     public Checkin(String timeStamp) {
         timestamp = timeStamp;
-        checkinMember=new HashSet<String>();
+        checkinMember = new HashSet<String>();
     }
 
     public String getTimestamp() {
@@ -31,4 +31,5 @@ public class Checkin {
     public void deleteCheckinMember() {
         checkinMember.clear();
     }
+
 }
