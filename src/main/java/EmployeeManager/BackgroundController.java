@@ -184,7 +184,20 @@ public class BackgroundController {
         String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
-
+        String sql = "select userName,s_score,avatarURL from user order by s_score desc";
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        try {
+            list = server.jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
+            return e.toString();
+        }
+        List<User> users = new ArrayList<User>();
+        int rank = 1;
+        for (Map<String, Object> map : list) {
+            User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
+            users.add(user_temp);
+        }
+        model.addAttribute("list", users);
         model.addAttribute("selected_type","无");
         return "RankingList";
     }
