@@ -254,10 +254,8 @@
             var i,j,n;
             for (i = department.length-1; i >0 ; i--) {
                 j = i;
-                alert ( i.toString() + department.options[j].text);
                 for (n = 1; n < j; n++) {
                     if (department.options[n].text == department.options[j].text){
-                        alert(j.toString() + n.toString());
                         department.options.remove(j);
                         break;
                     }
