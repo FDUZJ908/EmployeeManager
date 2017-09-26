@@ -10,9 +10,13 @@
 
 <body>
 <div class="page">
-    <h3>待审批列表</h3>
+    <div class="page-title">
+        <h3>待审批列表</h3>
+    </div>
     <form method="post" class="submit-form" nctype="multipart/form-data">
-        <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
+        <div class="approval_content">
+            <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
+        </div>
         <div th:each="list:${list1}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">

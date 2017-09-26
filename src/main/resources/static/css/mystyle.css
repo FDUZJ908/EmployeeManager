@@ -3,6 +3,7 @@ html,body{
 	height: 100%;
 	font-family: Geneva, Tahoma, Verdana;
 	font-size: 100%;
+	background-color: rgb(237,238,240);
 }
 
 hr {
@@ -16,29 +17,39 @@ h3{
 
 .space{
 	visibility: visible;
-	height: 30%;
+	height: 20%;
 }
 
 .key-search{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
 	width: 100%;
 	text-align: center;
-	margin-bottom: 60px;
+	background-color: rgb(255,255,255);
 }
 
 .key-search input[type="text"]{
 	width: 100%;
-	font-size: 30px;
+	font-size: 2em;
+	text-align: center;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	padding: 10px;
+	padding: 0.5em 0;
+	border: 0.05em rgb(255,255,255);
+	background-color: rgb(237,238,240);
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
 }
 
 .key-search a{
 	display: block;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	font-size: 20px;
-	padding: 10px;
+    -webkit-box-sizing:border-box;
+	font-size: 1.5em;
+	padding: 0.5em 0;
+	text-decoration:none;
 }
 
 .page{
@@ -48,6 +59,11 @@ h3{
 	font-size: 1em;
 }
 
+.page-title{
+	padding: 0.5em 0;
+	background-color: rgb(255,255,255);
+}
+
 .submit-form{
 	width: 100%;
 	height: 100%;
@@ -55,16 +71,12 @@ h3{
 
 }
 
-.submit-form label{
-	display: block;
-	font-size: 50px;
-    border: none;
-    letter-spacing: 1px;
-}
-
-
 .select-file{
 	display: flex;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	flex-direction: row-reverse;
+	padding-right: 2em;
 }
 
 .select-file label{
@@ -73,14 +85,19 @@ h3{
 	-moz-box-sizing: border-box;
 	width: 25%;
 	text-align: center;
-	background-color: #f0f0f0;
-	font-size: 40px;
+	background-color: rgb(237,238,240);
+	border-radius: 1em;
+	font-size: 1em;
 	cursor: pointer;
+	float: right;
+	margin: 0 0 0.5em 0 !important;
 }
 
 .select-file input[type="file"]{
 	display: none;
 }
+
+
 
 
 /*submit report*/
@@ -92,7 +109,21 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
     font-size: 1em;
-	margin: 3em 0;
+	margin: 2em 0;
+	background-color: rgb(255,255,255);
+}
+
+
+.report_box label{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+	display: block;
+	font-size: 50px;
+    border: none;
+    letter-spacing: 1px;
+	margin: 0.5em 0 0.5em 0;
+
 }
 
 .report_box input{
@@ -101,8 +132,10 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
+	margin: 0 0 0.5em 0;
 	outline: none;
     font-size: 5em;
+	background: rgb(255,255,255);
 
 }
 
@@ -116,6 +149,8 @@ h3{
     padding: 0 auto;
 	outline: none;
     font-size: 5em;
+	background: rgb(255,255,255);
+	margin: 0 0 0.5em 0;
 }
 
 .report_box input[type="submit"] {
@@ -124,12 +159,14 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
-	margin-top: 1.5em;
-	margin-bottom: 5em;
+	margin-top: 0em;
+	margin-bottom: 0em;
 	border:none;
 	letter-spacing: 1px;
     cursor: pointer;
     -webkit-appearance: none;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
 }
 
 .selected-box{
@@ -143,6 +180,7 @@ h3{
 	margin: 3em 0;
 	overflow: hidden;
 	display: flex;
+	background-color: rgb(235,235,235);
 }
 
 .selected-box input[type="search"]{
@@ -156,6 +194,7 @@ h3{
 	min-height: 100%;
 	float: right;
 	font-size: 5em;
+	background-color: rgb(235,235,235);
 }
 
 
@@ -197,6 +236,7 @@ h3{
     -webkit-box-sizing:border-box;
     font-size: 1em;
 	margin-bottom: 3em 0;
+	background-color: rgb(235,235,235);
 }
 
 .unselected-members input[type="button"]{
@@ -237,7 +277,6 @@ h3{
 	height: 100%;
 	width: 33.3%;
 	text-align: center;
-	border: 1px solid;
 	font-size: 1em;
 }
 
@@ -246,45 +285,62 @@ h3{
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
 	display: block;
-	border: 1px solid;
+	border: 1px solid rgb(255,255,255);
 	height: 100%;
 	width: 100%;
     font-size: 2em;
 	text-align: center;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
 }
 
 .approval_bottom_box input[type="submit"]{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	border: none;
+	border: 1px solid rgb(255,255,255);
 	display: block;
 	height: 100%;
 	width: 100%;
     cursor: pointer;
 	-webkit-appearance: none;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
 }
 
 .approval_bottom_box select{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	border: 1px solid;
+	border: 1px solid rgb(255,255,255);
 	height: 100%;
 	width: 100%;
     font-size: 2em;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
 }
-
 
 .approval_content{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	margin: 1em 0;
+	margin-top: 1em;
 	display: flex;
 	width: 100%;
 	position: relative;
 	font-size: 1em;
+	background-color: rgb(255,255,255);
+}
+
+.approval_content label{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	width: 100%;
+	text-align: center;
+	padding: 0 auto;
+	font-size: 2.5em;
+	padding: 0.75em 0;
 }
 
 .approval_left {
@@ -338,8 +394,6 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	border-bottom: 1px solid;
-	border-top: 1px solid;
 	font-size: 1em;
 }
 
@@ -352,7 +406,7 @@ h3{
 .approval_right_content {
 	font-size: 1.5em;
 	float: right;
-	border-top: 1px solid;
+	border-top: 1px solid rgb(176,176,176);
 	width: 90%;
 	height: 80%;
 	margin-bottom: 1em;
@@ -376,6 +430,8 @@ h3{
     border: none;
     cursor: pointer;
     -webkit-appearance: none;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
 }
 
 .rank_box{
@@ -386,8 +442,9 @@ h3{
 	min-height: 10%;
 	max-height: 10%;
 	font-size: 1em;
-	border-bottom: 1px solid;
 	display: flex;
+	background-color: rgb(255,255,255);
+	margin-bottom: 0.5em;
 }
 
 .rank_box_left{
@@ -451,6 +508,8 @@ h3{
     cursor: pointer;
 	font-size: 2em;
 	-webkit-appearance: none;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
 }
 
 .history_box{
@@ -459,7 +518,8 @@ h3{
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
 	font-size: 1em;
-	margin: 1em 0;
+	margin-top: 1em 0;
+	background-color: rgb(255,255,255);
 }
 
 
