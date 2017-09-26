@@ -103,8 +103,13 @@
             return false;
         }
 
-        if (isNaN(score.value)) {
+        if (score.value.toString() == "") {
             alert("任务分值不能为空！")
+            return false;
+        }
+
+        if (isNaN(score.value.toString())) {
+            alert("任务分值必须为数字！")
             return false;
         }
         
