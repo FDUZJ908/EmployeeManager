@@ -19,7 +19,7 @@
 
             <div class="report_box">
                 <label>报告内容:</label>
-                <input type="text" name="content">
+                <input type="text" name="content" required="required">
                 <div class="select-file">
                     <input type="file" name="file" id="file" required="required"/>
                     <label for="file">上传附件
@@ -58,8 +58,10 @@
                     </div>
                 </select>
             </div>
-            <div class="report_box">
-                <input type="submit" value="提交报告">
+            <div class="bottom_box">
+                <div class="report_box">
+                    <input type="submit" value="提交报告">
+                </div>
             </div>
         </form>
     </div>

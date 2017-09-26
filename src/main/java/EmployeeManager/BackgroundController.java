@@ -182,6 +182,8 @@ public class BackgroundController {
         String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
+
+        model.addAttribute("selected_type","无");
         return "RankingList";
     }
 
