@@ -18,7 +18,7 @@
             </select>
             <div class="report_box">
                 <label>报告内容:</label>
-                <input type="text" name="content">
+                <input type="text" name="content" required="required">
                 <div class="select-file">
                     <input type="file" name="file" id="file" required="required"/>
                     <label for="file">上传附件
@@ -59,18 +59,20 @@
             </div>
             <div id="memberList" class="unselected-members">
             </div>
-            <div class="report_box">
-                <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
+            <div class="submit_box">
+                <input type="submit" value="提交报告">
             </div>
-            <select name="members_hide" id="members_hide" style="display:none">
-                <div th:each="AllUser:${AllUsers}">
-                    <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
-                </div>
-            </select>
             <input name="members" id="members" style="display:none" value="">
         </form>
     </div>
+    <div class="space">
+    </div>
 </div>
+<select name="members_hide" id="members_hide" style="display:none">
+    <div th:each="AllUser:${AllUsers}">
+        <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
+    </div>
+</select>
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -165,6 +167,7 @@
     }
 
     /*]]>*/
+
 
 </script>
 

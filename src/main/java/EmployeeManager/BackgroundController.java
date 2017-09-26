@@ -74,6 +74,7 @@ public class BackgroundController {
                              Model model) {
 
         String UserId = server.getUserId(CODE, PASecret);
+        String userName = server.getUserName(UserId);
         if (server.isUser(UserId) == false)
             return "failure";
         List<String> AllUsers = server.getAllUsers();
@@ -86,6 +87,7 @@ public class BackgroundController {
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
 
         model.addAttribute("UserId", UserId);
+        model.addAttribute("userName",userName);
         model.addAttribute("Leaders", Leaders);
         model.addAttribute("Departments", Departments);
         model.addAttribute("AllUsers", AllUsers);
@@ -182,6 +184,8 @@ public class BackgroundController {
         String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
+
+        model.addAttribute("selected_type","无");
         return "RankingList";
     }
 
