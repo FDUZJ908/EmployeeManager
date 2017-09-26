@@ -18,7 +18,7 @@
             </select>
             <div class="report_box">
                 <label>报告内容:</label>
-                <input type="text" name="content" required="required">
+                <input type="text" name="content" id="content" required="required">
                 <div class="select-file">
                     <input type="file" name="file" id="file" required="required"/>
                     <label for="file">上传附件
@@ -47,7 +47,7 @@
 
             <div class="report_box">
                 <label>任务分值:</label>
-                <input type="number" name="score" required="required">
+                <input type="number" name="score" required="required" id="score">
             </div>
 
             <div class="report_box">
@@ -95,19 +95,31 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     function checkDL () {
+        var content = document.getElementById("content");
+        var score = document.getElementById("score");
         var department = document.getElementById("department");
         var leader = document.getElementById("leader");
+
+        if (content.value.toString() == "") {
+            alert("报告内容不能为空！");
+            return false;
+        }
+
+        if (isNaN(score.value)) {
+            alert("任务分值不能为空！")
+            return false;
+        }
+        
         if (department.options[department.selectedIndex].text == "请选择部门") {
             alert("请选择部门！");
             return false;
         }
-        else {
-            if (leader.options[leader.selectedIndex].text == "请选择领导") {
+        if (leader.options[leader.selectedIndex].text == "请选择领导") {
                 alert("请选择领导！");
                 return false;
-            }
-            else checkMemberDivToInput();
         }
+        checkMemberDivToInput();
+
     }
     function checkMemberDivToInput() {
         /* check the department and leader*/
