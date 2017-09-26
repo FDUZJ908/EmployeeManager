@@ -12,7 +12,7 @@
         <h3>领导报告</h3>
     </div>
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
@@ -47,7 +47,7 @@
 
             <div class="report_box">
                 <label>任务分值:</label>
-                <input type="number" name="score" required="required">
+                <input type="text" name="score" required="required" id="score">
             </div>
 
             <div class="report_box">
@@ -63,7 +63,7 @@
             <div id="memberList" class="unselected-members">
             </div>
             <div class="submit_box">
-                <input type="submit" value="提交报告">
+                <input type="submit" value="提交报告" >
             </div>
             <input name="members" id="members" style="display:none" value="">
         </form>
@@ -79,6 +79,34 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    function checkDL () {
+        var content = document.getElementById("content");
+        var score = document.getElementById("score");
+        var department = document.getElementById("department");
+        var leader = document.getElementById("leader");
+
+        if (content.value.toString() == "") {
+            alert("报告内容不能为空！");
+            return false;
+        }
+
+        if (score.value.toString() == "") {
+            alert("任务分值不能为空！")
+            return false;
+        }
+
+        if (isNaN(score.value.toString())) {
+            alert("任务分值必须为数字！")
+            return false;
+        }
+
+        var con = confirm("确认提交报告？");
+        if (con == false)
+            return false;
+
+        checkMemberDivToInput();
+
+    }
     function checkMemberDivToInput() {
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
