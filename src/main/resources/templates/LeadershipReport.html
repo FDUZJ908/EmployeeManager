@@ -59,22 +59,20 @@
             </div>
             <div id="memberList" class="unselected-members">
             </div>
-            <div class="space">
+            <div class="submit_box">
+                <input type="submit" value="提交报告">
             </div>
-            <div class="bottom_box">
-                <div class="submit_box">
-                    <input type="submit" value="提交报告" onclick="checkMemberDivToInput()">
-                </div>
-            </div>
-            <select name="members_hide" id="members_hide" style="display:none">
-                <div th:each="AllUser:${AllUsers}">
-                    <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
-                </div>
-            </select>
             <input name="members" id="members" style="display:none" value="">
         </form>
     </div>
+    <div class="space">
+    </div>
 </div>
+<select name="members_hide" id="members_hide" style="display:none">
+    <div th:each="AllUser:${AllUsers}">
+        <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
+    </div>
+</select>
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
