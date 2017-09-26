@@ -95,16 +95,16 @@
         var list2 = /*[[${list2}]]*/ "";
         var count = 0;
 
-        if (list1 == "" && list2 == "") {
+        if (list1.length== 0 && list2.length == 0) {
             alert("没有需要审批的报告！");
             return false;
         }
         for (i = 0 ; i< check1.length-2 ; i++) {
-            if (check1[i].value == 1)
+            if (check1[i].checked == true)
                 count++;
         }
         for (j = 0 ; j< check2.length-2 ; j++) {
-            if (check1[j].value == 1)
+            if (check1[j].checked == true)
                 count++;
         }
         if(!count) {
