@@ -37,11 +37,11 @@ h3{
 
 .key-search input[type="text"]{
 	width: 100%;
-	font-size: 2em;
+	font-size: 3em;
 	text-align: center;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	padding: 0.5em 0;
+	padding: 0 0 0.5em 0;
 	border: 0.05em rgb(255,255,255);
 	background-color: rgb(237,238,240);
 	-webkit-border-radius: 1em;
@@ -54,7 +54,7 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	font-size: 1.5em;
-	padding: 0.5em 0;
+	padding: 0.5em 0 0 0;
 	text-decoration:none;
 }
 
@@ -347,6 +347,11 @@ h3{
 	text-align: center;
 	font-size: 1em;
 }
+
+.approval_bottom_box ::-webkit-input-placeholder { color: rgb(255,255,255); }
+.approval_bottom_box ::-moz-placeholder { color: rgb(255,255,255); }
+.approval_bottom_box :-ms-input-placeholder { color: rgb(255,255,255); }
+.approval_bottom_box input: -moz-placeholder { color: rgb(255,255,255); }
 
 .approval_bottom_box input{
 	box-sizing: border-box;
