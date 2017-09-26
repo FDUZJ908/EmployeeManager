@@ -19,7 +19,7 @@
 
             <div class="report_box">
                 <label>报告内容:</label>
-                <input type="text" name="content" required="required">
+                <input type="text" name="content" id="content" required="required">
                 <div class="select-file">
                     <input type="file" name="file" id="file" required="required"/>
                     <label for="file">上传附件
@@ -123,10 +123,8 @@
         var i,j,n;
         for (i = department.length-1; i >0 ; i--) {
             j = i;
-            alert ( i.toString() + department.options[j].text);
             for (n = 1; n < j; n++) {
                 if (department.options[n].text == department.options[j].text){
-                    alert(j.toString() + n.toString());
                     department.options.remove(j);
                     break;
                 }

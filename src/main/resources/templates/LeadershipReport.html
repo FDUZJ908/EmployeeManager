@@ -18,7 +18,7 @@
             </select>
             <div class="report_box">
                 <label>报告内容:</label>
-                <input type="text" name="content" required="required">
+                <input type="text" name="content" id="content" required="required">
                 <div class="select-file">
                     <input type="file" name="file" id="file" required="required"/>
                     <label for="file">上传附件
@@ -82,8 +82,6 @@
     function checkDL () {
         var content = document.getElementById("content");
         var score = document.getElementById("score");
-        var department = document.getElementById("department");
-        var leader = document.getElementById("leader");
 
         if (content.value.toString() == "") {
             alert("报告内容不能为空！");

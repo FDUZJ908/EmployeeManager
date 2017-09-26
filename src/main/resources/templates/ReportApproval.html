@@ -13,7 +13,7 @@
     <div class="page-title">
         <h3>待审批列表</h3>
     </div>
-    <form method="post" class="submit-form" nctype="multipart/form-data" onsubmit="checkDL()">
+    <form method="post" class="submit-form" nctype="multipart/form-data" onsubmit="return checkDL()">
         <div class="approval_content">
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
@@ -95,7 +95,7 @@
         var list2 = /*[[${list2}]]*/ "";
         var count = 0;
 
-        if (list1 == null && list2 == null) {
+        if (list1 == "" && list2 == "") {
             alert("没有需要审批的报告！");
             return false;
         }
