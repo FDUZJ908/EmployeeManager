@@ -121,7 +121,7 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
-        String sqlMessage = "'"+UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
+        String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
         server.jdbcTemplate.update("insert into undealedCaseReport " +
                 "(userID,leaderName,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
@@ -141,7 +141,7 @@ public class BackgroundController {
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("UserId", UserId);
         model.addAttribute("AllUsers", AllUsers);
-        model.addAttribute("list",DLeaders);
+        model.addAttribute("list", DLeaders);
         return "LeadershipReport";
     }
 
@@ -203,7 +203,7 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type",type);
+            model.addAttribute("selected_type", type);
             model.addAttribute("list", users);
             return "RankingList";
         } else {
@@ -228,7 +228,7 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type",type);
+            model.addAttribute("selected_type", type);
             model.addAttribute("list", users);
             return "RankingList";
         }
@@ -560,6 +560,19 @@ public class BackgroundController {
         return "Synchronization succeed!";
     }
 
+    @RequestMapping("/QRCodeRefresh")
+    public String QRCodeRefresh(@RequestParam("code") String CODE,
+                                Model model) {
+        String UserID = server.getUserId(CODE, PASecret);
+        String timestamp = Long.toString(System.currentTimeMillis());
+        Checkin checkin = checkins.get(UserID);
+        checkin.deleteCheckinMember();
+        checkin.setTimestamp(timestamp);
+        model.addAttribute("timestamp", timestamp);
+        model.addAttribute("creator", UserID);
+        return "QRCode";
+    };
+
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          Model model) {
@@ -567,8 +580,10 @@ public class BackgroundController {
         String timestamp = Long.toString(System.currentTimeMillis());
         if (checkins.containsKey(UserID)) {
             Checkin checkin = checkins.get(UserID);
-            checkin.deleteCheckinMember();
-            checkin.setTimestamp(timestamp);
+            if ((Long.parseLong(timestamp) - Long.parseLong(checkin.getTimestamp())) > 30 * 60 * 1000) {
+                checkin.deleteCheckinMember();
+                checkin.setTimestamp(timestamp);
+            }
         } else {
             if (server.isUser(UserID)) {
                 Checkin checkin = new Checkin(timestamp);
@@ -578,6 +593,7 @@ public class BackgroundController {
         }
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", UserID);
+        model.addAttribute("CODE", CODE);
         return "QRCode";
     }
 
@@ -587,7 +603,7 @@ public class BackgroundController {
                              Model model) {
         System.out.println(timestamp);
         if (!checkins.containsKey(creator) || !checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
-        System.out.println("creator:"+creator);
+        System.out.println("creator:" + creator);
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", creator);
         return "redirectQR";
@@ -599,7 +615,7 @@ public class BackgroundController {
                           Model model) {
         System.out.println(CODE);
         String userID = server.getUserId(CODE, PASecret);
-        server.award(userID,2);
+        server.award(userID, 2);
         System.out.println("checkin:" + userID);
         if (checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
         model.addAttribute("userID", userID);

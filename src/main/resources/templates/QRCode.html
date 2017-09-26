@@ -481,11 +481,12 @@
         }, QRCode.CorrectLevel = d
     }();
     var timestamp = /*[[${timestamp}]]*/;
+    alert(timestamp);
     var creator = /*[[${creator}]]*/;
     new QRCode(document.getElementById("qrcode"), "http://shiftlin.top:4908/redirectQR?timestamp=" + timestamp + "&creator=" + creator);
     /*]]>*/
 </script>
 
-
+<button th:href="/QRCodeRefresh?code=${CODE}">刷新</button>
 
 </html>
