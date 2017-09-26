@@ -12,7 +12,7 @@
         <h3>个案报告</h3>
     </div>
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data" onsubmit="return checkMemberDivToInput()">
+        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
@@ -92,18 +92,25 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    function checkDL () {
+        var department = document.getElementById("department");
+        var leader = document.getElementById("leader");
+        if (department.options[department.selectedIndex].text == "请选择部门") {
+            alert("请选择部门！");
+            return false;
+        }
+        else {
+            if (leader.options[leader.selectedIndex].text == "请选择领导") {
+                alert("请选择领导！");
+                return false;
+            }
+            else checkMemberDivToInput();
+        }
+    }
     function checkMemberDivToInput() {
         /* check the department and leader*/
         var department = document.getElementById("department");
         var leader = document.getElementById("leader");
-        if (department.options[department.selectedIndex].text = "请选择部门") {
-            alert("请选择部门！");
-            return false;
-        }
-        else if(leader.options[leader.selectedIndex].text = "请选择领导") {
-            alert("请选择领导！");
-            return false;
-        }
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
         var checkMember = checkMemberDiv.children;
