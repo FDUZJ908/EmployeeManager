@@ -60,13 +60,13 @@
                 </select>
             </div>
 
-            <div>
-                <select id="department_hide" style="display:none">
-                <option>请选择部门</option>
-                <div th:each="department:${list}">
-                    <option th:value="${department.leader}" th:text="${department.department}"></option>
-                </div>
-            </select>
+            <div style="display:none">
+                <select id="department_hide" >
+                    <option>请选择部门</option>
+                    <div th:each="department:${list}">
+                        <option th:value="${department.leader}" th:text="${department.department}"></option>
+                    </div>
+                </select>
             </div>
             <div class="report_box">
                 <label>审批领导:</label>
@@ -75,12 +75,14 @@
                 </select>
             </div>
 
-            <div class="selected-box">
+            <div class="report_box">
                 <label>队伍成员:</label>
-                <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                <div class="selected-box">
+                    <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                    </div>
+                    <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
+                           oninput="memberSearch()">
                 </div>
-                <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
-                       oninput="memberSearch()">
             </div>
             <br/>
             <div id="memberList" class="unselected-members">
@@ -276,6 +278,8 @@
     }*/
 
     /*]]>*/
+
+
 
 
 

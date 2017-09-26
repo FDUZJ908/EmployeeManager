@@ -116,6 +116,19 @@ h3{
     -webkit-box-sizing:border-box;
     font-size: 1em;
 	background-color: rgb(255,255,255);
+	margin: 20em 0;
+}
+
+.submit_box input{
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+	outline: none;
+    font-size: 5em;
+	background: rgb(255,255,255);
+
 }
 
 .submit_box input[type="submit"] {
@@ -124,15 +137,12 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
-	margin-top: 3em;
-	margin-bottom: 0em;
 	border:none;
 	letter-spacing: 1px;
     cursor: pointer;
     -webkit-appearance: none;
 	color: rgb(255,255,255);
 	background-color: rgb(80,119,170);
-	font-size: 2em;
 }
 
 .report_box{
@@ -145,9 +155,6 @@ h3{
 	margin: 2em 0;
 	background-color: rgb(255,255,255);
 }
-
-
-
 
 .report_box label{
 	box-sizing: border-box;
@@ -215,6 +222,7 @@ h3{
     border: 1px solid;
 	margin: 3em 0;
 	overflow: hidden;
+	display: flex;
 	background-color: rgb(235,235,235);
 
 }

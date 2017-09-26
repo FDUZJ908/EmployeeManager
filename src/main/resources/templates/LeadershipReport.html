@@ -50,12 +50,15 @@
                 <input type="number" name="score" required="required">
             </div>
 
-            <div class="selected-box">
+            <div class="report_box">
                 <label>队伍成员:</label>
-                <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                <div class="selected-box">
+
+                    <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                    </div>
+                    <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
+                           oninput="memberSearch()">
                 </div>
-                <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
-                       oninput="memberSearch()">
             </div>
             <div id="memberList" class="unselected-members">
             </div>
@@ -167,6 +170,7 @@
     }
 
     /*]]>*/
+
 
 
 </script>
