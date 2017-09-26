@@ -563,6 +563,9 @@ public class BackgroundController {
     @RequestMapping("/QRCodeRefresh")
     public String QRCodeRefresh(@RequestParam("code") String CODE,
                                 Model model) {
+        System.out.println("***********************************************************************************");
+        System.out.println(CODE);
+        System.out.println("***********************************************************************************");
         String UserID = server.getUserId(CODE, PASecret);
         String timestamp = Long.toString(System.currentTimeMillis());
         Checkin checkin = checkins.get(UserID);
@@ -570,6 +573,7 @@ public class BackgroundController {
         checkin.setTimestamp(timestamp);
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", UserID);
+        model.addAttribute("CODE", CODE);
         return "QRCode";
     };
 
@@ -583,6 +587,8 @@ public class BackgroundController {
             if ((Long.parseLong(timestamp) - Long.parseLong(checkin.getTimestamp())) > 30 * 60 * 1000) {
                 checkin.deleteCheckinMember();
                 checkin.setTimestamp(timestamp);
+            } else {
+                timestamp = checkin.getTimestamp();
             }
         } else {
             if (server.isUser(UserID)) {

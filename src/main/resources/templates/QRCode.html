@@ -487,6 +487,6 @@
     /*]]>*/
 </script>
 
-<button th:href="/QRCodeRefresh?code=${CODE}">刷新</button>
+<a th:href="@{'/QRCodeRefresh?code='+${CODE}}">刷新</a>
 
 </html>
