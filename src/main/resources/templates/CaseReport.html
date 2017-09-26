@@ -61,7 +61,7 @@
             </div>
 
             <div>
-                <select id="department_hide">
+                <select id="department_hide" style="display:none">
                 <option>请选择部门</option>
                 <div th:each="department:${list}">
                     <option th:value="${department.leader}" th:text="${department.department}"></option>
@@ -236,8 +236,8 @@
                 leader.options.remove(i);
             for (i = 1; i < department_hide.length; i++) {
                 var flag2 = department_hide[i].text.indexOf(selectedD);
-                if (flag2 != -1) {
-                    if (userName != department_hide[i].text)
+                if (flag2 != -1 && userName != department_hide[i].text) {
+                    alert(userName.toString() + department_hide[i].text)
                         leader.options.add(new Option(department[i].value.toString(), department[i].value.toString()));
                 }
             }
@@ -249,8 +249,8 @@
             for (i = department.length; i >0 ; i--) {
                 var j = i;
                 for (n = 1; n < j; n++) {
-                    var flag = department[j].text.indexOf(department[n].text);
-                    if (flag != -1) {
+                    if (department[n].text == department[j].text){
+                        alert(j.toString() + n.toString());
                         department.options.remove(j);
                         break;
                     }
