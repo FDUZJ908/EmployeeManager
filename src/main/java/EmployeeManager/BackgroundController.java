@@ -564,31 +564,6 @@ public class BackgroundController {
         return "Synchronization succeed!";
     }
 
-    @RequestMapping("/QRCodeRefresh")
-    public String QRCodeRefresh(@RequestParam("code") String CODE,
-                                Model model) {
-        String UserID = server.getUserId(CODE, PASecret);
-        String timestamp = Long.toString(System.currentTimeMillis());
-        if (checkins.containsKey(UserID)) {
-            Checkin checkin = checkins.get(UserID);
-
-            checkin.deleteCheckinMember();
-            checkin.setTimestamp(timestamp);
-
-            timestamp = checkin.getTimestamp();
-
-        } else {
-            Checkin checkin = new Checkin(timestamp);
-            checkins.put(UserID, checkin);
-        }
-        model.addAttribute("timestamp", timestamp);
-        model.addAttribute("creator", UserID);
-        model.addAttribute("CODE", CODE);
-        return "QRCode";
-    }
-
-    ;
-
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          Model model) {
