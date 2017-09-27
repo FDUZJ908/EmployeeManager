@@ -13,7 +13,7 @@
     <div class="page-title">
         <h3>待审批列表</h3>
     </div>
-    <form method="post" class="submit-form" nctype="multipart/form-data">
+    <form method="post" class="submit-form" nctype="multipart/form-data" onsubmit="return checkDL()">
         <div class="approval_content">
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
@@ -73,7 +73,7 @@
                 </select>
             </div>
             <div class="approval_bottom_box">
-                <input type="text" name="reportComment" placeholder="请输入审批意见" required="required" />
+                <input type="text" name="reportComment" placeholder="请输入审批意见"/>
             </div>
             <div class="approval_bottom_box">
                 <input class="submit" type="submit" value="确定审批"/>
@@ -87,4 +87,39 @@
 </div>
 
 </body>
+<script th:inline="javascript">
+    function checkDL() {
+        var check1 = document.getElementsByName("check1");
+        var check2 = document.getElementsByName("check2");
+        var list1 = /*[[${list1}]]*/ "";
+        var list2 = /*[[${list2}]]*/ "";
+        var count = 0;
+
+        if (list1.length== 0 && list2.length == 0) {
+            alert("没有需要审批的报告！");
+            return false;
+        }
+        for (i = 0 ; i< check1.length-1 ; i++) {
+            if (check1[i].checked == true)
+                count++;
+        }
+        for (j = 0 ; j< check2.length-1 ; j++) {
+            if (check2[j].checked == true)
+                count++;
+        }
+        if(!count) {
+            alert("请选择需要审批的报告！");
+            return false;
+        }
+        else {
+            var con = confirm("确认审批已选择报告？");
+            if (con == true)
+                return true;
+            else
+                return false;
+
+        }
+
+    }
+</script>
 </html>

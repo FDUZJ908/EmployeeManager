@@ -6,22 +6,22 @@
     <title>一般报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
-<body>
+<body onload="loadDepartment()">
 <div class="page">
     <div class="page-title">
         <h3>一般报告</h3>
     </div>
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
 
             <div class="report_box">
                 <label>报告内容:</label>
-                <input type="text" name="content" required="required">
+                <input type="text" name="content" id="content" required="required">
                 <div class="select-file">
-                    <input type="file" name="file" id="file" required="required"/>
+                    <input type="file" name="file" id="file"/>
                     <label for="file">上传附件
                     </label>
                 </div>
@@ -49,21 +49,25 @@
                 </select>
             </div>
 
+            <div style="display:none">
+                <select id="department_hide" >
+                    <option>请选择部门</option>
+                    <div th:each="department:${list}">
+                        <option th:value="${department.leader}" th:text="${department.department}"></option>
+                    </div>
+                </select>
+            </div>
             <div class="report_box">
                 <label>审批领导:</label>
                 <select name="leader" id="leader">
                     <option>请选择领导</option>
-                    <div th:each="leader:${list}">
-                        <option th:value="${leader.leader}" th:text="${leader.leader}"></option>
-                    </div>
                 </select>
             </div>
 
-            <div class="bottom_box">
-                <div class="submit_box">
-                    <input type="submit" value="提交报告">
-                </div>
+            <div class="submit_box">
+                <input type="submit" value="提交报告">
             </div>
+
         </form>
     </div>
     <div class="space">
@@ -72,16 +76,43 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    function departmentRedirect() {
+    function checkDL () {
+        var content = document.getElementById("content");
         var department = document.getElementById("department");
         var leader = document.getElementById("leader");
+
+        if (content.value.toString() == "") {
+            alert("报告内容不能为空！");
+            return false;
+        }
+
+        if (department.options[department.selectedIndex].text == "请选择部门") {
+            alert("请选择部门！");
+            return false;
+        }
+        if (leader.options[leader.selectedIndex].text == "请选择领导") {
+            alert("请选择领导！");
+            return false;
+        }
+
+        var con = confirm("确认提交报告？");
+        if (con == false)
+            return false;
+
+        checkMemberDivToInput();
+
+    }
+    function departmentRedirect() {
+        var department_hide = document.getElementById("department_hide");
+        var department = document.getElementById("department");
+        var leader = document.getElementById("leader");
+        var userName = /*[[${userName}]]*/ "";
         var selectedD = department.options[department.selectedIndex].text;
         for (i = leader.length - 1; i > 0; i--)
             leader.options.remove(i);
-        for (i = 1; i < department.length; i++) {
-            var flag2 = department[i].text.indexOf(selectedD);
-            if (flag2 != -1) {
-                leader.options.add(new Option(department[i].value.toString(), department[i].value.toString()));
+        for (i = 1; i < department_hide.length; i++) {
+            if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
+                leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
             }
         }
     }
@@ -89,12 +120,12 @@
 
     function loadDepartment() {
         var department = document.getElementById("department");
-        for (i = 1; i < department.length; i++) {
-            var j = i;
+        var i,j,n;
+        for (i = department.length-1; i >0 ; i--) {
+            j = i;
             for (n = 1; n < j; n++) {
-                var flag1 = department[j].text.indexOf(department[n].text);
-                if (flag1 != -1) {
-                    department[j].setAttribute("style", "display:none");
+                if (department.options[n].text == department.options[j].text){
+                    department.options.remove(j);
                     break;
                 }
             }

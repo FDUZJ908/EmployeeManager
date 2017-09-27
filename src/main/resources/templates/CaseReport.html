@@ -20,7 +20,7 @@
                 <label>报告内容:</label>
                 <input type="text" name="content" id="content" required="required">
                 <div class="select-file">
-                    <input type="file" name="file" id="file" required="required"/>
+                    <input type="file" name="file" id="file"/>
                     <label for="file">上传附件
                     </label>
                 </div>
@@ -60,13 +60,13 @@
                 </select>
             </div>
 
-            <div>
-                <select id="department_hide">
-                <option>请选择部门</option>
-                <div th:each="department:${list}">
-                    <option th:value="${department.leader}" th:text="${department.department}"></option>
-                </div>
-            </select>
+            <div style="display:none">
+                <select id="department_hide" >
+                    <option>请选择部门</option>
+                    <div th:each="department:${list}">
+                        <option th:value="${department.leader}" th:text="${department.department}"></option>
+                    </div>
+                </select>
             </div>
             <div class="report_box">
                 <label>审批领导:</label>
@@ -75,12 +75,14 @@
                 </select>
             </div>
 
-            <div class="selected-box">
+            <div class="report_box">
                 <label>队伍成员:</label>
-                <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                <div class="selected-box">
+                    <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
+                    </div>
+                    <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
+                           oninput="memberSearch()">
                 </div>
-                <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
-                       oninput="memberSearch()">
             </div>
             <br/>
             <div id="memberList" class="unselected-members">
@@ -132,6 +134,11 @@
                 alert("请选择领导！");
                 return false;
         }
+
+        var con = confirm("确认提交报告？");
+        if (con == false)
+            return false;
+
         checkMemberDivToInput();
 
     }
@@ -235,10 +242,8 @@
             for (i = leader.length - 1; i > 0; i--)
                 leader.options.remove(i);
             for (i = 1; i < department_hide.length; i++) {
-                var flag2 = department_hide[i].text.indexOf(selectedD);
-                if (flag2 != -1) {
-                    if (userName != department_hide[i].text)
-                        leader.options.add(new Option(department[i].value.toString(), department[i].value.toString()));
+                if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
+                        leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
                 }
             }
         }
@@ -246,11 +251,11 @@
 
         function loadDepartment() {
             var department = document.getElementById("department");
-            for (i = department.length; i >0 ; i--) {
-                var j = i;
+            var i,j,n;
+            for (i = department.length-1; i >0 ; i--) {
+                j = i;
                 for (n = 1; n < j; n++) {
-                    var flag = department[j].text.indexOf(department[n].text);
-                    if (flag != -1) {
+                    if (department.options[n].text == department.options[j].text){
                         department.options.remove(j);
                         break;
                     }
@@ -277,6 +282,8 @@
     }*/
 
     /*]]>*/
+
+
 
 
 

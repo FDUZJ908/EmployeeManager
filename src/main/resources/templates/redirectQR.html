@@ -11,13 +11,8 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var creator = /*[[${creator}]]*/;
-    var timestamp = /*[[${timestamp}]]*/;
-    var curtimestamp = (new Date()).valueOf();
-    if (curtimestamp - parseInt(timestamp) <= 30*60*1000)
-        self.location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2Fcheckin&response_type=code&scope=snsapi_base&state='+creator+'#wechat_redirect';
-    else
-        alert("对不起，二维码已过期");
+    var state = /*[[${state}]]*/;
+    self.location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2Fcheckin&response_type=code&scope=snsapi_base&state='+state+'#wechat_redirect';
     /*]]>*/
 </script>
 

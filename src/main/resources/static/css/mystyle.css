@@ -37,11 +37,11 @@ h3{
 
 .key-search input[type="text"]{
 	width: 100%;
-	font-size: 2em;
+	font-size: 3em;
 	text-align: center;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	padding: 0.5em 0;
+	padding: 0 0 0.5em 0;
 	border: 0.05em rgb(255,255,255);
 	background-color: rgb(237,238,240);
 	-webkit-border-radius: 1em;
@@ -54,7 +54,7 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	font-size: 1.5em;
-	padding: 0.5em 0;
+	padding: 0.5em 0 0 0;
 	text-decoration:none;
 }
 
@@ -116,6 +116,19 @@ h3{
     -webkit-box-sizing:border-box;
     font-size: 1em;
 	background-color: rgb(255,255,255);
+	margin: 20em 0;
+}
+
+.submit_box input{
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+	outline: none;
+    font-size: 4em;
+	background: rgb(255,255,255);
+
 }
 
 .submit_box input[type="submit"] {
@@ -124,15 +137,12 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
-	margin-top: 3em;
-	margin-bottom: 0em;
 	border:none;
 	letter-spacing: 1px;
     cursor: pointer;
     -webkit-appearance: none;
 	color: rgb(255,255,255);
 	background-color: rgb(80,119,170);
-	font-size: 2em;
 }
 
 .report_box{
@@ -146,15 +156,12 @@ h3{
 	background-color: rgb(255,255,255);
 }
 
-
-
-
 .report_box label{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	display: block;
-	font-size: 50px;
+	font-size: 3em;
     border: none;
     letter-spacing: 1px;
 	margin: 0.5em 0 0.5em 0;
@@ -169,7 +176,7 @@ h3{
     -webkit-box-sizing:border-box;
 	margin: 0 0 0.5em 0;
 	outline: none;
-    font-size: 5em;
+    font-size: 4em;
 	background: rgb(255,255,255);
 
 }
@@ -183,7 +190,7 @@ h3{
     -webkit-appearance: none;
     padding: 0 auto;
 	outline: none;
-    font-size: 5em;
+    font-size: 4em;
 	background: rgb(255,255,255);
 	margin: 0 0 0.5em 0;
 }
@@ -215,10 +222,11 @@ h3{
     border: 1px solid;
 	margin: 3em 0;
 	overflow: hidden;
-	background-color: rgb(235,235,235);
+	display: flex;
+	background-color: rgb(255,255,255);
 
 }
-
+/*
 .selected-box label{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -228,6 +236,19 @@ h3{
     border: none;
     letter-spacing: 1px;
 	margin: 0.5em 0 0.5em 0;
+}*/
+
+.selected-box input{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    -webkit-appearance: none;
+    width: 30%;
+    height: 100%;
+    font-size: 1em;
+    display: flex;
+    float: right;
+	background-color: rgb(255,255,255);
 }
 
 .selected-box input[type="search"]{
@@ -236,12 +257,11 @@ h3{
     -webkit-box-sizing:border-box;
     -webkit-appearance: none;
     display: block;
-	min-width: 29%;
-	max-width: 29%;
-	min-height: 100%;
-	float: right;
-	font-size: 5em;
-	background-color: rgb(235,235,235);
+    width: 100%;
+    height: 100%;
+	font-size: 3em;
+	background-color: rgb(255,255,255);
+	margin: 1em 0;
 }
 
 
@@ -253,16 +273,18 @@ h3{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
+    display: block;
 	float: left;
 	font-size: 1em;
 	display: flex;
 	overflow: scroll;
+	background-color: rgb(255,255,255);
 }
 
 .selected-members input[type="button"]{
 	min-width: 33%;
+	max-width: 33%;
 	min-height: 100%;
-	border: 1px solid;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
@@ -270,8 +292,12 @@ h3{
     display: block;
     text-align: center;
 	font-size: 3em;
-	padding: 0.9em 0;
+	padding: 1em 0;
 	cursor: pointer;
+	background: right top;
+	background-size: 20% 20%;
+	background-repeat:no-repeat;
+	background-image: url(/images/delete.png);
 }
 
 
@@ -282,7 +308,7 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
     font-size: 1em;
-	background-color: rgb(235,235,235);
+	background-color: rgb(255,255,255);
 }
 
 .unselected-members input[type="button"]{
@@ -290,14 +316,18 @@ h3{
 	min-height: 100%;
 	width: 24%;
 	font-size: 3em;
-	padding: 0.9em 0;
-	border: 1px solid;;
+	padding: 1em 0;
+	border: 1px solid;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
     -webkit-appearance: none;
 	margin: 0.1em;
 	cursor: pointer;
+	background: right top;
+	background-size: 20% 20%;
+	background-repeat:no-repeat;
+	background-image: url(/images/add.png);
 }
 
 
@@ -325,6 +355,11 @@ h3{
 	text-align: center;
 	font-size: 1em;
 }
+
+.approval_bottom_box ::-webkit-input-placeholder { color: rgb(255,255,255); }
+.approval_bottom_box ::-moz-placeholder { color: rgb(255,255,255); }
+.approval_bottom_box :-ms-input-placeholder { color: rgb(255,255,255); }
+.approval_bottom_box input: -moz-placeholder { color: rgb(255,255,255); }
 
 .approval_bottom_box input{
 	box-sizing: border-box;

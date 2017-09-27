@@ -55,13 +55,11 @@ public class HistoryReport {
                 break;
         }
 
-        if (String.valueOf(isPass) == "null")
-            isPass = "";
-        else if (Integer.parseInt(String.valueOf(type))>= 10)
+        if (Integer.parseInt(String.valueOf(type))>= 10)
             isPass = "待审批";
         else
         {
-            if (String.valueOf(isPass).equals("1"))
+            if (String.valueOf(isPass) == "1")
                 isPass = "通过";
             if (String.valueOf(isPass).equals("0"))
                 isPass = "不通过";
