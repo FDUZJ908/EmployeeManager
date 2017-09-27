@@ -187,10 +187,7 @@ public class BackgroundController {
         String UserId = server.getUserId(CODE, PASecret);
         if (server.isUser(UserId) == false)
             return "failure";
-<<<<<<< HEAD
 
-        model.addAttribute("selected_type", "无");
-=======
         String sql = "select userName,s_score,avatarURL from user order by s_score desc";
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         try {
@@ -206,7 +203,7 @@ public class BackgroundController {
         }
         model.addAttribute("list", users);
         model.addAttribute("selected_type", "总排行");
->>>>>>> 5974a538330a08c7b65b4142df3933a60e8ffc5a
+
         return "RankingList";
     }
 
@@ -588,22 +585,12 @@ public class BackgroundController {
                          @RequestParam("state") String REFRESH,
                          Model model) {
         String UserID = server.getUserId(CODE, PASecret);
-<<<<<<< HEAD
-        String timestamp = Long.toString(System.currentTimeMillis());
-        if (checkins.containsKey(UserID)) {
-            Checkin checkin = checkins.get(UserID);
-            if ((Long.parseLong(timestamp) - Long.parseLong(checkin.getTimestamp())) > 30 * 60 * 1000) {
-                checkin.deleteCheckinMember();
-                checkin.setTimestamp(timestamp);
-            } else {
-                timestamp = checkin.getTimestamp();
-            }
-=======
+
         long timestamp = System.currentTimeMillis();
         if (!checkins.containsKey(UserID)) {
             if (server.isUser(UserID)) checkins.put(UserID, new Checkin(timestamp));
             else return "failure";
->>>>>>> 5974a538330a08c7b65b4142df3933a60e8ffc5a
+
         } else {
             Checkin checkin = checkins.get(UserID);
             if (REFRESH.equals("true") || timestamp - checkin.getTimestamp() > QRTimeout) {
@@ -622,15 +609,9 @@ public class BackgroundController {
     public String redirectQR(@RequestParam("timestamp") String timestamp,
                              @RequestParam("creator") String creator,
                              Model model) {
-<<<<<<< HEAD
-        System.out.println(timestamp);
-        if (!checkins.containsKey(creator) || !checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
-        System.out.println("creator:" + creator);
-        model.addAttribute("timestamp", timestamp);
-        model.addAttribute("creator", creator);
-=======
-        model.addAttribute("state", creator+"-"+timestamp);
->>>>>>> 5974a538330a08c7b65b4142df3933a60e8ffc5a
+
+        model.addAttribute("state", creator + "-" + timestamp);
+
         return "redirectQR";
     }
 
@@ -638,26 +619,16 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-<<<<<<< HEAD
-        String userID = server.getUserId(CODE, PASecret);
-        Object user = userID;
-        if (checkins.get(STATE).getCheckinMember().contains(user)) return "failure";
-        System.out.println("-------------------------------------checkin---------------------------------------");
-        System.out.println("checkin:" + userID);
-        server.award(userID, 2);
-=======
         int p = STATE.indexOf("-");
         String creator = STATE.substring(0, p);
         long timestamp = Long.parseLong(STATE.substring(p + 1));
         if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp) return "failure";
         if (System.currentTimeMillis() - timestamp > QRTimeout) return "failure";
-
         String userID = server.getUserId(CODE, PASecret);
-        Checkin checkin=checkins.get(creator);
+        Checkin checkin = checkins.get(creator);
         if (checkin.getCheckinMember().contains(userID)) return "failure";
         server.award(userID, 2);
         checkin.addCheckinMember(userID);
->>>>>>> 5974a538330a08c7b65b4142df3933a60e8ffc5a
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }
