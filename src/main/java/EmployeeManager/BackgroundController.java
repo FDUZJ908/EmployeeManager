@@ -37,6 +37,8 @@ public class BackgroundController {
         if (server.isUser(UserId) == false)
             return "failure";
 
+        String latestReport = server.getLatestGeneralReport(UserId);
+
        /* List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
             return "failure";
@@ -48,6 +50,7 @@ public class BackgroundController {
 
         model.addAttribute("userName", userName);
         model.addAttribute("UserId", UserId);
+        model.addAttribute("latestReport", latestReport);
         model.addAttribute("list", DLeaders);
         return "GeneralReport";
     }
@@ -545,7 +548,7 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listLeaderReport) {
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), map.get("leaderName"), map.get("members"), 2);
+                        map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), "", "", 2);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserID);
