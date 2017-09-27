@@ -23,6 +23,7 @@ public class BackgroundController {
     @Autowired
     Server server;
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
+    int QRTimeout = 30 * 60 * 1000;
     @Value("${web.upload-path}")
     private String path;
 
@@ -45,7 +46,7 @@ public class BackgroundController {
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         String userName = server.getUserName(UserId);
 
-        model.addAttribute("userName",userName);
+        model.addAttribute("userName", userName);
         model.addAttribute("UserId", UserId);
         model.addAttribute("list", DLeaders);
         return "GeneralReport";
@@ -89,7 +90,7 @@ public class BackgroundController {
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
 
         model.addAttribute("UserId", UserId);
-        model.addAttribute("userName",userName);
+        model.addAttribute("userName", userName);
         model.addAttribute("Leaders", Leaders);
         model.addAttribute("Departments", Departments);
         model.addAttribute("AllUsers", AllUsers);
@@ -125,7 +126,7 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
-        String sqlMessage = "'"+UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
+        String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
         server.jdbcTemplate.update("insert into undealedCaseReport " +
                 "(userID,leaderName,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
@@ -145,7 +146,7 @@ public class BackgroundController {
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("UserId", UserId);
         model.addAttribute("AllUsers", AllUsers);
-        model.addAttribute("list",DLeaders);
+        model.addAttribute("list", DLeaders);
         return "LeadershipReport";
     }
 
@@ -200,7 +201,7 @@ public class BackgroundController {
             users.add(user_temp);
         }
         model.addAttribute("list", users);
-        model.addAttribute("selected_type","总排行");
+        model.addAttribute("selected_type", "总排行");
         return "RankingList";
     }
 
@@ -222,7 +223,7 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type",type);
+            model.addAttribute("selected_type", type);
             model.addAttribute("list", users);
             return "RankingList";
         } else {
@@ -247,7 +248,7 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type",type);
+            model.addAttribute("selected_type", type);
             model.addAttribute("list", users);
             return "RankingList";
         }
@@ -573,27 +574,26 @@ public class BackgroundController {
     @RequestMapping("/Synchronizer")
     @ResponseBody
     public String Synchronizer() throws Exception {
-
         server.syncUser(server.syncDepartment());
-
         return "Synchronization succeed!";
     }
 
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
+                         @RequestParam("state") String REFRESH,
                          Model model) {
         String UserID = server.getUserId(CODE, PASecret);
-        String timestamp = Long.toString(System.currentTimeMillis());
-        if (checkins.containsKey(UserID)) {
-            Checkin checkin = checkins.get(UserID);
-            checkin.deleteCheckinMember();
-            checkin.setTimestamp(timestamp);
+        long timestamp = System.currentTimeMillis();
+        if (!checkins.containsKey(UserID)) {
+            if (server.isUser(UserID)) checkins.put(UserID, new Checkin(timestamp));
+            else return "failure";
         } else {
-            if (server.isUser(UserID)) {
-                Checkin checkin = new Checkin(timestamp);
-                checkins.put(UserID, checkin);
-            } else
-                return "failure";
+            Checkin checkin = checkins.get(UserID);
+            if (REFRESH.equals("true") || timestamp - checkin.getTimestamp() > QRTimeout) {
+                checkin.deleteCheckinMember();
+                checkin.setTimestamp(timestamp);
+            }
+            timestamp = checkin.getTimestamp();
         }
         model.addAttribute("timestamp", timestamp);
         model.addAttribute("creator", UserID);
@@ -604,11 +604,7 @@ public class BackgroundController {
     public String redirectQR(@RequestParam("timestamp") String timestamp,
                              @RequestParam("creator") String creator,
                              Model model) {
-        System.out.println(timestamp);
-        if (!checkins.containsKey(creator) || !checkins.get(creator).getTimestamp().equals(timestamp)) return "failure";
-        System.out.println("creator:"+creator);
-        model.addAttribute("timestamp", timestamp);
-        model.addAttribute("creator", creator);
+        model.addAttribute("state", creator+"-"+timestamp);
         return "redirectQR";
     }
 
@@ -616,11 +612,17 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-        System.out.println(CODE);
+        int p = STATE.indexOf("-");
+        String creator = STATE.substring(0, p);
+        long timestamp = Long.parseLong(STATE.substring(p + 1));
+        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp) return "failure";
+        if (System.currentTimeMillis() - timestamp > QRTimeout) return "failure";
+
         String userID = server.getUserId(CODE, PASecret);
-        server.award(userID,2);
-        System.out.println("checkin:" + userID);
-        if (checkins.get(STATE).getCheckinMember().contains(userID)) return "failure";
+        Checkin checkin=checkins.get(creator);
+        if (checkin.getCheckinMember().contains(userID)) return "failure";
+        server.award(userID, 2);
+        checkin.addCheckinMember(userID);
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }

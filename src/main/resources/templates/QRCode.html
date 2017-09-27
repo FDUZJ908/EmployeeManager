@@ -482,6 +482,7 @@
     }();
     var timestamp = /*[[${timestamp}]]*/;
     var creator = /*[[${creator}]]*/;
+    timestamp=String(timestamp);
     new QRCode(document.getElementById("qrcode"), "http://shiftlin.top:4908/redirectQR?timestamp=" + timestamp + "&creator=" + creator);
     /*]]>*/
 </script>

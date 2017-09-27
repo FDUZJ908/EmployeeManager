@@ -4,19 +4,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Checkin {
-    private String timestamp;
+    private long timestamp;
     private Set<String> checkinMember;
 
-    public Checkin(String timeStamp) {
+    public Checkin(long timeStamp) {
         timestamp = timeStamp;
         checkinMember=new HashSet<String>();
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -24,8 +24,8 @@ public class Checkin {
         return checkinMember;
     }
 
-    public void setCheckinMember(Set<String> checkinMember) {
-        this.checkinMember = checkinMember;
+    public void addCheckinMember(String userID) {
+        this.checkinMember.add(userID);
     }
 
     public void deleteCheckinMember() {
