@@ -29,21 +29,17 @@ public class HistoryReport {
                 scoreTemp = 0;
                 categoryTmp = "";
                 break;
-            case 0:
-                scoreTemp = 2;
-                categoryTmp = "日常工作";
-                break;
             case 1:
-                scoreTemp = 2;
-                categoryTmp = "领导交办";
+                scoreTemp = 1;
+                categoryTmp = "日常工作";
                 break;
             case 2:
                 scoreTemp = 2;
-                categoryTmp = "阶段汇总";
+                categoryTmp = "领导交办";
                 break;
             case 3:
-                scoreTemp = 1;
-                categoryTmp = "考勤签到";
+                scoreTemp = 2;
+                categoryTmp = "阶段汇总";
                 break;
             case 4:
                 scoreTemp = 2;
