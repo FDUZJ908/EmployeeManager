@@ -17,6 +17,9 @@
         <div class="approval_content">
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
+        <div class="check_box">
+        <input type="checkbox" id="checkboxAll" onclick="checkboxAll"> <span id="checkboxAllText"></span>
+        </div>
         <div th:each="list:${list1}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">
@@ -88,6 +91,38 @@
 
 </body>
 <script th:inline="javascript">
+    function checkboxAll() {
+        var check1 = document.getElementsByName("check1");
+        var check2 = document.getElementsByName("check2");
+        var checkboxAll = document.getElementById("checkboxAll");
+        var spanText = document.getElementById("checkboxAllText");
+
+        if (checkboxAll.checked == false) {
+
+            spanText.innerHTML = "全选";
+
+            for (i = 0 ; i< check1.length-1 ; i++)
+                check1[i].checked = false;
+
+            for (j = 0 ; j< check2.length-1 ; j++)
+                check2[j].checked = false;
+
+        }
+
+        else {
+
+            spanText.innerHTML = "取消全选";
+
+            for (i = 0 ; i< check1.length-1 ; i++)
+                check1[i].checked = true;
+
+            for (j = 0 ; j< check2.length-1 ; j++)
+                check2[j].checked = true;
+
+        }
+
+
+    }
     function checkDL() {
         var check1 = document.getElementsByName("check1");
         var check2 = document.getElementsByName("check2");
