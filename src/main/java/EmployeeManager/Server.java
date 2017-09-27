@@ -209,7 +209,7 @@ public class Server {
     }
 
     public Map<String, Object> getUndealedGeneralReport(String reportID) {
-        String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID + "LIMIT 1";
+        String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID + " LIMIT 1";
         List<Map<String, Object>> generalReport;
         try {
             generalReport = jdbcTemplate.queryForList(sql);
@@ -221,7 +221,7 @@ public class Server {
     }
 
     public Map<String, Object> getUndealedCaseReport(String reportID) {
-        String sql = "SELECT * FROM undealedCaseReport WHERE reportID=" + reportID + "LIMIT 1";
+        String sql = "SELECT * FROM undealedCaseReport WHERE reportID=" + reportID + " LIMIT 1";
         List<Map<String, Object>> caseReport;
         try {
             caseReport = jdbcTemplate.queryForList(sql);
