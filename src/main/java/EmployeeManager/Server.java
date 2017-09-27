@@ -232,6 +232,23 @@ public class Server {
         return caseReport;
     }
 
+    public String getLatestGeneralReport (String userID) {
+        String sql = "select submitTime from generalReport where userID=" + "'" + userID + "'" + "order by submitTime desc";
+        List<Map<String, Object>> generalReport;
+        String latestGeneralReport = "";
+        try {
+            generalReport = jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+        for (Map< String,Object>map : generalReport) {
+            latestGeneralReport = map.get("submitTime").toString();
+            break;
+        }
+        return latestGeneralReport;
+    }
+
     /*public void getReports(List<HistoryReport> reports,
                            List<Map<String, Object>> listCaseReport,
                            String UserID,

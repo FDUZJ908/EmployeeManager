@@ -59,17 +59,14 @@ public class HistoryReport {
             isPass = "待审批";
         else
         {
-            if (String.valueOf(isPass) == "1")
+            if (String.valueOf(isPass).equals("true"))
                 isPass = "通过";
-            if (String.valueOf(isPass).equals("0"))
+            if (String.valueOf(isPass).equals("false"))
                 isPass = "不通过";
         }
 
-        if (String.valueOf(scoreType).equals("0"))
-            singleScore = "-" + String.valueOf(singleScore);
-
-        if (String.valueOf(comment) == "null")
-            comment = "";
+        if (String.valueOf(comment) == "")
+            comment = "无";
         else
             comment = String.valueOf(comment);
 
