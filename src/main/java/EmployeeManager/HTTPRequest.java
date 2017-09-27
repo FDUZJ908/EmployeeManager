@@ -4,67 +4,57 @@ import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HTTPRequest {
 
-    // HTTPS GET请求
-    public JSONObject sendGET(String urlGet) throws Exception {
-
-        URL obj = new URL(urlGet);
-        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+    // HTTP GET请求
+    public JSONObject sendGET(String url) throws Exception {
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpsURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
+        while ((inputLine = reader.readLine()) != null) {
             response.append(inputLine);
         }
-        in.close();
+        reader.close();
+        con.disconnect();
+
         JSONObject jsonObject = new JSONObject(response.toString());
         return jsonObject;
     }
-/*
+    
     // HTTP POST请求
-    private void sendPost() throws Exception {
-
-        String url = "https://selfsolve.apple.com/wcResults.do";
+    public JSONObject sendPost(String url,JSONObject data) throws Exception {
         URL obj = new URL(url);
-        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-
-        //添加请求头
+        HttpURLConnection con = (HttpsURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", USER_AGENT);
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
-        String urlParameters = "sn=C02G8416DRJM&cn=&locale=&caller=&num=12345";
-
-        //发送Post请求
         con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(urlParameters);
-        wr.flush();
-        wr.close();
+        con.setDoInput(true);
 
-        int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + urlParameters);
-        System.out.println("Response Code : " + responseCode);
+        BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        writer.write(data.toString());
+        writer.flush();
+        writer.close();
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
+        while ((inputLine = reader.readLine()) != null) {
             response.append(inputLine);
         }
-        in.close();
+        reader.close();
+        con.disconnect();
 
-        //打印结果
-        System.out.println(response.toString());
-
+        JSONObject jsonObject = new JSONObject(response.toString());
+        return jsonObject;
     }
-*/
+
 }

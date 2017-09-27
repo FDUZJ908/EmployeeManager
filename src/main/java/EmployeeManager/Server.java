@@ -1,7 +1,6 @@
 package EmployeeManager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +27,7 @@ public class Server {
     static final String corpid = "wx7635106ee1705d6d";
     static final String PASecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
     static final String SYNSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
+    static final int reportAgentID = 1000002;
 
     @Autowired
     public JdbcTemplate jdbcTemplate;
@@ -102,7 +102,7 @@ public class Server {
         try {
             department = jdbcTemplate.queryForList(dIDSql, args);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
         return department;
@@ -116,7 +116,7 @@ public class Server {
         try {
             userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
         String userName = "";
@@ -165,10 +165,10 @@ public class Server {
                     f.createNewFile();
                 file.transferTo(f);
             } catch (FileNotFoundException e) {
-                System.out.println(e.toString());
+                System.out.println(e.getMessage());
                 return false;
             } catch (IOException e) {
-                System.out.println(e.toString());
+                System.out.println(e.getMessage());
                 return false;
             }
         }
@@ -208,28 +208,28 @@ public class Server {
             dir.mkdir();
     }
 
-    public List<Map<String, Object>> getUndealedGeneralReport(String reportID) {
-        String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID;
+    public Map<String, Object> getUndealedGeneralReport(String reportID) {
+        String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID + "LIMIT 1";
         List<Map<String, Object>> generalReport;
         try {
             generalReport = jdbcTemplate.queryForList(sql);
+            return generalReport.get(0);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
-        return generalReport;
     }
 
-    public List<Map<String, Object>> getUndealedCaseReport(String reportID) {
-        String sql = "SELECT * FROM undealedCaseReport WHERE reportID=" + reportID;
+    public Map<String, Object> getUndealedCaseReport(String reportID) {
+        String sql = "SELECT * FROM undealedCaseReport WHERE reportID=" + reportID + "LIMIT 1";
         List<Map<String, Object>> caseReport;
         try {
             caseReport = jdbcTemplate.queryForList(sql);
+            return caseReport.get(0);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
-        return caseReport;
     }
 
     /*public void getReports(List<HistoryReport> reports,
@@ -253,7 +253,7 @@ public class Server {
         try {
             allUsersCursor = jdbcTemplate.queryForList(sql);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
         List<String> allUsers = new ArrayList<String>();
@@ -272,7 +272,7 @@ public class Server {
         try {
             department = jdbcTemplate.queryForList(dIDSql, args1);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
 
@@ -399,7 +399,7 @@ public class Server {
         try {
             jdbcTemplate.update(updatesql, args);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -416,7 +416,7 @@ public class Server {
             try {
                 memberCursor = jdbcTemplate.queryForList(memberSql, args);
             } catch (Exception e) {
-                System.out.println(e.toString());
+                System.out.println(e.getMessage());
             }
             if (!memberCursor.isEmpty()) {
                 for (Map<String, Object> map : memberCursor) {
@@ -426,26 +426,25 @@ public class Server {
                 System.out.println("成员不存在");
             }
         }
-
         IDs = IDs.substring(0, IDs.length() - 1);
-
         return IDs;
     }
 
-    public void postMessageToUser(String members, String text) throws JSONException {
+    public void sendMessage(String members, String content) throws Exception {
+        HTTPRequest httpReq = new HTTPRequest();
+        String token = getAccessToken(PASecret, false);
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
+
+        String userIDs = name2id(members);
         JSONObject jsonObject = new JSONObject();
-
-        String users = name2id(members);
-
-
-        /* 文本消息需要进一步修改
-         */
-        jsonObject.put("touser", users);
+        jsonObject.put("touser", userIDs);
         jsonObject.put("msgtype", "text");
-        jsonObject.put("agentid", corpid);
-        jsonObject.put("content", text);
+        jsonObject.put("agentid", reportAgentID);
+        JSONObject text=new JSONObject();
+        text.put("content",content);
+        jsonObject.put("text", text);
 
-
+        jsonObject = httpReq.sendPost(url, jsonObject);
     }
 
 }

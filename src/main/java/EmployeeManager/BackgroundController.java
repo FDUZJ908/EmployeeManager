@@ -68,6 +68,13 @@ public class BackgroundController {
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
+
+        try {
+            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         return "success";
     }
 
@@ -131,6 +138,13 @@ public class BackgroundController {
         server.jdbcTemplate.update("insert into undealedCaseReport " +
                 "(userID,leaderName,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
                 "values(" + sqlMessage + ")");
+
+        try {
+            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         return "success";
     }
 
@@ -193,7 +207,7 @@ public class BackgroundController {
         try {
             list = server.jdbcTemplate.queryForList(sql);
         } catch (Exception e) {
-            return e.toString();
+            return e.getMessage();
         }
         List<User> users = new ArrayList<User>();
         int rank = 1;
@@ -217,7 +231,7 @@ public class BackgroundController {
             try {
                 list = server.jdbcTemplate.queryForList(sql);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             List<User> users = new ArrayList<User>();
             int rank = 1;
@@ -242,7 +256,7 @@ public class BackgroundController {
             try {
                 list = server.jdbcTemplate.queryForList(sql);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             List<User> users = new ArrayList<User>();
             int rank = 1;
@@ -279,12 +293,12 @@ public class BackgroundController {
         try {
             generalReport = server.jdbcTemplate.queryForList(getGeneralReport, args);
         } catch (Exception e) {
-            return e.toString();
+            return e.getMessage();
         }
         try {
             caseReport = server.jdbcTemplate.queryForList(getCaseReport, args);
         } catch (Exception e) {
-            return e.toString();
+            return e.getMessage();
         }
         List<GeneralReport> list1 = new ArrayList<GeneralReport>();
         List<CaseReport> list2 = new ArrayList<CaseReport>();
@@ -322,33 +336,31 @@ public class BackgroundController {
 
         if (!check1.isEmpty()) {
             for (int i = 0; i < reports1.length; i++) {
-                List<Map<String, Object>> generalReport;
-                generalReport = server.getUndealedGeneralReport(reports1[i]);
+                Map<String, Object> generalReport = server.getUndealedGeneralReport(reports1[i]);
+                if (generalReport == null) continue;
                 String sqlMessage = "";
                 int singleScore;
-                for (Map<String, Object> map : generalReport) {
-                    sqlMessage = "'" + map.get("userID").toString() + "'" +
-                            ",'" + map.get("leaderName").toString() + "'," +
-                            map.get("category").toString() +
-                            ",'" + map.get("reportText").toString() + "'" +
-                            ",'" + map.get("reportPath").toString() + "'" +
-                            ",'" + map.get("submitTime").toString() + "'" +
-                            ",'" + checkTime + "'," +
-                            reportStatus +
-                            ",'" + reportComment + "'";
-                    if (map.get("category").toString().equals("1"))
-                        singleScore = 1;
-                    else
-                        singleScore = 2;
-                    if (reportStatus.equals("0"))
-                        singleScore = 0;
 
-                    updateSql = "UPDATE user set s_score=s_score + " + singleScore +
-                            " where userID=?";
-                    Object args[] = new Object[]{map.get("userID").toString()};
+                sqlMessage = "'" + generalReport.get("userID").toString() + "'" +
+                        ",'" + generalReport.get("leaderName").toString() + "'," +
+                        generalReport.get("category").toString() +
+                        ",'" + generalReport.get("reportText").toString() + "'" +
+                        ",'" + generalReport.get("reportPath").toString() + "'" +
+                        ",'" + generalReport.get("submitTime").toString() + "'" +
+                        ",'" + checkTime + "'," +
+                        reportStatus +
+                        ",'" + reportComment + "'";
+                if (generalReport.get("category").toString().equals("1"))
+                    singleScore = 1;
+                else
+                    singleScore = 2;
+                if (reportStatus.equals("0"))
+                    singleScore = 0;
 
-                    server.jdbcTemplate.update(updateSql, args);
-                }
+                updateSql = "UPDATE user set s_score=s_score + " + singleScore +
+                        " where userID=?";
+                Object args[] = new Object[]{generalReport.get("userID").toString()};
+                server.jdbcTemplate.update(updateSql, args);
 
                 updateSql = "insert into generalReport " +
                         "(userID,leaderName,category,reportText,reportPath,submitTime,checkTime,isPass,comment) " +
@@ -357,54 +369,58 @@ public class BackgroundController {
                 updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
                 server.jdbcTemplate.update(updateSql);
 
-
+                try {
+                    server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
         if (!check2.isEmpty()) {
             for (int i = 0; i < reports2.length; i++) {
-                List<Map<String, Object>> caseReport;
-                caseReport = server.getUndealedCaseReport(reports2[i]);
+                Map<String, Object> caseReport = server.getUndealedCaseReport(reports2[i]);
+                if (caseReport == null) continue;
                 String sqlMessage = "";
                 int singleScore;
-                for (Map<String, Object> map : caseReport) {
-                    String scoreType = "";
-                    if (reportStatus.equals("1")) {
-                        scoreType = "1";
-                        singleScore = Integer.parseInt(map.get("singleScore").toString());
-                    } else {
-                        scoreType = "0";
-                        singleScore = -Integer.parseInt(map.get("singleScore").toString());
 
-                    }
-                    sqlMessage = "'" + map.get("userID").toString() + "'" +
-                            ",'" + map.get("leaderName").toString() + "'" +
-                            ",'" + map.get("members").toString() + "'," +
-                            map.get("category").toString() +
-                            ",'" + map.get("reportText").toString() + "'" +
-                            ",'" + map.get("reportPath").toString() + "'" +
-                            ",'" + scoreType + "'," +
-                            map.get("singleScore").toString() +
-                            ",'" + map.get("submitTime").toString() + "'" +
-                            ",'" + checkTime + "'," +
-                            reportStatus +
-                            ",'" + reportComment + "'";
-                    System.out.print(map.get("members").toString());
-                    if (!map.get("members").toString().isEmpty()) {
-                        String[] member = map.get("members").toString().split(",");
+                String scoreType = "";
+                if (reportStatus.equals("1")) {
+                    scoreType = "1";
+                    singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
+                } else {
+                    scoreType = "0";
+                    singleScore = -Integer.parseInt(caseReport.get("singleScore").toString());
 
-                        for (int j = 0; j < member.length; j++) {
-                            updateSql = "update user set s_score = s_score + " + singleScore +
-                                    " where userName=?";
-                            Object args1[] = new Object[]{member[j]};
-                            server.jdbcTemplate.update(updateSql, args1);
-                        }
-                    }
-
-                    updateSql = "update user set s_score = s_score + " + singleScore +
-                            " where userID=?";
-                    Object args2[] = new Object[]{map.get("userID").toString()};
-                    server.jdbcTemplate.update(updateSql, args2);
                 }
+                sqlMessage = "'" + caseReport.get("userID").toString() + "'" +
+                        ",'" + caseReport.get("leaderName").toString() + "'" +
+                        ",'" + caseReport.get("members").toString() + "'," +
+                        caseReport.get("category").toString() +
+                        ",'" + caseReport.get("reportText").toString() + "'" +
+                        ",'" + caseReport.get("reportPath").toString() + "'" +
+                        ",'" + scoreType + "'," +
+                        caseReport.get("singleScore").toString() +
+                        ",'" + caseReport.get("submitTime").toString() + "'" +
+                        ",'" + checkTime + "'," +
+                        reportStatus +
+                        ",'" + reportComment + "'";
+                System.out.print(caseReport.get("members").toString());
+                if (!caseReport.get("members").toString().isEmpty()) {
+                    String[] member = caseReport.get("members").toString().split(",");
+
+                    for (int j = 0; j < member.length; j++) {
+                        updateSql = "update user set s_score = s_score + " + singleScore +
+                                " where userName=?";
+                        Object args1[] = new Object[]{member[j]};
+                        server.jdbcTemplate.update(updateSql, args1);
+                    }
+                }
+
+                updateSql = "update user set s_score = s_score + " + singleScore +
+                        " where userID=?";
+                Object args2[] = new Object[]{caseReport.get("userID").toString()};
+                server.jdbcTemplate.update(updateSql, args2);
+
                 updateSql = "insert into caseReport " +
                         "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
                         "singleScore,submitTime,checkTime,isPass,comment) " +
@@ -412,6 +428,12 @@ public class BackgroundController {
                 server.jdbcTemplate.update(updateSql);
                 updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
                 server.jdbcTemplate.update(updateSql);
+
+                try {
+                    server.sendMessage(caseReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
         return "success";
@@ -445,7 +467,7 @@ public class BackgroundController {
             try {
                 listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
@@ -462,7 +484,7 @@ public class BackgroundController {
             try {
                 listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("category"),
@@ -486,7 +508,7 @@ public class BackgroundController {
             try {
                 listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
@@ -503,7 +525,7 @@ public class BackgroundController {
             try {
                 listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("category"),
@@ -519,7 +541,7 @@ public class BackgroundController {
             try {
                 listLeaderReport = server.jdbcTemplate.queryForList(sqlLeaderReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             for (Map<String, Object> map : listLeaderReport) {
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("category"),
@@ -539,7 +561,7 @@ public class BackgroundController {
             try {
                 list = server.jdbcTemplate.queryForList(sqlGeneralReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
 
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
@@ -556,7 +578,7 @@ public class BackgroundController {
             try {
                 listCaseReport = server.jdbcTemplate.queryForList(sqlCaseReport, args);
             } catch (Exception e) {
-                return e.toString();
+                return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
                 String posterName = server.getUserName(map.get("userID").toString());
