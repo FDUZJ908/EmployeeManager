@@ -29,21 +29,17 @@ public class HistoryReport {
                 scoreTemp = 0;
                 categoryTmp = "";
                 break;
-            case 0:
-                scoreTemp = 2;
-                categoryTmp = "日常工作";
-                break;
             case 1:
-                scoreTemp = 2;
-                categoryTmp = "领导交办";
+                scoreTemp = 1;
+                categoryTmp = "日常工作";
                 break;
             case 2:
                 scoreTemp = 2;
-                categoryTmp = "阶段汇总";
+                categoryTmp = "领导交办";
                 break;
             case 3:
-                scoreTemp = 1;
-                categoryTmp = "考勤签到";
+                scoreTemp = 2;
+                categoryTmp = "阶段汇总";
                 break;
             case 4:
                 scoreTemp = 2;
@@ -59,17 +55,14 @@ public class HistoryReport {
             isPass = "待审批";
         else
         {
-            if (String.valueOf(isPass) == "1")
+            if (String.valueOf(isPass).equals("true"))
                 isPass = "通过";
-            if (String.valueOf(isPass).equals("0"))
+            if (String.valueOf(isPass).equals("false"))
                 isPass = "不通过";
         }
 
-        if (String.valueOf(scoreType).equals("0"))
-            singleScore = "-" + String.valueOf(singleScore);
-
-        if (String.valueOf(comment) == "null")
-            comment = "";
+        if (String.valueOf(comment) == "")
+            comment = "无";
         else
             comment = String.valueOf(comment);
 

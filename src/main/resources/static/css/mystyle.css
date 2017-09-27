@@ -126,7 +126,7 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	outline: none;
-    font-size: 5em;
+    font-size: 4em;
 	background: rgb(255,255,255);
 
 }
@@ -161,7 +161,7 @@ h3{
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	display: block;
-	font-size: 50px;
+	font-size: 3em;
     border: none;
     letter-spacing: 1px;
 	margin: 0.5em 0 0.5em 0;
@@ -176,7 +176,7 @@ h3{
     -webkit-box-sizing:border-box;
 	margin: 0 0 0.5em 0;
 	outline: none;
-    font-size: 5em;
+    font-size: 4em;
 	background: rgb(255,255,255);
 
 }
@@ -190,7 +190,7 @@ h3{
     -webkit-appearance: none;
     padding: 0 auto;
 	outline: none;
-    font-size: 5em;
+    font-size: 4em;
 	background: rgb(255,255,255);
 	margin: 0 0 0.5em 0;
 }
@@ -294,6 +294,10 @@ h3{
 	font-size: 3em;
 	padding: 1em 0;
 	cursor: pointer;
+	background: right top;
+	background-size: 20% 20%;
+	background-repeat:no-repeat;
+	background-image: url(/images/delete.png);
 }
 
 
@@ -313,13 +317,17 @@ h3{
 	width: 24%;
 	font-size: 3em;
 	padding: 1em 0;
-	border: 1px solid;;
+	border: 1px solid;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
     -webkit-appearance: none;
 	margin: 0.1em;
 	cursor: pointer;
+	background: right top;
+	background-size: 20% 20%;
+	background-repeat:no-repeat;
+	background-image: url(/images/add.png);
 }
 
 

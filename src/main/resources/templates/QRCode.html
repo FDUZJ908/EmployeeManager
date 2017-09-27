@@ -482,10 +482,11 @@
     }();
     var timestamp = /*[[${timestamp}]]*/;
     var creator = /*[[${creator}]]*/;
+    timestamp=String(timestamp);
     new QRCode(document.getElementById("qrcode"), "http://shiftlin.top:4908/redirectQR?timestamp=" + timestamp + "&creator=" + creator);
     /*]]>*/
 </script>
 
-
+<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2FQRCode&response_type=code&scope=snsapi_base&state=true#wechat_redirect''>刷新</a>
 
 </html>

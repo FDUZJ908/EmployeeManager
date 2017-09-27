@@ -73,7 +73,7 @@
                 </select>
             </div>
             <div class="approval_bottom_box">
-                <input type="text" name="reportComment" placeholder="请输入审批意见" required="required" />
+                <input type="text" name="reportComment" placeholder="请输入审批意见"/>
             </div>
             <div class="approval_bottom_box">
                 <input class="submit" type="submit" value="确定审批"/>
@@ -99,11 +99,11 @@
             alert("没有需要审批的报告！");
             return false;
         }
-        for (i = 0 ; i< check1.length-2 ; i++) {
+        for (i = 0 ; i< check1.length-1 ; i++) {
             if (check1[i].checked == true)
                 count++;
         }
-        for (j = 0 ; j< check2.length-2 ; j++) {
+        for (j = 0 ; j< check2.length-1 ; j++) {
             if (check2[j].checked == true)
                 count++;
         }

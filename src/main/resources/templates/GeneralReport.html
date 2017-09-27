@@ -21,7 +21,7 @@
                 <label>报告内容:</label>
                 <input type="text" name="content" id="content" required="required">
                 <div class="select-file">
-                    <input type="file" name="file" id="file" required="required"/>
+                    <input type="file" name="file" id="file"/>
                     <label for="file">上传附件
                     </label>
                 </div>
@@ -98,6 +98,25 @@
         var con = confirm("确认提交报告？");
         if (con == false)
             return false;
+
+        /* check the latest post time */
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month > 0  && month < 10) {
+            month = "0" + month;
+        }
+        if (strDate > 0 && strDate < 10) {
+            strDate = "0" + strDate;
+        }
+        var currentDate = date.getFullYear() + "-" + month + "-" + strDate;
+        var latestReportTime = /*[[${latestReport}]]*/ "";
+        latestReportTime = latestReportTime.substring(0,10);
+
+        if (currentDate == latestReportTime) {
+            alert("每天只能提交一次一般报告！");
+            return false;
+        }
 
         checkMemberDivToInput();
 
