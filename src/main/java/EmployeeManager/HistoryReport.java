@@ -61,7 +61,7 @@ public class HistoryReport {
                 isPass = "不通过";
         }
 
-        if (String.valueOf(comment) == "")
+        if (String.valueOf(comment) == "" || String.valueOf(comment) == "null")
             comment = "无";
         else
             comment = String.valueOf(comment);
@@ -69,7 +69,7 @@ public class HistoryReport {
         if(members.toString() == "")
             members = "无";
 
-        if(leaderName.toString() == "")
+        if(leaderName.toString() == "" || leaderName.toString() == "null")
             leaderName = "无";
 
         this.reportID = String.valueOf(reportID);
