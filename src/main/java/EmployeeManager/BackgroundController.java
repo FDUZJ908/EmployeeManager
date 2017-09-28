@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static EmployeeManager.Server.PASecret;
+import static EmployeeManager.Server.*;
 
 @Controller
 public class BackgroundController {
@@ -32,7 +32,7 @@ public class BackgroundController {
                                 @RequestParam("code") String code,
                                 Model model) {
         //System.out.println(code);
-        String UserId = server.getUserId(code, PASecret);
+        String UserId = server.getUserId(code, submitSecret);
         //System.out.println(UserId);
         if (server.isUser(UserId) == false)
             return "failure";
@@ -73,7 +73,7 @@ public class BackgroundController {
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
 
         try {
-            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。");
+            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, approvalAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -86,7 +86,7 @@ public class BackgroundController {
                              @RequestParam("state") String STATE,
                              Model model) {
 
-        String UserId = server.getUserId(CODE, PASecret);
+        String UserId = server.getUserId(CODE, submitSecret);
         String userName = server.getUserName(UserId);
         if (server.isUser(UserId) == false)
             return "failure";
@@ -143,7 +143,7 @@ public class BackgroundController {
                 "values(" + sqlMessage + ")");
 
         try {
-            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。");
+            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, approvalAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -156,7 +156,7 @@ public class BackgroundController {
                              @RequestParam("state") String STATE,
                              Model model) {
 
-        String UserId = server.getUserId(CODE, PASecret);
+        String UserId = server.getUserId(CODE, submitSecret);
         if (server.isUser(UserId) == false)
             return "failure";
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
@@ -210,7 +210,7 @@ public class BackgroundController {
     public String RankingList(@RequestParam("code") String CODE,
                               @RequestParam("state") String STATE,
                               Model model) {
-        String UserId = server.getUserId(CODE, PASecret);
+        String UserId = server.getUserId(CODE, submitSecret);
         if (server.isUser(UserId) == false)
             return "failure";
 
@@ -287,7 +287,7 @@ public class BackgroundController {
                                  @RequestParam("state") String STATE,
                                  Model model) {
 
-        String UserId = server.getUserId(CODE, PASecret);
+        String UserId = server.getUserId(CODE, submitSecret);
         if (server.isUser(UserId) == false)
             return "failure";
 
@@ -382,7 +382,7 @@ public class BackgroundController {
                 server.jdbcTemplate.update(updateSql);
 
                 try {
-                    server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。");
+                    server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -440,7 +440,7 @@ public class BackgroundController {
                 server.jdbcTemplate.update(updateSql);
 
                 try {
-                    server.sendMessage(caseReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。");
+                    server.sendMessage(caseReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -453,7 +453,7 @@ public class BackgroundController {
     public String HistoryReport(@RequestParam("code") String CODE,
                                 @RequestParam("state") String STATE,
                                 Model model) {
-        String UserId = server.getUserId(CODE, PASecret);
+        String UserId = server.getUserId(CODE, submitSecret);
         if (server.isUser(UserId) == false)
             return "failure";
         String UserName = server.getUserName(UserId);
@@ -616,7 +616,7 @@ public class BackgroundController {
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
                          Model model) {
-        String UserID = server.getUserId(CODE, PASecret);
+        String UserID = server.getUserId(CODE, submitSecret);
 
         long timestamp = System.currentTimeMillis();
         if (!checkins.containsKey(UserID)) {
@@ -656,7 +656,7 @@ public class BackgroundController {
         long timestamp = Long.parseLong(STATE.substring(p + 1));
         if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp) return "failure";
         if (System.currentTimeMillis() - timestamp > QRTimeout) return "failure";
-        String userID = server.getUserId(CODE, PASecret);
+        String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
         if (checkin.getCheckinMember().contains(userID)) return "failure";
         server.award(userID, 2);
