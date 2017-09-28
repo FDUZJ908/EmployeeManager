@@ -10,15 +10,17 @@
 
 <body>
 <div class="page">
+    <!--
     <div class="page-title">
         <h3>待审批列表</h3>
     </div>
+    -->
     <form method="post" class="submit-form" nctype="multipart/form-data" onsubmit="return checkDL()">
         <div class="approval_content">
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
 
-        <input type="button" id="checkboxAll" onclick="selectAll()"  value="全选" >
+        <button type="button" id="checkboxAll" onclick="selectAll()" value="全选">全选</button>
 
         <div th:each="list:${list1}" class="approval_content">
             <div class="approval_left">
@@ -68,6 +70,18 @@
             </div>
         </div>
 
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/><br/>
+
+
+
         <div th:if="${list1!=null and list2!=null}" class="bottom_box">
             <div class="approval_bottom_box">
                 <select name="reportStatus">
@@ -85,8 +99,8 @@
         <input type="hidden" name="check1">
         <input type="hidden" name="check2">
     </form>
-    <div class="space">
-    </div>
+</div>
+<div class="space">
 </div>
 
 </body>
@@ -158,5 +172,6 @@
 
     }
        /*]]>*/
+
 </script>
 </html>

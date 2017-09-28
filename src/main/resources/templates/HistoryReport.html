@@ -50,11 +50,15 @@
 <div class="page">
     <div class="key-search">
         <input type="text" id="userInPut" placeholder="请输入关键字搜索" oninput="reportSearch()">
+        <!--
         <a href = "javascript:void(0);" onclick ="setReport()">清空搜索结果</a>
+        -->
     </div>
+    <!--
     <div class="page-title">
         <h3>报告列表</h3>
     </div>
+    -->
     <div th:each="report:${list}" class="history_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
         <div style="display: flex; flex-direction:column;">
             <div class="history_title">
@@ -82,8 +86,22 @@
             <div class="history_comment">
                 <p th:text="'评语：'+${report.getComment()}"></p>
             </div>
+            <div class="history_checktime">
+                <p th:text="'审批时间：'+${report.getCheckTime()}"></p>
+            </div>
         </div>
     </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/><br/><br/>
+    <br/>
+    <br/>
+    <br/><br/>
+
+
+
+
     <div id="reportHideDiv">
         <div class="report_box" th:each="report:${list}">
             <select th:value="${report.getReportID()}"
@@ -103,8 +121,8 @@
             </select>
         </div>
     </div>
-    <div class="space">
-    </div>
+</div>
+<div class="space">
 </div>
 <form method="post" nctype="multipart/form-data">
     <select name="UserID" style="display:none">
