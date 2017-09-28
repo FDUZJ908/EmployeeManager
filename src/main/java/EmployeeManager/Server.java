@@ -232,7 +232,7 @@ public class Server {
         }
     }
 
-    public String getLatestGeneralReport (String userID) {
+    public String getLatestGeneralReport(String userID) {
         String sql = "select submitTime from generalReport where userID=" + "'" + userID + "'" + "order by submitTime desc";
         List<Map<String, Object>> generalReport;
         String latestGeneralReport = "";
@@ -242,7 +242,7 @@ public class Server {
             System.out.println(e.toString());
             return null;
         }
-        for (Map< String,Object>map : generalReport) {
+        for (Map<String, Object> map : generalReport) {
             latestGeneralReport = map.get("submitTime").toString();
             break;
         }
@@ -361,7 +361,11 @@ public class Server {
             else values += "(";
             for (int j = 0; j < keyNum; j++) {
                 if (!user.has(userKeys[j])) args[argc++] = null;
-                else args[argc++] = user.get(userKeys[j]);
+                else {
+                    Object argv = user.get(userKeys[j]);
+                    if (argv.getClass() == String.class) argv = argv.toString().replace(" ", "");
+                    args[argc++] = argv;
+                }
                 if (j > 0) values += ",?";
                 else values += "?";
             }
@@ -457,8 +461,8 @@ public class Server {
         jsonObject.put("touser", userIDs);
         jsonObject.put("msgtype", "text");
         jsonObject.put("agentid", reportAgentID);
-        JSONObject text=new JSONObject();
-        text.put("content",content);
+        JSONObject text = new JSONObject();
+        text.put("content", content);
         jsonObject.put("text", text);
 
         jsonObject = httpReq.sendPost(url, jsonObject);
