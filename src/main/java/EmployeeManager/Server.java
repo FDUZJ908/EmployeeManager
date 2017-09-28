@@ -25,15 +25,21 @@ import static EmployeeManager.User.userKeys;
 public class Server {
 
     static final String corpid = "wx7635106ee1705d6d";
-    static final String PASecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
-    static final String SYNSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
-    static final int reportAgentID = 1000002;
+    static final String submitSecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
+    static final String contactSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
+    static final String approvalSecret = "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E";
+    static final String reportSecret = "xVBKh9GKuDGd_nJp8TBRzWzWBHkIVDFPjxewNKhBEzA";
+    static final int approvalAgentID = 1000004;
+    static final int reportAgentID = 1000005;
+
+    static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
+        put(approvalAgentID, approvalSecret);
+        put(reportAgentID, reportSecret);
+    }};
 
     @Autowired
     public JdbcTemplate jdbcTemplate;
-
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
-
     @Value("${web.upload-path}")
     private String path;
 
@@ -79,7 +85,7 @@ public class Server {
 
     /*
     public boolean isUser(String UserId) {
-        String token = getAccessToken(PASecret, false);
+        String token = getAccessToken(submitSecret, false);
         HTTPRequest http = new HTTPRequest();
         int errcode;
         String errmsg;
@@ -318,7 +324,7 @@ public class Server {
 
     public Map<Integer, String> syncDepartment() throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(SYNSecret, true);
+        String token = getAccessToken(contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/department/list?access_token=" + token;
         JSONObject jsonRes = httpReq.sendGET(url);
         if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
@@ -344,7 +350,7 @@ public class Server {
 
     public void syncUser(Map<Integer, String> departName) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(SYNSecret, true);
+        String token = getAccessToken(contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=" + token + "&department_id=1&fetch_child=1";
         JSONObject jsonRes = httpReq.sendGET(url);
         if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
@@ -447,20 +453,21 @@ public class Server {
                 System.out.println("成员不存在");
             }
         }
-        IDs = IDs.substring(0, IDs.length() - 1);
+        if (IDs.length() > 0)
+            IDs = IDs.substring(0, IDs.length() - 1); //****
         return IDs;
     }
 
-    public void sendMessage(String members, String content) throws Exception {
+    public void sendMessage(String members, String content, boolean byName, int agentID) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(PASecret, false);
+        String token = getAccessToken(corpsecret.get(agentID), false);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
 
-        String userIDs = name2id(members);
+        String userIDs = byName ? name2id(members) : members;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("touser", userIDs);
         jsonObject.put("msgtype", "text");
-        jsonObject.put("agentid", reportAgentID);
+        jsonObject.put("agentid", agentID);
         JSONObject text = new JSONObject();
         text.put("content", content);
         jsonObject.put("text", text);
