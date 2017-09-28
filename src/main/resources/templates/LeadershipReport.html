@@ -152,6 +152,7 @@
         var userInput = document.getElementById('userInput').value;
         var members_hide = document.getElementById('members_hide');
         var checkMemberDiv = document.getElementById("checkMemberDiv");
+        var userName = /*[[${userName}]]*/ "";
         var members;
         var addMemberList = document.getElementById("memberList");
         var memberID;
@@ -175,7 +176,7 @@
                     if (checkMember[j].value == members_hide[i].value)
                         count++;
                 }
-                if (!count) {
+                if (!count && userName != members_hide[i].value) {
                     matchedMembers[f] = members_hide[i].value;
                     f++;
                 }
