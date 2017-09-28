@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -199,7 +200,7 @@ public class BackgroundController {
         if (score_type.equals("0"))
             singleScore = -singleScore;
 
-        String sqlLeaderScore ="UPDATE user set s_score=s_score + " + singleScore + " where userID=?";
+        String sqlLeaderScore = "UPDATE user set s_score=s_score + " + singleScore + " where userID=?";
         Object args[] = new Object[]{UserId};
         server.jdbcTemplate.update(sqlLeaderScore, args);
 
@@ -399,11 +400,9 @@ public class BackgroundController {
                 if (reportStatus.equals("1")) {
                     if (caseReport.get("scoreType").toString().equals("1")) {
                         singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
-                    }
-                    else
+                    } else
                         singleScore = -Integer.parseInt(caseReport.get("singleScore").toString());
-                }
-                else {
+                } else {
                     singleScore = 0;
                 }
                 sqlMessage = "'" + caseReport.get("userID").toString() + "'" +
@@ -485,7 +484,7 @@ public class BackgroundController {
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"),"", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", "", "", map.get("leaderName"), "", 10);
                 reports.add(report_temp);
             }
@@ -501,7 +500,7 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"),"", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", map.get("scoreType"), "", map.get("leaderName"), map.get("members"), 11);
                 reports.add(report_temp);
             }
@@ -559,7 +558,7 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listLeaderReport) {
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, "", map.get("submitTime"), "", map.get("category"),
-                        map.get("reportText"),"", map.get("scoreType"), "", "", "", 2);
+                        map.get("reportText"), "", map.get("scoreType"), "", "", "", 2);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserID);
@@ -668,4 +667,47 @@ public class BackgroundController {
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }
+
+    /*
+    @RequestMapping("/Reservation")
+    public String Reservation(@RequestParam("code") String CODE,
+                              @RequestParam("state") String STATE,
+                              Model model) {
+        String UserId = server.getUserId(CODE, submitSecret);
+        if (server.isUser(UserId) == false)
+            return "failure";
+        String UserName = server.getUserName(UserId);
+        model.addAttribute("UserID", UserId);
+        model.addAttribute("UserName", UserName);
+        return "Reservation";
+    }
+
+    @PostMapping(value = "/Reservation")
+    public String Reservation(@RequestParam("type") String type,
+                              @RequestParam("members") String members,
+                              @RequestParam("suits") String suits,
+                              @RequestParam("UserID") String userID) {
+
+        //type = 0 午餐
+        //type = 1 晚餐
+
+
+        String time = server.currentTime();
+        String sql = "'"+userID+"',"+members+","+suits+",'"+time+"',"+type;
+        server.jdbcTemplate.update("insert into reservation " +
+                "(userID,members,suits,time,type) values(" + sql + ")");
+        return "success";
+    }
+
+
+    @RequestMapping("/checkOrder")
+    public String checkOder(Model model) {
+        int lunchmembers;
+        int lunchsuits;
+        int dinnermembers;
+        int dinnersuits;
+        return "checkOrder";
+    }
+
+    */
 }

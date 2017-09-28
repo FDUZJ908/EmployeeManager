@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>报餐系统</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+</head>
+<body>
+<div>
+    <div>
+        <h1>报餐统计</h1>
+    </div>
+
+    <h2>中餐</h2>
+    <h3>就餐人数</h3>
+    <p th:text="${lunchmembers}"></p>
+    <h3>就餐份数</h3>
+    <p th:text="${lunchsuits}"></p>
+
+    <h2>晚餐</h2>
+    <h3>就餐人数</h3>
+    <p th:text="${dinnermembers}"></p>
+    <h3>就餐份数</h3>
+    <p th:text="${dinnersuits}"></p>
+
+</div>
+
+</body>
+</html>
