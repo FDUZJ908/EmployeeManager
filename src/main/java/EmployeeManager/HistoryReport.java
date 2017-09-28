@@ -8,6 +8,7 @@ public class HistoryReport {
     private String userID;
     private String userName;
     private String submitTime;
+    private String checkTime;
     private String category;
     private String reportText;
     private String isPass;
@@ -18,7 +19,7 @@ public class HistoryReport {
     private String members;
     private String  type;
 
-    public HistoryReport(Object reportID,Object userID, Object userName, Object submitTime, Object category, Object reportText,
+    public HistoryReport(Object reportID,Object userID, Object userName, Object submitTime, Object checkTime, Object category, Object reportText,
                          Object isPass, Object scoreType, Object comment, Object leaderName, Object members, Object type) {
 
         int scoreTemp = 0;
@@ -61,7 +62,7 @@ public class HistoryReport {
                 isPass = "不通过";
         }
 
-        if (String.valueOf(comment) == "" || String.valueOf(comment) == "null")
+        if (String.valueOf(comment) == "")
             comment = "无";
         else
             comment = String.valueOf(comment);
@@ -69,13 +70,14 @@ public class HistoryReport {
         if(members.toString() == "")
             members = "无";
 
-        if(leaderName.toString() == "" || leaderName.toString() == "null")
+        if(leaderName.toString() == "")
             leaderName = "无";
 
         this.reportID = String.valueOf(reportID);
         this.userID = String.valueOf(userID);
         this.userName = String.valueOf(userName);
         this.submitTime = String.valueOf(submitTime);
+        this.checkTime = String.valueOf(checkTime);
         this.category = String.valueOf(categoryTmp);
         this.reportText = String.valueOf(reportText);
         this.isPass = String.valueOf(isPass);
@@ -104,6 +106,8 @@ public class HistoryReport {
     public String getSubmitTime() {
         return submitTime;
     }
+
+    public String getCheckTime() { return checkTime; }
 
     public String getCategory() {
         return category;
