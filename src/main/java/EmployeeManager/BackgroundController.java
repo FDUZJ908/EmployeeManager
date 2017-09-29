@@ -23,6 +23,7 @@ public class BackgroundController {
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
     Set<String> reported = new HashSet<String>();
     int QRTimeout = 30 * 60 * 1000;
+    Log log = new Log("BackgroundController");
 
     @Value("${web.upload-path}")
     private String path;

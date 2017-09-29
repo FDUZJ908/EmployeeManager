@@ -18,9 +18,6 @@ import java.util.*;
 import static EmployeeManager.User.userAttrs;
 import static EmployeeManager.User.userKeys;
 
-/**
- * Created by lsh on 04/09/2017.
- */
 @Component
 public class Server {
 
@@ -41,10 +38,10 @@ public class Server {
     public JdbcTemplate jdbcTemplate;
 
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
-
+    EmployeeManager.Log log = new EmployeeManager.Log("BackgroundController");
+    
     @Value("${web.upload-path}")
     private String path;
-
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);

@@ -1,8 +1,5 @@
 package EmployeeManager;
 
-/**
- * Created by 11437 on 2017/8/4.
- */
 public class CaseReport {
     private String reportID;
     private String userId;
