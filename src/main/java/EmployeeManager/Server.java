@@ -39,7 +39,9 @@ public class Server {
 
     @Autowired
     public JdbcTemplate jdbcTemplate;
+
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
+
     @Value("${web.upload-path}")
     private String path;
 
@@ -418,7 +420,6 @@ public class Server {
             }
         }
     }
-
 
     public void award(String userid, int score) {
         String updatesql = "UPDATE user set s_score=s_score + " + score + " where userID=?";

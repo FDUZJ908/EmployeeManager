@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static EmployeeManager.Server.*;
 
@@ -22,8 +19,11 @@ public class BackgroundController {
 
     @Autowired
     Server server;
+
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
+    Set<String> reported = new HashSet<String>();
     int QRTimeout = 30 * 60 * 1000;
+
     @Value("${web.upload-path}")
     private String path;
 
@@ -60,25 +60,27 @@ public class BackgroundController {
                                     @RequestParam("type") String type,
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
-                                    @RequestParam("UserId") String UserId,
-                                    Model model) {
+                                    @RequestParam("UserId") String UserId) {
+        if (reported.contains(UserId))
+            return "failure";
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
+
         String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
 
+        reported.add(UserId);
         try {
             server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, approvalAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        model.addAttribute("successNum", "00");
         return "success";
     }
 
@@ -205,7 +207,7 @@ public class BackgroundController {
         if (score_type.equals("0"))
             singleScore = -singleScore;
 
-        String sqlLeaderScore ="UPDATE user set s_score=s_score + " + singleScore + " where userID=?";
+        String sqlLeaderScore = "UPDATE user set s_score=s_score + " + singleScore + " where userID=?";
         Object args[] = new Object[]{UserId};
         server.jdbcTemplate.update(sqlLeaderScore, args);
 
@@ -407,11 +409,9 @@ public class BackgroundController {
                 if (reportStatus.equals("1")) {
                     if (caseReport.get("scoreType").toString().equals("1")) {
                         singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
-                    }
-                    else
+                    } else
                         singleScore = -Integer.parseInt(caseReport.get("singleScore").toString());
-                }
-                else {
+                } else {
                     singleScore = 0;
                 }
                 sqlMessage = "'" + caseReport.get("userID").toString() + "'" +
@@ -426,7 +426,7 @@ public class BackgroundController {
                         ",'" + checkTime + "'," +
                         reportStatus +
                         ",'" + reportComment + "'";
-                System.out.print(caseReport.get("members").toString());
+                //System.out.print(caseReport.get("members").toString());
                 if (!caseReport.get("members").toString().isEmpty()) {
                     String[] member = caseReport.get("members").toString().split(",");
 
@@ -494,7 +494,7 @@ public class BackgroundController {
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"),"", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", "", "", map.get("leaderName"), "", 10);
                 reports.add(report_temp);
             }
@@ -510,7 +510,7 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"),"", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", map.get("scoreType"), "", map.get("leaderName"), map.get("members"), 11);
                 reports.add(report_temp);
             }
@@ -568,7 +568,7 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listLeaderReport) {
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, "", map.get("submitTime"), "", map.get("category"),
-                        map.get("reportText"),"", map.get("scoreType"), "", "", "", 2);
+                        map.get("reportText"), "", map.get("scoreType"), "", "", "", 2);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserID);
@@ -625,6 +625,13 @@ public class BackgroundController {
         return "Synchronization succeed!";
     }
 
+    @RequestMapping("/Refresh")
+    @ResponseBody
+    public String Refresh() throws Exception {
+        reported.clear();
+        return "Refresh succeed!";
+    }
+
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
@@ -639,7 +646,7 @@ public class BackgroundController {
         } else {
             Checkin checkin = checkins.get(UserID);
             if (REFRESH.equals("true") || timestamp - checkin.getTimestamp() > QRTimeout) {
-                checkin.deleteCheckinMember();
+                checkin.clear();
                 checkin.setTimestamp(timestamp);
             }
             timestamp = checkin.getTimestamp();
@@ -671,10 +678,53 @@ public class BackgroundController {
         if (System.currentTimeMillis() - timestamp > QRTimeout) return "failure";
         String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
-        if (checkin.getCheckinMember().contains(userID)) return "failure";
+        if (checkin.getUsers().contains(userID)) return "failure";
         server.award(userID, 2);
-        checkin.addCheckinMember(userID);
+        checkin.add(userID);
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }
+
+    /*
+    @RequestMapping("/Reservation")
+    public String Reservation(@RequestParam("code") String CODE,
+                              @RequestParam("state") String STATE,
+                              Model model) {
+        String UserId = server.getUserId(CODE, submitSecret);
+        if (server.isUser(UserId) == false)
+            return "failure";
+        String UserName = server.getUserName(UserId);
+        model.addAttribute("UserID", UserId);
+        model.addAttribute("UserName", UserName);
+        return "Reservation";
+    }
+
+    @PostMapping(value = "/Reservation")
+    public String Reservation(@RequestParam("type") String type,
+                              @RequestParam("members") String members,
+                              @RequestParam("suits") String suits,
+                              @RequestParam("UserID") String userID) {
+
+        //type = 0 午餐
+        //type = 1 晚餐
+
+
+        String time = server.currentTime();
+        String sql = "'"+userID+"',"+members+","+suits+",'"+time+"',"+type;
+        server.jdbcTemplate.update("insert into reservation " +
+                "(userID,members,suits,time,type) values(" + sql + ")");
+        return "success";
+    }
+
+
+    @RequestMapping("/checkOrder")
+    public String checkOder(Model model) {
+        int lunchmembers;
+        int lunchsuits;
+        int dinnermembers;
+        int dinnersuits;
+        return "checkOrder";
+    }
+
+    */
 }

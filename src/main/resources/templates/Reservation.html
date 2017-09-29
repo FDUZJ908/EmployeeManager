@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>报餐系统</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+</head>
+<body>
+<div>
+    <div>
+        <h3>报餐系统</h3>
+    </div>
+    <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()">
+        <h4>中晚餐</h4>
+        <select name="type">
+            <option value="0">午餐</option>
+            <option value="1">晚餐</option>
+        </select>
+
+        <h4>报餐人数</h4>
+        <input type="text" name="members" id="members" required="required">
+
+        <h4>报餐份数</h4>
+        <input type="text" name="suits" id="suits" required="required">
+
+        <h4>报餐人</h4>
+        <select name="UserName">
+            <option th:value="${UserName}" th:text="${UserName}"></option>
+        </select>
+        <select name="UserID">
+            <option th:value="${UserID}" th:text="${UserID}"></option>
+        </select>
+        <input type="submit" value="提交">
+    </form>
+</div>
+
+</body>
+</html>

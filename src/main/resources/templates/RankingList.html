@@ -10,21 +10,44 @@
 
 <body>
 <div class="page">
-
+    <!--
     <div class="page-title">
         <h3 th:text="'积分榜-'+${selected_type}"></h3>
     </div>
+    -->
     <hr>
     <div th:each="everyone:${list}" class="rank_box">
         <div class="rank_box_left"><p th:text="${everyone.rank}"></p></div>
         <div class="rank_box_left"><img th:src="@{${everyone.avatarURL}}"/></div>
         <div class="rank_box_left"><p th:text="${everyone.username}"></p></div>
+        <div class="rank_box_left"><p></p></div>
+        <div class="rank_box_left"><p></p></div>
         <div class="rank_box_right"><p th:text="${everyone.score}"></p></div>
     </div>
-    <div class="space">
+    <!--
+    <div class="rank_box">
+        <div class="rank_box_left"><p></p></div>
+        <div class="rank_box_left"><p></p></div>
+        <div class="rank_box_left"><p></p></div>
+        <div class="rank_box_right"><p></p></div>
     </div>
+    -->
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
 
 </div>
+<div class="space">
+</div>
+
 
 
 <form method="post" nctype="multipart/form-data">
