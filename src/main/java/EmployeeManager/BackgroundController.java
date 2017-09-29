@@ -1,6 +1,5 @@
 package EmployeeManager;
 
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -11,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static EmployeeManager.Server.*;
 
@@ -23,8 +19,11 @@ public class BackgroundController {
 
     @Autowired
     Server server;
+
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
+    Set<String> reported = new HashSet<String>();
     int QRTimeout = 30 * 60 * 1000;
+
     @Value("${web.upload-path}")
     private String path;
 
@@ -62,17 +61,22 @@ public class BackgroundController {
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
                                     @RequestParam("UserId") String UserId) {
+        if (reported.contains(UserId))
+            return "failure";
+
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
+
         String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
 
+        reported.add(UserId);
         try {
             server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, approvalAgentID);
         } catch (Exception e) {
@@ -419,7 +423,7 @@ public class BackgroundController {
                         ",'" + checkTime + "'," +
                         reportStatus +
                         ",'" + reportComment + "'";
-                System.out.print(caseReport.get("members").toString());
+                //System.out.print(caseReport.get("members").toString());
                 if (!caseReport.get("members").toString().isEmpty()) {
                     String[] member = caseReport.get("members").toString().split(",");
 
@@ -617,6 +621,13 @@ public class BackgroundController {
         return "Synchronization succeed!";
     }
 
+    @RequestMapping("/Refresh")
+    @ResponseBody
+    public String Refresh() throws Exception {
+        reported.clear();
+        return "Refresh succeed!";
+    }
+
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
@@ -631,7 +642,7 @@ public class BackgroundController {
         } else {
             Checkin checkin = checkins.get(UserID);
             if (REFRESH.equals("true") || timestamp - checkin.getTimestamp() > QRTimeout) {
-                checkin.deleteCheckinMember();
+                checkin.clear();
                 checkin.setTimestamp(timestamp);
             }
             timestamp = checkin.getTimestamp();
@@ -663,9 +674,9 @@ public class BackgroundController {
         if (System.currentTimeMillis() - timestamp > QRTimeout) return "failure";
         String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
-        if (checkin.getCheckinMember().contains(userID)) return "failure";
+        if (checkin.getUsers().contains(userID)) return "failure";
         server.award(userID, 2);
-        checkin.addCheckinMember(userID);
+        checkin.add(userID);
         model.addAttribute("userID", userID);
         return "checkinSuccess";
     }

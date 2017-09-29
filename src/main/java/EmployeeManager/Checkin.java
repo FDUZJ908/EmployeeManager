@@ -5,11 +5,18 @@ import java.util.Set;
 
 public class Checkin {
     private long timestamp;
-    private Set<String> checkinMember;
+    private Set<String> users;
+
+    public Checkin() {
+        timestamp = System.currentTimeMillis();
+        users = new HashSet<String>();
+        users.clear();
+    }
 
     public Checkin(long timeStamp) {
         timestamp = timeStamp;
-        checkinMember = new HashSet<String>();
+        users = new HashSet<String>();
+        users.clear();
     }
 
     public long getTimestamp() {
@@ -20,16 +27,16 @@ public class Checkin {
         this.timestamp = timestamp;
     }
 
-    public Set<String> getCheckinMember() {
-        return checkinMember;
+    public Set<String> getUsers() {
+        return users;
     }
 
-    public void addCheckinMember(String userID) {
-        this.checkinMember.add(userID);
+    public void add(String userID) {
+        this.users.add(userID);
     }
 
-    public void deleteCheckinMember() {
-        checkinMember.clear();
+    public void clear() {
+        users.clear();
     }
 
 }
