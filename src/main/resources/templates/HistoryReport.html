@@ -68,7 +68,7 @@
 				<button type="button"></button>
 			</div>
 			<div class="history_submitTime">
-				<p th:text="'${report.getSubmitTime()}"></p>
+				<p th:text="${report.getSubmitTime()}"></p>
 			</div>
 		</div>
         <div style="display: flex; flex-direction:column;">
@@ -94,9 +94,11 @@
             <div class="history_comment">
                 <p th:text="'评语：'+${report.getComment()}"></p>
             </div>
+            <!--
             <div class="history_checktime">
                 <p th:text="'审批时间：'+${report.getCheckTime()}"></p>
             </div>
+            -->
         </div>
     </div>
     <br/>
