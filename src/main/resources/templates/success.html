@@ -6,7 +6,35 @@
     <title>成功</title>
 </head>
 
-<body>
-<h1>成功</h1>
+<body onload="successAlert()">
+
 </body>
+<script th:inline ="javascript">
+        /*<![CDATA[*/
+    function successAlert () {
+    var successNum =  /*[[${successNum}]]*/ "";
+    switch (successNum)
+    {
+    case "00" :
+        alert("一般报告提交成功！");
+        window.history.back(-1);
+        break;
+    case "01" :
+        alert("个案报告提交成功！");
+        window.history.back(-1);
+        break;
+    case "02" :
+        alert("领导报告提交成功！");
+        window.history.back(-1);
+        break;
+    case "03" :
+        alert("报告审批成功！");
+        window.history.back(-1);
+        break;
+    default :
+        alert("成功");
+    }
+    }
+        /*]]>*/
+</script>
 </html>

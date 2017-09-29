@@ -6,7 +6,12 @@
     <title>失败</title>
 </head>
 
-<body>
-<h1>失败</h1>
+<body onload="errorAlert()">
 </body>
+<script th:inline="javascript">
+    function errorAlert () {
+        var userID =  /*[[${userID}]]*/"";
+        alert(userID);
+    }
+</script>
 </html>
