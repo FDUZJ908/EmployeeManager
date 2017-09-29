@@ -60,10 +60,18 @@
     </div>
     -->
     <div th:each="report:${list}" class="history_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
-        <div style="display: flex; flex-direction:column;">
-            <div class="history_title">
-                <p th:text="${report.getUserName()}+'提交的'+${report.getCategory()}+'('+${report.getSubmitTime()}+')'"></p>
+       <div style="display: flex;flex-direction: row;align-items:center;">
+			<div class="history_title">
+                <p th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+${report.getCategory()}"></p>
             </div>
+			<div class="history_file">
+				<button type="button"></button>
+			</div>
+			<div class="history_submitTime">
+				<p th:text="'${report.getSubmitTime()}"></p>
+			</div>
+		</div>
+        <div style="display: flex; flex-direction:column;">
             <div class="history_content">
                 <p th:text="'内容：'+${report.getReportText()}"></p>
             </div>
@@ -82,7 +90,7 @@
                 <p th:text="'状态：'+${report.getIsPass()}"></p>
             </div>
         </div>
-        <div style="display: flex;">
+        <div style="display:flex;">
             <div class="history_comment">
                 <p th:text="'评语：'+${report.getComment()}"></p>
             </div>

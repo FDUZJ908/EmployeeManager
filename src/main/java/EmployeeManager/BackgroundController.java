@@ -64,7 +64,6 @@ public class BackgroundController {
                                     @RequestParam("UserId") String UserId) {
         if (reported.contains(UserId))
             return "failure";
-
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -83,7 +82,6 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
         return "success";
     }
 
@@ -94,8 +92,10 @@ public class BackgroundController {
 
         String UserId = server.getUserId(CODE, submitSecret);
         String userName = server.getUserName(UserId);
-        if (server.isUser(UserId) == false)
+        if (server.isUser(UserId) == false) {
+            model.addAttribute("userID",UserId);
             return "failure";
+        }
         List<String> AllUsers = server.getAllUsers();
         List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
@@ -115,6 +115,7 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/CaseReport")
+    @ResponseBody
     public String CaseReportPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
@@ -153,7 +154,7 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
+        model.addAttribute("successNum", "01");
         return "success";
     }
 
@@ -211,6 +212,7 @@ public class BackgroundController {
         Object args[] = new Object[]{UserId};
         server.jdbcTemplate.update(sqlLeaderScore, args);
 
+        model.addAttribute("successNum", "02");
         return "success";
     }
 
@@ -342,7 +344,8 @@ public class BackgroundController {
     public String ReportApprovalPost(@RequestParam("reportStatus") String reportStatus,
                                      @RequestParam("reportComment") String reportComment,
                                      @RequestParam("check1") String check1,
-                                     @RequestParam("check2") String check2) {
+                                     @RequestParam("check2") String check2,
+                                     Model model) {
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
 
@@ -456,6 +459,7 @@ public class BackgroundController {
                 }
             }
         }
+        model.addAttribute("successNum", "03");
         return "success";
     }
 

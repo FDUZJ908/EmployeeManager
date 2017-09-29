@@ -64,14 +64,17 @@ public class HistoryReport {
 
         if (String.valueOf(comment) == "")
             comment = "无";
-        else
-            comment = String.valueOf(comment);
 
         if(members.toString() == "")
             members = "无";
 
         if(leaderName.toString() == "")
             leaderName = "无";
+
+        submitTime = submitTime.toString().substring(0 , 16);
+
+        if(checkTime.toString() != "")
+            checkTime = checkTime.toString().substring(0 , 16);
 
         this.reportID = String.valueOf(reportID);
         this.userID = String.valueOf(userID);
