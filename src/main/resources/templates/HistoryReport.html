@@ -40,13 +40,31 @@
         userInput.value = "";
         reportSearch();
     }
+	
+	function changeBGC2(){
+		var BGCnum = /*[[${selected_type}]]*/ "";
+		switch(BGCnum){
+			case 1 :
+				var B1=document.getElementById("B1");
+				B1.setAttribute("style","background-color:red;");
+				break;
+			case 2 :
+				var B2=document.getElementById("B2");
+				B2.setAttribute("style","background-color:red;");
+				break;
+			case 3 :
+				var B3=document.getElementById("B3");
+				B3.setAttribute("style","background-color:red;");
+				break;
+		}
+	}
 </script>
 <head>
     <meta charset="UTF-8">
     <title>查询与统计</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
-<body>
+<body onload="changeBGC2()">
 <div class="page">
     <div class="key-search">
         <input type="text" id="userInPut" placeholder="请输入关键字搜索" oninput="reportSearch()">
@@ -143,13 +161,13 @@
     </select>
     <div class=" bottom_box">
         <div class="history_button">
-            <input type="submit" value="我的提交(已审批)" name="button"/>
+            <input type="submit" id="B1" value="我的提交(已审批)" name="button"/>
         </div>
         <div class="history_button">
-            <input type="submit" value="我的提交(未审批)" name="button"/>
+            <input type="submit" id="B2" value="我的提交(未审批)" name="button"/>
         </div>
         <div class="history_button">
-            <input type="submit" value="我的审批" name="button"/>
+            <input type="submit" id="B3" value="我的审批" name="button"/>
         </div>
     </div>
 </form>

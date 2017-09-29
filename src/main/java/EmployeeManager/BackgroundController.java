@@ -216,6 +216,8 @@ public class BackgroundController {
         return "success";
     }
 
+	
+	//slected_type 为设置button点击后颜色准备
     @RequestMapping("/RankingList")
     public String RankingList(@RequestParam("code") String CODE,
                               @RequestParam("state") String STATE,
@@ -238,7 +240,7 @@ public class BackgroundController {
             users.add(user_temp);
         }
         model.addAttribute("list", users);
-        model.addAttribute("selected_type", "总排行");
+        model.addAttribute("selected_type", 3);
 
         return "RankingList";
     }
@@ -261,18 +263,31 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type", type);
+            model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
             return "RankingList";
         } else {
             String selectedType = new String();
             if (type.equals("领导干部"))
-                selectedType = "3";
+			{
+			selectedType = "3";
+			model.addAttribute("selected_type", 1);
+			}
             else if (type.equals("中层干部"))
+			{
                 selectedType = "2";
+			model.addAttribute("selected_type", 2);
+			}
             else if (type.equals("一般干部"))
+			{
                 selectedType = "1";
-            else selectedType = "0";
+			model.addAttribute("selected_type", 4);
+			}
+            else 
+			{
+				selectedType = "0";
+				model.addAttribute("selected_type", 5);
+			}
             String sql = "select userName,s_score,avatarURL from user where position=" + selectedType + " order by s_score desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
             try {
@@ -286,7 +301,6 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type", type);
             model.addAttribute("list", users);
             return "RankingList";
         }
@@ -519,6 +533,7 @@ public class BackgroundController {
             model.addAttribute("UserID", UserID);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
+			model.addAttribute("selected_type",2);
             return "HistoryReport";
         }
 
@@ -575,6 +590,7 @@ public class BackgroundController {
             model.addAttribute("UserID", UserID);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
+			model.addAttribute("selected_type",1);
             return "HistoryReport";
         }
         if (type.equals("我的审批")) {
@@ -613,6 +629,7 @@ public class BackgroundController {
             model.addAttribute("UserID", UserID);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
+			model.addAttribute("selected_type",3);
             return "HistoryReport";
         }
         return "failure";
