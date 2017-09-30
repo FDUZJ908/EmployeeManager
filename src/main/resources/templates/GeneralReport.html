@@ -14,7 +14,7 @@
     </div>
     -->
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()">
+        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()" id="generalForm">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
@@ -67,7 +67,7 @@
             </div>
 
             <div class="submit_box">
-                <input type="submit" value="提交报告">
+                <input type="button" value="提交报告" onclick="test()">
             </div>
 
         </form>
@@ -150,9 +150,13 @@
             }
         }
     }
+
+
+
     /*]]>*/
 
 
 
 </script>
+
 </html>

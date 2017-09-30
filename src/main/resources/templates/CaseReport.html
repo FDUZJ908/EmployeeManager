@@ -102,6 +102,8 @@
     </div>
 </select>
 
+<iframe name='hidden_frame' id="hidden_frame" style='display: none'></iframe>
+
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -262,6 +264,13 @@
                     }
                 }
             }
+            var statusNum = /*[[${statusNum}]]*/ "";
+            switch(statusNum) {
+
+            case "01" :
+                alert("个案报告提交成功！");
+                break;
+            }
         }
 
 
@@ -292,14 +301,4 @@
 
 </script>
 
-<script type="text/javascript" src="http://127.0.0.1/CarAppStore/js/jquery/jquery-1.9.0.min.js"></script>
-<script type="text/javascript" src="http://127.0.0.1/CarAppStore/js/jquery/jquery-form.js"></script>
-<script>
-    $(document).ready(function() {
-       $("#caseForm").ajaxForm(function(data){
-             alert("post success." + data);
-             //Alert("post success.");
-       });
-});
-</script>
 </html>

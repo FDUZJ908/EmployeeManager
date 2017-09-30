@@ -71,10 +71,10 @@ public class HistoryReport {
         if(leaderName.toString() == "")
             leaderName = "无";
 
-        submitTime = submitTime.toString().substring(0 , 16);
+        submitTime = submitTime.toString().substring(0 , submitTime.toString().length()-5);
 
         if(checkTime.toString() != "")
-            checkTime = checkTime.toString().substring(0 , 16);
+            checkTime = checkTime.toString().substring(0 , checkTime.toString().length()-5);
 
         this.reportID = String.valueOf(reportID);
         this.userID = String.valueOf(userID);

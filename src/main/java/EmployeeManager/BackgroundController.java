@@ -56,6 +56,7 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/GeneralReport")
+    @ResponseBody
     public String GeneralReportPost(@RequestParam("content") String content,
                                     @RequestParam("type") String type,
                                     @RequestParam("leader") String leader,
@@ -114,7 +115,6 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/CaseReport")
-    @ResponseBody
     public String CaseReportPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
@@ -153,8 +153,8 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        model.addAttribute("successNum", "01");
-        return "success";
+        model.addAttribute("statusNum", "01");
+        return "CaseReport";
     }
 
     @RequestMapping("/LeadershipReport")
@@ -458,7 +458,7 @@ public class BackgroundController {
                 }
             }
         }
-        model.addAttribute("successNum", "03");
+        model.addAttribute("statusNum", "03");
         return "success";
     }
 
@@ -477,6 +477,7 @@ public class BackgroundController {
 
     //添加查询与统计
     @PostMapping(value = "/HistoryReport")
+    @ResponseBody
     public String HistoryReportPost(@RequestParam("button") String type,
                                     /*@RequestParam("search") String search,*/
                                     @RequestParam("UserID") String UserID,

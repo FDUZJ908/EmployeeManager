@@ -8,7 +8,7 @@
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
-<body>
+<body onload="reset()">
 <div class="page">
     <!--
     <div class="page-title">
@@ -170,6 +170,19 @@
 
         }
 
+    }
+
+    function reset() {
+        var statusNum = /*[[${statusNum}]]*/ "";
+        switch(statusNum) {
+
+        case "01" :
+            alert("个案报告提交成功！");
+            break;
+        case "03" :
+            alert("报告审批成功！");
+            break;
+        }
     }
        /*]]>*/
 
