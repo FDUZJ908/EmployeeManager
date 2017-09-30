@@ -8,7 +8,7 @@
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
-<body>
+<body onload="changeBGC1()">
 <div class="page">
     <!--
     <div class="page-title">
@@ -45,20 +45,46 @@
 
 
 </div>
-<div class="space">
-</div>
-
 
 
 <form method="post" nctype="multipart/form-data">
     <div class="bottom_box">
-        <div class="rank_button"><input type="submit" value="领导干部" name="button"></div>
-        <div class="rank_button"><input type="submit" value="中层干部" name="button"></div>
-        <div class="rank_button"><input type="submit" value="总排行" name="button"></div>
-        <div class="rank_button"><input type="submit" value="一般干部" name="button"></div>
-        <div class="rank_button"><input type="submit" value="村级干部" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B1" value="领导干部" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B2" value="中层干部" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B3" value="总排行" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B4" value="一般干部" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B5" value="村级干部" name="button"></div>
     </div>
 </form>
 </body>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	function changeBGC1(){
+		var BGCnum = /*[[${selected_type}]]*/ "";
+		switch(BGCnum){
+			case 1 :
+				var B1=document.getElementById("B1");
+				B1.setAttribute("style","background-color:red;");
+				break;
+			case 2 :
+				var B2=document.getElementById("B2");
+				B2.setAttribute("style","background-color:red;");
+				break;
+			case 3 :
+				var B3=document.getElementById("B3");
+				B3.setAttribute("style","background-color:red;");
+				break;
+			case 4 :
+				var B4=document.getElementById("B4");
+				B4.setAttribute("style","background-color:red;");
+				break;
+			case 5 :
+				var B5=document.getElementById("B5");
+				B5.setAttribute("style","background-color:red;");
+				break;
+		}
+	}
+	/*]]>*/
+</script>
 
 </html>

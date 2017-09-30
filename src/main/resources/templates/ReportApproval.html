@@ -20,21 +20,25 @@
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
 
-        <button type="button" id="checkboxAll" onclick="selectAll()" value="全选">全选</button>
+        <div th:if="${list1!=null or list2!=null}" style="margin: 1em 0 1em 0.7em;position:relative;">
+            <input type="checkbox" id="checkboxAll" onclick="selectAll()" value="全选"/>
+        </div>
 
         <div th:each="list:${list1}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">
-                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}"><span>√</span>
+                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}">
                 </div>
                 <label for="check"></label>
             </div>
             <div class="approval_right">
                 <div class="approval_right_title">
-                    <p th:text="'提交人'+${list.userName}+'('+${list.submitTime}+')'"></p>
+                    <p th:text="'提交人:'+${list.userName}"></p>
                 </div>
                 <div class="approval_right_content">
                     <p th:text="'内容:' + ${list.reportText}"></p>
+                </div>
+                <div class="approval_right_attach">
                     <div th:switch="${list.category}">
                         <p th:case="1">一般报告-日常工作(1分)</p>
                         <p th:case="2">一般报告-领导交办(2分</p>
@@ -42,22 +46,25 @@
                         <p th:case="4">一般报告-急难危重(2分)</p>
                         <p th:case="5">一般报告-其他工作(2分)</p>
                     </div>
+                    <p th:text="'提交时间:'+${list.submitTime}"></p>
                 </div>
             </div>
         </div>
         <div th:each="list:${list2}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">
-                    <input type="checkbox" name="check2" id="check2" th:value="${list.reportID}"><span>√</span>
+                    <input type="checkbox" name="check2" id="check2" th:value="${list.reportID}">
                 </div>
                 <label for="check"></label>
             </div>
             <div class="approval_right">
                 <div class="approval_right_title">
-                    <p th:text="'提交人'+${list.userName}+'('+${list.submitTime}+')'"></p>
+                    <p th:text="'提交人:'+${list.userName}"></p>
                 </div>
                 <div class="approval_right_content">
                     <p th:text="'内容:' + ${list.reportText}"></p>
+                </div>
+                <div class="approval_right_attach">
                     <p th:text="'小组成员:' + ${list.members}"></p>
                     <div th:switch="${list.category}">
                         <p th:case="1" th:text="'个案报告-工作日常('+${list.singleScore}+'分)'">)</p>
@@ -66,6 +73,7 @@
                         <p th:case="4" th:text="'个案报告-急难危重('+${list.singleScore}+'分)'"></p>
                         <p th:case="5" th:text="'个案报告-其他工作('+${list.singleScore}+'分)'"></p>
                     </div>
+                    <p th:text="'提交时间:'+${list.submitTime}"></p>
                 </div>
             </div>
         </div>
