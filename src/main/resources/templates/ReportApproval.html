@@ -20,14 +20,14 @@
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
 
-        <div style="margin: 1em 0 1em 0.7em;position:relative;">
+        <div th:if="${list1!=null or list2!=null}" style="margin: 1em 0 1em 0.7em;position:relative;">
             <input type="checkbox" id="checkboxAll" onclick="selectAll()" value="全选"/>
         </div>
 
         <div th:each="list:${list1}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">
-                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}"><span>√</span>
+                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}">
                 </div>
                 <label for="check"></label>
             </div>
@@ -39,7 +39,6 @@
                     <p th:text="'内容:' + ${list.reportText}"></p>
                 </div>
                 <div class="approval_right_attach">
-                    <p th:text="'小组成员:' + ${list.members}"></p>
                     <div th:switch="${list.category}">
                         <p th:case="1">一般报告-日常工作(1分)</p>
                         <p th:case="2">一般报告-领导交办(2分</p>
@@ -54,7 +53,7 @@
         <div th:each="list:${list2}" class="approval_content">
             <div class="approval_left">
                 <div class="check_box">
-                    <input type="checkbox" name="check2" id="check2" th:value="${list.reportID}"><span>√</span>
+                    <input type="checkbox" name="check2" id="check2" th:value="${list.reportID}">
                 </div>
                 <label for="check"></label>
             </div>
