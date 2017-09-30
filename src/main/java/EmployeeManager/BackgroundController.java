@@ -70,7 +70,8 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
-
+        if(file.getOriginalFilename().equals(""))
+            pathCurrent="";
         String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
@@ -143,6 +144,8 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
+        if(file.getOriginalFilename().equals(""))
+            pathCurrent="";
         String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
         server.jdbcTemplate.update("insert into undealedCaseReport " +
@@ -198,6 +201,8 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (server.saveFile(file, pathCurrent) == false)
             return "failure";
+        if(file.getOriginalFilename().equals(""))
+            pathCurrent="";
         String sqlMessage = "'" + UserId + "','" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
                 score + ",'" + server.currentTime() + "'," + score_type;
         server.jdbcTemplate.update("insert into leaderReport " +

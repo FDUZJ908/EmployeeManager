@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import org.hibernate.dialect.SybaseAnywhereDialect;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,6 +204,8 @@ public class Server {
     }
 
     public String currentFileName(String currentTime, String originalFileName) {
+        System.out.println(currentTime.replace(" ", "-").replace(":", "-") + "_" +
+                originalFileName.replace(" ", "%20"));
         return currentTime.replace(" ", "-").replace(":", "-") + "_" +
                 originalFileName.replace(" ", "%20");
     }
@@ -210,7 +213,11 @@ public class Server {
     public void mkDir(String UserId) {
         File dir = new File(path + UserId);
         if (!dir.exists())
-            dir.mkdir();
+            try {
+                dir.mkdir();
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
     }
 
     public Map<String, Object> getUndealedGeneralReport(String reportID) {

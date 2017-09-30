@@ -91,26 +91,26 @@
 		</div>
         <div style="display: flex; flex-direction:column;">
             <div class="history_content">
-                <p th:text="'内容：'+${report.getReportText()}"></p>
+                <p th:text="'内容:&nbsp'+${report.getReportText()}"></p>
             </div>
             <div class="history_members">
-                <p th:text="'成员：'+${report.getMembers()}"></p>
+                <p th:text="'成员:&nbsp'+${report.getMembers()}"></p>
             </div>
         </div>
         <div style="display: flex;">
             <div class="history_score">
-                <p th:text="'分值：'+${report.getSingleScore()}"></p>
+                <p th:text="'分值:&nbsp'+${report.getSingleScore()}"></p>
             </div>
             <div class="history_leader">
-                <p th:text="'领导：'+${report.getLeaderName()}"></p>
+                <p th:text="'领导:&nbsp'+${report.getLeaderName()}"></p>
             </div>
             <div class="history_status">
-                <p th:text="'状态：'+${report.getIsPass()}"></p>
+                <p th:text="'状态:&nbsp'+${report.getIsPass()}"></p>
             </div>
         </div>
         <div style="display:flex;">
             <div class="history_comment">
-                <p th:text="'评语：'+${report.getComment()}"></p>
+                <p th:text="'审批意见:&nbsp'+${report.getComment()}"></p>
             </div>
             <!--
             <div class="history_checktime">
@@ -149,8 +149,6 @@
             </select>
         </div>
     </div>
-</div>
-<div class="space">
 </div>
 <form method="post" nctype="multipart/form-data">
     <select name="UserID" style="display:none">

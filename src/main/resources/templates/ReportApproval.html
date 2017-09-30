@@ -32,11 +32,16 @@
                 <label for="check"></label>
             </div>
             <div class="approval_right">
-                <div class="approval_right_title">
-                    <p th:text="'提交人:'+${list.userName}"></p>
+                <div style="display:flex;flex-direction:rows;align-items:center;">
+                    <div class="approval_right_title">
+                        <p th:text="'提交人:&nbsp'+${list.userName}"></p>
+                    </div>
+                    <div class="approval_right_att">
+                        <button type="button"></button>
+                    </div>
                 </div>
                 <div class="approval_right_content">
-                    <p th:text="'内容:' + ${list.reportText}"></p>
+                    <p th:text="'内容:&nbsp' + ${list.reportText}"></p>
                 </div>
                 <div class="approval_right_attach">
                     <div th:switch="${list.category}">
@@ -46,7 +51,7 @@
                         <p th:case="4">一般报告-急难危重(2分)</p>
                         <p th:case="5">一般报告-其他工作(2分)</p>
                     </div>
-                    <p th:text="'提交时间:'+${list.submitTime}"></p>
+                    <p th:text="'提交时间:&nbsp'+${list.submitTime}"></p>
                 </div>
             </div>
         </div>
@@ -59,13 +64,13 @@
             </div>
             <div class="approval_right">
                 <div class="approval_right_title">
-                    <p th:text="'提交人:'+${list.userName}"></p>
+                    <p th:text="'提交人:&nbsp'+${list.userName}"></p>
                 </div>
                 <div class="approval_right_content">
-                    <p th:text="'内容:' + ${list.reportText}"></p>
+                    <p th:text="'内容:&nbsp' + ${list.reportText}"></p>
                 </div>
                 <div class="approval_right_attach">
-                    <p th:text="'小组成员:' + ${list.members}"></p>
+                    <p th:text="'小组成员:&nbsp' + ${list.members}"></p>
                     <div th:switch="${list.category}">
                         <p th:case="1" th:text="'个案报告-工作日常('+${list.singleScore}+'分)'">)</p>
                         <p th:case="2" th:text="'个案报告-领导交办('+${list.singleScore}+'分)'"></p>
@@ -73,7 +78,7 @@
                         <p th:case="4" th:text="'个案报告-急难危重('+${list.singleScore}+'分)'"></p>
                         <p th:case="5" th:text="'个案报告-其他工作('+${list.singleScore}+'分)'"></p>
                     </div>
-                    <p th:text="'提交时间:'+${list.submitTime}"></p>
+                    <p th:text="'提交时间:&nbsp'+${list.submitTime}"></p>
                 </div>
             </div>
         </div>
@@ -87,7 +92,6 @@
         <br/>
         <br/>
         <br/><br/>
-
 
 
         <div th:if="${list1!=null and list2!=null}" class="bottom_box">
@@ -107,8 +111,6 @@
         <input type="hidden" name="check1">
         <input type="hidden" name="check2">
     </form>
-</div>
-<div class="space">
 </div>
 
 </body>
@@ -180,6 +182,7 @@
 
     }
        /*]]>*/
+
 
 </script>
 </html>
