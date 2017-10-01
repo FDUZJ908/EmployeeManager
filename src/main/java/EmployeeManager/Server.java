@@ -204,8 +204,7 @@ public class Server {
     }
 
     public String currentFileName(String currentTime, String originalFileName) {
-        System.out.println(currentTime.replace(" ", "-").replace(":", "-") + "_" +
-                originalFileName.replace(" ", "%20"));
+
         return currentTime.replace(" ", "-").replace(":", "-") + "_" +
                 originalFileName.replace(" ", "%20");
     }

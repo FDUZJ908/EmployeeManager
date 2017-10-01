@@ -10,14 +10,25 @@ public class GeneralReport {
     private String category;
     private String reportText;
     private String submitTime;
+    private String reportPath;
 
-    GeneralReport(Object ReportID, Object UserID, Object UserName, Object Category, Object ReportText, Object SubmitTime) {
+    GeneralReport(Object ReportID, Object UserID, Object UserName, Object Category,
+                  Object ReportText, Object SubmitTime, Object reportPath) {
         this.reportID = String.valueOf(ReportID);
         this.userId = String.valueOf(UserID);
         this.userName = String.valueOf(UserName);
         this.category = String.valueOf(Category);
         this.reportText = String.valueOf(ReportText);
         this.submitTime = String.valueOf(SubmitTime);
+        this.reportPath = String.valueOf(reportPath);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getReportPath() {
+        return reportPath;
     }
 
     public String getUserName() {
