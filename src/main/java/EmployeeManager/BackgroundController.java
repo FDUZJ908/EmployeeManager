@@ -31,9 +31,10 @@ public class BackgroundController {
                                 Model model) {
         String UserId = server.getUserId(code, submitSecret);
         logger.info("Request GeneralReport: " + UserId); //log
-        if (!server.isUser(UserId))
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum","00");
             return "failure";
-
+        }
         String latestReport = server.getLatestGeneralReport(UserId);
 
         // Department-Leader-LeaderID
@@ -55,15 +56,18 @@ public class BackgroundController {
                                     @RequestParam("UserId") String UserId,
                                     Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
-        if (reported.contains(UserId))
+        if (reported.contains(UserId)) {
+            model.addAttribute("errorNum", "00");
             return "failure";
-
+        }
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
-        if (!server.saveFile(file, pathCurrent))
+        if (!server.saveFile(file, pathCurrent)) {
+            model.addAttribute("errorNum", "02");
             return "failure";
+        }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
@@ -87,23 +91,18 @@ public class BackgroundController {
                              Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request CaseReport: " + UserId); //log
-        if (!server.isUser(UserId))
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum", "00");
             return "failure";
+        }
 
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
-        List<Map<String, Object>> Departments = server.getDepartment(UserId);
-        if (Departments == null)
-            return "failure";
-        List<User> Leaders = server.getLeader(UserId, Departments);
-
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
 
         model.addAttribute("UserId", UserId);
         model.addAttribute("userName", userName);
-        model.addAttribute("Leaders", Leaders);
-        model.addAttribute("Departments", Departments);
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
         return "CaseReport";
@@ -150,9 +149,10 @@ public class BackgroundController {
                              Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request LeadershipReport: " + UserId); //log
-        if (!server.isUser(UserId))
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum","00");
             return "failure";
-
+        }
         String userName = server.getUserName(UserId);
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         List<String> AllUsers = server.getAllUsers();
@@ -178,8 +178,10 @@ public class BackgroundController {
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
-        if (!server.saveFile(file, pathCurrent))
+        if (!server.saveFile(file, pathCurrent)) {
+            model.addAttribute("errorNum","02");
             return "failure";
+        }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
@@ -208,8 +210,10 @@ public class BackgroundController {
                               Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request RankingList: " + UserId); //log
-        /*if (!server.isUser(UserId))
-            return "failure";*/
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum", "00");
+            return "failure";
+        }
 
         String sql = "select userName,s_score,avatarURL from user order by s_score desc";
         List<Map<String, Object>> list;
@@ -293,8 +297,10 @@ public class BackgroundController {
                                  Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request ReportApproval: " + UserId); //log
-        if (!server.isUser(UserId))
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum", "00");
             return "failure";
+        }
 
         String getGeneralReport = "select reportID,userID,category,reportText,submitTime,userName,reportPath " +
                 "from undealedGeneralReport natural join user where leaderName=(select userName from user " +
@@ -481,9 +487,10 @@ public class BackgroundController {
                                 Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request HistoryReport: " + UserId); //log
-        if (!server.isUser(UserId))
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum", "00");
             return "failure";
-
+        }
         String UserName = server.getUserName(UserId);
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
@@ -653,6 +660,7 @@ public class BackgroundController {
             model.addAttribute("selected_type", 3);
             return "HistoryReport";
         }
+        model.addAttribute("errorNum","01" );
         return "failure";
 
     }
@@ -681,9 +689,10 @@ public class BackgroundController {
                          Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request QRCode: " + UserId); //log
-        if (!server.isUser(UserId))
+        if (!server.isUser(UserId)) {
+            model.addAttribute("errorNum","00");
             return "failure";
-
+        }
         long timestamp = System.currentTimeMillis();
         if (!checkins.containsKey(UserId)) {
             checkins.put(UserId, new Checkin(timestamp));
@@ -720,11 +729,23 @@ public class BackgroundController {
         int p = STATE.indexOf("-");
         String creator = STATE.substring(0, p);
         long timestamp = Long.parseLong(STATE.substring(p + 1));
-        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp) return "failure";
-        if (System.currentTimeMillis() - timestamp > QRTimeout) return "failure";
+        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp)  // invalid QRcode
+        {
+            model.addAttribute("errorNum", "03");
+            return "failure";
+        }
+        if (System.currentTimeMillis() - timestamp > QRTimeout)  // invalid QRcode
+        {
+            model.addAttribute("errorNum", "03");
+            return "failure";
+        }
         String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
-        if (checkin.getUsers().contains(userID)) return "failure";
+        if (checkin.getUsers().contains(userID))
+        {
+            model.addAttribute("errorNum" , "04");
+            return "failure";// avoid scanning QRcode repeatly
+        }
         server.award(userID, 2);
         checkin.add(userID);
         model.addAttribute("userID", userID);

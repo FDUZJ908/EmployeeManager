@@ -97,9 +97,10 @@
 			<div class="history_title">
                 <p th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+${report.getCategory()}"></p>
             </div>
-			<div class="history_file">
+			<!--div class="history_file">
                 <button type="button" th:value="${report.reportPath}"></button>
 			</div>
+			-->
 			<div class="history_submitTime">
 				<p th:text="${report.getSubmitTime()}"></p>
 			</div>
@@ -109,7 +110,7 @@
                 <p th:text="'内容:&nbsp'+${report.getReportText()}"></p>
             </div>
             <div class="approval_right_att">
-                <button type="button" value="${report.reportPath}"></button>
+                <button th:if="${!report.reportPath.isEmpty()}" type="button" th:value="${report.reportPath}"></button>
             </div>
             <div class="history_members">
                 <p th:text="'成员:&nbsp'+${report.getMembers()}"></p>

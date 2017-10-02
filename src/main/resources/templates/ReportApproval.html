@@ -130,11 +130,9 @@
                         <p th:text="'提交人:&nbsp'+${list.userName}"></p>
                     </div>
 
-                    <img th:src="${list.reportPath}"/>
-
                     <div class="approval_right_att">
 
-                        <button type="button"></button>
+                        <button th:style="${list.reportPath}=='null'? 'display:none':'' " type="button" th:value="${list.reportPath}"></button>
                     </div>
                 </div>
                 <div class="approval_right_content">
@@ -167,7 +165,7 @@
 
                 <div class="approval_right_att">
 
-                    <button type="button" th:value="${list.reportID}"></button>
+                    <button th:style="${list.reportPath}==null? 'display:none':'' " type="button" th:value="${list.reportPath}"></button>
                 </div>
                 <div class="approval_right_content">
                     <p th:text="'内容:&nbsp' + ${list.reportText}"></p>

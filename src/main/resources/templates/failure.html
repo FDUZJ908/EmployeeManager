@@ -7,11 +7,36 @@
 </head>
 
 <body onload="errorAlert()">
+
 </body>
-<script th:inline="javascript">
+<script th:inline ="javascript">
+        /*<![CDATA[*/
     function errorAlert () {
-        var userID =  /*[[${userID}]]*/"";
-        alert(userID);
+    var errorNum =  /*[[${errorNum}]]*/ "";
+    switch (errorNum)
+    {
+    case "00" :
+        alert("用户不存在！");
+        window.history.back(-1);
+        break;
+    case "01" :
+        alert("报告审批失败！");
+        window.history.back(-1);
+        break;
+    case "02" :
+        alert("文件上传失败！");
+        window.history.back(-1);
+        break;
+    case "03":
+        alert("二维码已失效!");
+        break;
+    case "04":
+        alert("扫码失败:重复扫码!")
+        break;
+    default :
+        alert("失败!");
     }
+    }
+        /*]]>*/
 </script>
 </html>
