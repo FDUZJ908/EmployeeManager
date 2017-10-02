@@ -326,13 +326,13 @@ public class BackgroundController {
         List<GeneralReport> list1 = new ArrayList<GeneralReport>();
         List<CaseReport> list2 = new ArrayList<CaseReport>();
         for (Map<String, Object> map : generalReport) {
-            String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+            String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
             GeneralReport list1_temp = new GeneralReport(map.get("reportID"), map.get("userID"), map.get("userName"),
                     map.get("category"), map.get("reportText"), map.get("submitTime"), pathtmp);
             list1.add(list1_temp);
         }
         for (Map<String, Object> map : caseReport) {
-            String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+            String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
             CaseReport list2_temp = new CaseReport(map.get("reportID"), map.get("userID"), map.get("userName"),
                     map.get("category"), map.get("reportText"), map.get("submitTime"), map.get("members"),
                     map.get("singleScore"), pathtmp);
@@ -519,7 +519,7 @@ public class BackgroundController {
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
 
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
                         "", map.get("category"), map.get("reportText"), "", "", "", map.
                         get("leaderName"), "", 10, pathtmp);
@@ -538,7 +538,7 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listCaseReport) {
 
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
                         "", map.get("category"), map.get("reportText"), "", map.get("scoreType"),
                         "", map.get("leaderName"), map.get("members"), 11, pathtmp);
@@ -567,7 +567,7 @@ public class BackgroundController {
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
 
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
                         map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), 1,
                         map.get("comment"), map.get("leaderName"), "", 0, pathtmp);
@@ -588,7 +588,7 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listCaseReport) {
 
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
                         map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), map.get("scoreType"),
                         map.get("comment"), map.get("leaderName"), map.get("members"), 1, pathtmp);
@@ -606,7 +606,7 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listLeaderReport) {
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, "", map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", map.get("scoreType"), "", "", "", 2, pathtmp);
                 reports.add(report_temp);
@@ -631,7 +631,7 @@ public class BackgroundController {
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : list) {
                 String posterName = server.getUserName(map.get("userID").toString());
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("checkTime"), map.get("category")
                         , map.get("reportText"), map.get("isPass"), 0, map.get("comment"), UserName, "", 0, pathtmp);
                 reports.add(report_temp);
@@ -648,7 +648,7 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listCaseReport) {
                 String posterName = server.getUserName(map.get("userID").toString());
-                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                String pathtmp = map.get("reportPath").toString().replaceAll(path, "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
                         map.get("reportText"), map.get("isPass"),
                         map.get("scoreType"), map.get("comment"), UserName, map.get("members"), 1, pathtmp);
