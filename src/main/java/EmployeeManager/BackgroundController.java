@@ -1,5 +1,7 @@
 package EmployeeManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,14 +19,12 @@ import static EmployeeManager.Server.*;
 @Controller
 public class BackgroundController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     Server server;
-
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
     Set<String> reported = new HashSet<String>();
     int QRTimeout = 30 * 60 * 1000;
-    Log log = new Log("BackgroundController");
-
     @Value("${web.upload-path}")
     private String path;
 
@@ -32,18 +32,12 @@ public class BackgroundController {
     public String GeneralReport(@RequestParam("state") String STATE,
                                 @RequestParam("code") String code,
                                 Model model) {
-        //System.out.println(code);
         String UserId = server.getUserId(code, submitSecret);
-        //System.out.println(UserId);
-        if (server.isUser(UserId) == false)
+        logger.info("Request GeneralReport: " + UserId); //log
+        if (!server.isUser(UserId))
             return "failure";
 
         String latestReport = server.getLatestGeneralReport(UserId);
-
-       /* List<Map<String, Object>> Departments = server.getDepartment(UserId);
-        if (Departments == null)
-            return "failure";
-        List<User> Leaders = server.getLeader(UserId, Departments);*/
 
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
@@ -62,8 +56,10 @@ public class BackgroundController {
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
                                     @RequestParam("UserId") String UserId) {
+        logger.info("Post GeneralReport: " + UserId); //log
         if (reported.contains(UserId))
             return "failure";
+
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -89,13 +85,14 @@ public class BackgroundController {
     public String CaseReport(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
-
         String UserId = server.getUserId(CODE, submitSecret);
-        String userName = server.getUserName(UserId);
-        if (server.isUser(UserId) == false) {
-            model.addAttribute("userID",UserId);
+        logger.info("Request CaseReport: " + UserId); //log
+        if (!server.isUser(UserId)) {
+            model.addAttribute("userID", UserId);
             return "failure";
         }
+
+        String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
         List<Map<String, Object>> Departments = server.getDepartment(UserId);
         if (Departments == null)
@@ -125,23 +122,13 @@ public class BackgroundController {
                                  @RequestParam("leader") String leader,
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
-       /* List<String> errorUser = server.checkMember(members);
-        if (!errorUser.isEmpty()) {
-            model.addAttribute("errorUser", errorUser);
-            List<Map<String, Object>> Departments = server.getDepartment(UserId);
-            if (Departments == null)
-                return "failure";
-            List<User> Leaders = server.getLeader(UserId, Departments);
-            model.addAttribute("UserId", UserId);
-            model.addAttribute("Leaders", Leaders);
-            model.addAttribute("Departments", Departments);
-            return "CaseReport";
-        }*/
+        logger.info("Post CaseReport: " + UserId); //log
+
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
-        if (server.saveFile(file, pathCurrent) == false)
+        if (!server.saveFile(file, pathCurrent))
             return "failure";
         String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
@@ -162,10 +149,11 @@ public class BackgroundController {
     public String Leadership(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
-
         String UserId = server.getUserId(CODE, submitSecret);
-        if (server.isUser(UserId) == false)
+        logger.info("Request LeadershipReport: " + UserId); //log
+        if (!server.isUser(UserId))
             return "failure";
+
         String userName = server.getUserName(UserId);
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         List<String> AllUsers = server.getAllUsers();
@@ -185,18 +173,13 @@ public class BackgroundController {
                                  @RequestParam("score") String score,
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
-        //判断是否领导自己提交?
-       /* List<String> errorUser = server.checkMember(members);
-        if (!errorUser.isEmpty()) {
-            model.addAttribute("errorUser", errorUser);
-            model.addAttribute("UserId", UserId);
-            return "LeadershipReport";
-        }*/
+        logger.info("Post LeadershipReport: " + UserId); //log
+
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
-        if (server.saveFile(file, pathCurrent) == false)
+        if (!server.saveFile(file, pathCurrent))
             return "failure";
         String sqlMessage = "'" + UserId + "','" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
                 score + ",'" + server.currentTime() + "'," + score_type;
@@ -221,11 +204,12 @@ public class BackgroundController {
                               @RequestParam("state") String STATE,
                               Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
-        if (server.isUser(UserId) == false)
-            return "failure";
+        logger.info("Request RankingList: " + UserId); //log
+        /*if (!server.isUser(UserId))
+            return "failure";*/
 
         String sql = "select userName,s_score,avatarURL from user order by s_score desc";
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> list;
         try {
             list = server.jdbcTemplate.queryForList(sql);
         } catch (Exception e) {
@@ -245,11 +229,13 @@ public class BackgroundController {
 
     //积分排行大致如下，需要增加显示更多信息（照片等）
     @PostMapping(value = "/RankingList")
-    public String RankingListPost(@RequestParam("button") String type, Model model) {
+    public String RankingListPost(@RequestParam("button") String type,
+                                  Model model) {
+        logger.info("Post RankingList: " + type); //log
 
         if (type.equals("总排行")) {
             String sql = "select userName,s_score,avatarURL from user order by s_score desc";
-            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> list;
             try {
                 list = server.jdbcTemplate.queryForList(sql);
             } catch (Exception e) {
@@ -265,7 +251,7 @@ public class BackgroundController {
             model.addAttribute("list", users);
             return "RankingList";
         } else {
-            String selectedType = new String();
+            String selectedType;
             if (type.equals("领导干部"))
                 selectedType = "3";
             else if (type.equals("中层干部"))
@@ -296,9 +282,9 @@ public class BackgroundController {
     public String ReportApproval(@RequestParam("code") String CODE,
                                  @RequestParam("state") String STATE,
                                  Model model) {
-
         String UserId = server.getUserId(CODE, submitSecret);
-        if (server.isUser(UserId) == false)
+        logger.info("Request ReportApproval: " + UserId); //log
+        if (!server.isUser(UserId))
             return "failure";
 
         String getGeneralReport = "select reportID,userID,category,reportText,submitTime,userName " +
@@ -346,6 +332,8 @@ public class BackgroundController {
                                      @RequestParam("check1") String check1,
                                      @RequestParam("check2") String check2,
                                      Model model) {
+        logger.info("post ReportApproval: " + check1 + "    " + check2); //log
+
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
 
@@ -468,8 +456,10 @@ public class BackgroundController {
                                 @RequestParam("state") String STATE,
                                 Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
-        if (server.isUser(UserId) == false)
+        logger.info("Request HistoryReport: " + UserId); //log
+        if (!server.isUser(UserId))
             return "failure";
+
         String UserName = server.getUserName(UserId);
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
@@ -480,14 +470,16 @@ public class BackgroundController {
     @PostMapping(value = "/HistoryReport")
     public String HistoryReportPost(@RequestParam("button") String type,
                                     /*@RequestParam("search") String search,*/
-                                    @RequestParam("UserID") String UserID,
+                                    @RequestParam("UserID") String UserId,
                                     @RequestParam("UserName") String UserName,
                                     Model model) {
+        logger.info("Post HistoryReport: " + UserId); //log
+
         if (type.equals("我的提交(未审批)")) {
             String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
             List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
-            Object args[] = new Object[]{UserID};
+            Object args[] = new Object[]{UserId};
             try {
                 listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport, args);
             } catch (Exception e) {
@@ -495,7 +487,7 @@ public class BackgroundController {
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), "", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", "", "", map.get("leaderName"), "", 10);
                 reports.add(report_temp);
             }
@@ -511,12 +503,12 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), "", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", map.get("scoreType"), "", map.get("leaderName"), map.get("members"), 11);
                 reports.add(report_temp);
             }
 
-            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
@@ -528,7 +520,7 @@ public class BackgroundController {
             String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment " +
                     "from generalReport where userID =? order by submitTime desc";
             List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
-            Object args[] = new Object[]{UserID};
+            Object args[] = new Object[]{UserId};
             try {
                 listGeneralReport = server.jdbcTemplate.queryForList(sqlGeneralReport, args);
             } catch (Exception e) {
@@ -536,7 +528,7 @@ public class BackgroundController {
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
                         map.get("reportText"), map.get("isPass"), 1, map.get("comment"), map.get("leaderName"), "", 0);
                 reports.add(report_temp);
             }
@@ -552,7 +544,7 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, UserName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
                         map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), map.get("leaderName"), map.get("members"), 1);
                 reports.add(report_temp);
             }
@@ -568,11 +560,11 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listLeaderReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserID, "", map.get("submitTime"), "", map.get("category"),
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, "", map.get("submitTime"), "", map.get("category"),
                         map.get("reportText"), "", map.get("scoreType"), "", "", "", 2);
                 reports.add(report_temp);
             }
-            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
@@ -610,7 +602,7 @@ public class BackgroundController {
                         map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), UserName, map.get("members"), 1);
                 reports.add(report_temp);
             }
-            model.addAttribute("UserID", UserID);
+            model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
             return "HistoryReport";
@@ -622,14 +614,18 @@ public class BackgroundController {
     @RequestMapping("/Synchronizer")
     @ResponseBody
     public String Synchronizer() throws Exception {
+        logger.info("Synchronization starts!"); //log
         server.syncUser(server.syncDepartment());
+        logger.info("Synchronization succeed!"); //log
         return "Synchronization succeed!";
     }
 
     @RequestMapping("/Refresh")
     @ResponseBody
     public String Refresh() throws Exception {
+        logger.info("Refresh starts!"); //log
         reported.clear();
+        logger.info("Refresh succeed!"); //log
         return "Refresh succeed!";
     }
 
@@ -637,15 +633,16 @@ public class BackgroundController {
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
                          Model model) {
-        String UserID = server.getUserId(CODE, submitSecret);
+        String UserId = server.getUserId(CODE, submitSecret);
+        logger.info("Request QRCode: " + UserId); //log
+        if (!server.isUser(UserId))
+            return "failure";
 
         long timestamp = System.currentTimeMillis();
-        if (!checkins.containsKey(UserID)) {
-            if (server.isUser(UserID)) checkins.put(UserID, new Checkin(timestamp));
-            else return "failure";
-
+        if (!checkins.containsKey(UserId)) {
+            checkins.put(UserId, new Checkin(timestamp));
         } else {
-            Checkin checkin = checkins.get(UserID);
+            Checkin checkin = checkins.get(UserId);
             if (REFRESH.equals("true") || timestamp - checkin.getTimestamp() > QRTimeout) {
                 checkin.clear();
                 checkin.setTimestamp(timestamp);
@@ -653,7 +650,7 @@ public class BackgroundController {
             timestamp = checkin.getTimestamp();
         }
         model.addAttribute("timestamp", timestamp);
-        model.addAttribute("creator", UserID);
+        model.addAttribute("creator", UserId);
         model.addAttribute("CODE", CODE);
         return "QRCode";
     }
@@ -662,9 +659,9 @@ public class BackgroundController {
     public String redirectQR(@RequestParam("timestamp") String timestamp,
                              @RequestParam("creator") String creator,
                              Model model) {
+        logger.info("Request redirectQR: " + creator + "-" + timestamp); //log
 
         model.addAttribute("state", creator + "-" + timestamp);
-
         return "redirectQR";
     }
 
@@ -672,6 +669,8 @@ public class BackgroundController {
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
+        logger.info("Request checkin: " + STATE); //log
+
         int p = STATE.indexOf("-");
         String creator = STATE.substring(0, p);
         long timestamp = Long.parseLong(STATE.substring(p + 1));
