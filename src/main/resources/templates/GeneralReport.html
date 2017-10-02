@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>一般报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+
 </head>
 <body onload="loadDepartment()">
 <div class="page">
@@ -32,8 +34,8 @@
 
             <div class="report_box">
                 <label>任务类型:</label>
-                <select name="type">
-                    <option value="1">日常工作</option>
+                <select name="type" id="type">
+                    <option value="1" id="resetType">日常工作</option>
                     <option value="2">领导交办</option>
                     <option value="3">阶段汇总</option>
                     <option value="4">危难险重</option>
@@ -44,7 +46,7 @@
             <div class="report_box">
                 <label>工作部门:</label>
                 <select name="department" id="department" onchange="departmentRedirect()">
-                    <option>请选择部门</option>
+                    <option id="resetDepartment">请选择部门</option>
                     <div th:each="department:${list}">
                         <option th:value="${department.leader}" th:text="${department.department}"></option>
                     </div>
@@ -62,12 +64,12 @@
             <div class="report_box">
                 <label>审批领导:</label>
                 <select name="leader" id="leader">
-                    <option>请选择领导</option>
+                    <option id=resetLeader">请选择领导</option>
                 </select>
             </div>
 
             <div class="submit_box">
-                <input type="button" value="提交报告" onclick="test()">
+                <input type="submit" value="提交报告">
             </div>
 
         </form>
@@ -118,8 +120,6 @@
             return false;
         }
 
-        checkMemberDivToInput();
-
     }
     function departmentRedirect() {
         var department_hide = document.getElementById("department_hide");
@@ -149,6 +149,26 @@
                 }
             }
         }
+        reset();
+    }
+
+    function reset() {
+        var content = document.getElementById("content");
+            content.value = "";
+        var file = document.getElementById("file");
+         if (file.outerHTML) {
+             file.outerHTML = file.outerHTML;
+         } else {
+             file.value = "";
+         }
+        var resetType =  document.getElementById("resetType");
+        var resetDepartment = document.getElementById("resetDepartment");
+        var resetLeader = document.getElementById("resetLeader");
+            resetType.selected = true;
+            resetDepartment.selected = true;
+            resetLeader.selected = true;
+            $("#score").val(null);
+
     }
 
 

@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <title>领导报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 </head>
-<body>
+<body onload="reset()">
 <div class="page">
     <!--
     <div class="page-title">
@@ -31,7 +32,7 @@
             <div class="report_box">
                 <label>任务类型:</label>
                 <select name="type">
-                    <option value="1">日常工作</option>
+                    <option value="1" id="resetType">日常工作</option>
                     <option value="2">领导交办</option>
                     <option value="3">阶段汇总</option>
                     <option value="4">危难险重</option>
@@ -42,7 +43,7 @@
             <div class="report_box">
                 <label>得分/扣分:</label>
                 <select name="score_type">
-                    <option value="1">得分</option>
+                    <option value="1" id="resetScore_type">得分</option>
                     <option value="0">扣分</option>
                 </select>
             </div>
@@ -103,8 +104,8 @@
             return false;
 
         checkMemberDivToInput();
-
     }
+
     function checkMemberDivToInput() {
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
@@ -194,6 +195,24 @@
                 addMemberList.appendChild(members);
             }
         }
+    }
+
+    function reset() {
+        var content = document.getElementById("content");
+            content.value = "";
+        var file = document.getElementById("file");
+         if (file.outerHTML) {
+             file.outerHTML = file.outerHTML;
+         } else {
+             file.value = "";
+         }
+        var resetType =  document.getElementById("resetType");
+        var resetScore_type = document.getElementById("resetScore_type");
+            resetType.selected = true;
+            resetScore_type.selected = true;
+        $("#score").val(null);
+        $("#checkMemberDiv").empty();
+
     }
 
     /*]]>*/

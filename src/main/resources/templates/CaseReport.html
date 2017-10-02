@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>个案报告提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 </head>
 <body onload="loadDepartment()">
 <div class="page">
@@ -31,7 +32,7 @@
             <div class="report_box">
                 <label>任务类型:</label>
                 <select name="type">
-                    <option value="1">日常工作</option>
+                    <option value="1" id="resetType">日常工作</option>
                     <option value="2">领导交办</option>
                     <option value="3">阶段汇总</option>
                     <option value="4">危难险重</option>
@@ -41,21 +42,21 @@
 
             <div class="report_box">
                 <label>得分/扣分:</label>
-                <select name="score_type">
-                    <option value="1">得分</option>
+                <select name="score_type" id="score_type">
+                    <option value="1" id="resetScore_type">得分</option>
                     <option value="0">扣分</option>
                 </select>
             </div>
 
             <div class="report_box">
                 <label>任务分值:</label>
-                <input type="text" name="score" required="required" id="score">
+                <input type="text" name="score"  id="score">
             </div>
 
             <div class="report_box">
                 <label>工作部门:</label>
                 <select name="department" id="department" onchange="departmentRedirect()">
-                    <option>请选择部门</option>
+                    <option id="resetDepartment">请选择部门</option>
                     <div th:each="department:${list}">
                         <option th:value="${department.leader}" th:text="${department.department}"></option>
                     </div>
@@ -73,7 +74,7 @@
             <div class="report_box">
                 <label>审批领导:</label>
                 <select name="leader" id="leader">
-                    <option>请选择领导</option>
+                    <option id="resetLeader">请选择领导</option>
                 </select>
             </div>
 
@@ -101,8 +102,6 @@
         <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
     </div>
 </select>
-
-<iframe name='hidden_frame' id="hidden_frame" style='display: none'></iframe>
 
 </body>
 <script th:inline="javascript">
@@ -154,6 +153,29 @@
         }
         members.setAttribute("value",members.value.toString().substring(0,members.value.toString().length-1))
     }
+
+    function reset() {
+        var content = document.getElementById("content");
+            content.value = "";
+        var file = document.getElementById("file");
+         if (file.outerHTML) {
+             file.outerHTML = file.outerHTML;
+         } else {
+             file.value = "";
+         }
+        var resetType =  document.getElementById("resetType");
+        var resetScore_type = document.getElementById("resetScore_type");
+        var resetDepartment = document.getElementById("resetDepartment");
+        var resetLeader = document.getElementById("resetLeader");
+            resetType.selected = true;
+            resetScore_type.selected = true;
+            resetDepartment.selected = true;
+            resetLeader.selected = true;
+        $("#score").val(null);
+        $("#checkMemberDiv").empty();
+
+    }
+
 
     function addDiv(value) {
         var mydiv = document.getElementById("checkMemberDiv");
@@ -245,7 +267,7 @@
             for (i = leader.length - 1; i > 0; i--)
                 leader.options.remove(i);
             for (i = 1; i < department_hide.length; i++) {
-                if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
+                if (department_hide[i].text == selectedD  /*&& userName != department_hide[i].value*/) {
                         leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
                 }
             }
@@ -253,6 +275,7 @@
 
 
         function loadDepartment() {
+            reset();
             var department = document.getElementById("department");
             var i,j,n;
             for (i = department.length-1; i >0 ; i--) {
@@ -263,13 +286,6 @@
                         break;
                     }
                 }
-            }
-            var statusNum = /*[[${statusNum}]]*/ "";
-            switch(statusNum) {
-
-            case "01" :
-                alert("个案报告提交成功！");
-                break;
             }
         }
 

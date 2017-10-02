@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -57,12 +54,12 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/GeneralReport")
-    @ResponseBody
     public String GeneralReportPost(@RequestParam("content") String content,
                                     @RequestParam("type") String type,
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
-                                    @RequestParam("UserId") String UserId) {
+                                    @RequestParam("UserId") String UserId,
+                                    Model model) {
         if (reported.contains(UserId))
             return "failure";
         String currentTime = server.currentTime();
@@ -83,6 +80,7 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        model.addAttribute("successNum","00");
         return "success";
     }
 
@@ -154,8 +152,8 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        model.addAttribute("statusNum", "01");
-        return "CaseReport";
+        model.addAttribute("successNum", "01");
+        return "success";
     }
 
     @RequestMapping("/LeadershipReport")
@@ -355,23 +353,35 @@ public class BackgroundController {
     }
 
     @PostMapping("/ReportApproval")
-    public String ReportApprovalPost(@RequestParam("reportStatus") String reportStatus,
+    @ResponseBody
+    public ReportApprovalAjax ReportApprovalPost(/*@RequestParam("reportStatus") String reportStatus,
                                      @RequestParam("reportComment") String reportComment,
                                      @RequestParam("check1") String check1,
-                                     @RequestParam("check2") String check2,
+                                     @RequestParam("check2") String check2,*/
+                                     @RequestBody ReportApprovalAjax ajax,
                                      Model model) {
-        String[] reports1 = check1.split(",");
-        String[] reports2 = check2.split(",");
+        System.out.println(ajax.getReportComment());
+        System.out.println(ajax.getReportStatus());
+        System.out.println(ajax.getCheck1());
+        System.out.println(ajax.getCheck2());
 
-        if (reportStatus.equals("1"))
+        String[] reports1 = ajax.getCheck1().split(",");
+        String[] reports2 = ajax.getCheck2().split(",");
+        String reportStatus;
+        String reportComment = ajax.getReportComment();
+        if (ajax.getReportStatus().equals("1"))
             reportStatus = "1";
         else
             reportStatus = "0";
 
         String updateSql = "";
         String checkTime = server.currentTime();
+        System.out.println(reportComment);
+        System.out.println(reportStatus);
+        System.out.println(ajax.getCheck1());
+        System.out.println(ajax.getCheck2());
 
-        if (!check1.isEmpty()) {
+        if (!ajax.getCheck1().isEmpty()) {
             for (int i = 0; i < reports1.length; i++) {
                 Map<String, Object> generalReport = server.getUndealedGeneralReport(reports1[i]);
                 if (generalReport == null) continue;
@@ -394,17 +404,24 @@ public class BackgroundController {
                 if (reportStatus.equals("0"))
                     singleScore = 0;
 
-                updateSql = "UPDATE user set s_score=s_score + " + singleScore +
-                        " where userID=?";
-                Object args[] = new Object[]{generalReport.get("userID").toString()};
-                server.jdbcTemplate.update(updateSql, args);
+                try {
+                    updateSql = "UPDATE user set s_score=s_score + " + singleScore +
+                            " where userID=?";
+                    Object args[] = new Object[]{generalReport.get("userID").toString()};
+                    server.jdbcTemplate.update(updateSql, args);
 
-                updateSql = "insert into generalReport " +
-                        "(userID,leaderName,category,reportText,reportPath,submitTime,checkTime,isPass,comment) " +
-                        "values(" + sqlMessage + ")";
-                server.jdbcTemplate.update(updateSql);
-                updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
-                server.jdbcTemplate.update(updateSql);
+                    updateSql = "insert into generalReport " +
+                            "(userID,leaderName,category,reportText,reportPath,submitTime,checkTime,isPass,comment) " +
+                            "values(" + sqlMessage + ")";
+                    server.jdbcTemplate.update(updateSql);
+                    updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
+                    server.jdbcTemplate.update(updateSql);
+                    ajax.setCheckResponse("审批成功!");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    ajax.setCheckResponse("一般报告审批失败!");
+                }
+
 
                 try {
                     server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
@@ -413,7 +430,7 @@ public class BackgroundController {
                 }
             }
         }
-        if (!check2.isEmpty()) {
+        if (!ajax.getCheck2().isEmpty()) {
             for (int i = 0; i < reports2.length; i++) {
                 Map<String, Object> caseReport = server.getUndealedCaseReport(reports2[i]);
                 if (caseReport == null) continue;
@@ -453,18 +470,24 @@ public class BackgroundController {
                     }
                 }
 
-                updateSql = "update user set s_score = s_score + " + singleScore +
-                        " where userID=?";
-                Object args2[] = new Object[]{caseReport.get("userID").toString()};
-                server.jdbcTemplate.update(updateSql, args2);
+                try {
+                    updateSql = "update user set s_score = s_score + " + singleScore +
+                            " where userID=?";
+                    Object args2[] = new Object[]{caseReport.get("userID").toString()};
+                    server.jdbcTemplate.update(updateSql, args2);
 
-                updateSql = "insert into caseReport " +
-                        "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
-                        "singleScore,submitTime,checkTime,isPass,comment) " +
-                        "values(" + sqlMessage + ")";
-                server.jdbcTemplate.update(updateSql);
-                updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
-                server.jdbcTemplate.update(updateSql);
+                    updateSql = "insert into caseReport " +
+                            "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
+                            "singleScore,submitTime,checkTime,isPass,comment) " +
+                            "values(" + sqlMessage + ")";
+                    server.jdbcTemplate.update(updateSql);
+                    updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
+                    server.jdbcTemplate.update(updateSql);
+                    ajax.setCheckResponse("审批成功!");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    ajax.setCheckResponse("个案报告审批失败!");
+                }
 
                 try {
                     server.sendMessage(caseReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
@@ -473,8 +496,7 @@ public class BackgroundController {
                 }
             }
         }
-        model.addAttribute("statusNum", "03");
-        return "success";
+        return ajax;
     }
 
     @RequestMapping("/HistoryReport")
