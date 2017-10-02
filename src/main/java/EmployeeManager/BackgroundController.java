@@ -516,7 +516,6 @@ public class BackgroundController {
 
     //添加查询与统计
     @PostMapping(value = "/HistoryReport")
-    @ResponseBody
     public String HistoryReportPost(@RequestParam("button") String type,
                                     /*@RequestParam("search") String search,*/
                                     @RequestParam("UserID") String UserID,

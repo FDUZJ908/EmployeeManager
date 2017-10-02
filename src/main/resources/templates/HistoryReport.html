@@ -58,6 +58,7 @@
 				break;
 		}
 	}
+
 </script>
 <head>
     <meta charset="UTF-8">
@@ -94,8 +95,7 @@
                 <p th:text="'内容:&nbsp'+${report.getReportText()}"></p>
             </div>
             <div class="approval_right_att">
-                <img th:src="${report.getReportPath()}"/>
-                <button type="button"></button>
+                <button type="button" ></button>
             </div>
             <div class="history_members">
                 <p th:text="'成员:&nbsp'+${report.getMembers()}"></p>
@@ -149,6 +149,7 @@
                     <option th:value="${report.getMembers()}"></option>
                     <option th:value="${report.getLeaderName()}"></option>
                     <option th:value="${report.getIsPass()}"></option>
+                    <option th:value="${report.getComment()}"></option>
                 </div>
             </select>
         </div>
