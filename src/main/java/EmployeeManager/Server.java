@@ -39,8 +39,7 @@ public class Server {
     public JdbcTemplate jdbcTemplate;
 
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
-    EmployeeManager.Log log = new EmployeeManager.Log("BackgroundController");
-    
+
     @Value("${web.upload-path}")
     private String path;
 
