@@ -9,6 +9,17 @@
     <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
     <script type="text/javascript">
     $(document).ready(function(){
+        
+        $(":button").click(function () {
+        var _this = $(this);
+        var src = _this.attr("value");
+        $("#holonomicImg").attr("src", src);
+        $("#outerDiv").fadeIn("fast");
+        $("#outerDiv").click(function(){
+            $(this).fadeOut("fast");
+        });
+    });
+        
         $("#approvalSubmit").click(function() {
             var reportStatus = document.getElementById("reportStatus");
             var reportComment = document.getElementById("reportComment").value;
@@ -152,13 +163,11 @@
                 <div class="approval_right_title">
                     <p th:text="'提交人:&nbsp'+${list.userName}"></p>
                 </div>
-
-
-                <img th:src="${list.reportPath}"/>
+                
 
                 <div class="approval_right_att">
 
-                    <button type="button"></button>
+                    <button type="button" th:value="${list.reportID}"></button>
                 </div>
                 <div class="approval_right_content">
                     <p th:text="'内容:&nbsp' + ${list.reportText}"></p>
@@ -187,7 +196,12 @@
         <br/>
         <br/><br/>
 
-
+        <div id="outerDiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+            <div id="innerDiv" style="position:absolute;">
+                <img id="holonomicImg" style="border:5px solid #fff margin:5px auto; display:block;width:90%; height:auto;left:5%;" src="" />
+            </div>
+        </div>
+        
         <div th:if="${list1!=null and list2!=null}" class="bottom_box">
             <div class="approval_bottom_box">
                 <select name="reportStatus" id="reportStatus">

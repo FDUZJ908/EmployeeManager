@@ -321,14 +321,12 @@ public class BackgroundController {
         List<CaseReport> list2 = new ArrayList<CaseReport>();
         for (Map<String, Object> map : generalReport) {
             String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
-            System.out.println(pathtmp);
             GeneralReport list1_temp = new GeneralReport(map.get("reportID"), map.get("userID"), map.get("userName"),
                     map.get("category"), map.get("reportText"), map.get("submitTime"), pathtmp);
             list1.add(list1_temp);
         }
         for (Map<String, Object> map : caseReport) {
             String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
-            System.out.println(pathtmp);
             CaseReport list2_temp = new CaseReport(map.get("reportID"), map.get("userID"), map.get("userName"),
                     map.get("category"), map.get("reportText"), map.get("submitTime"), map.get("members"),
                     map.get("singleScore"), pathtmp);
@@ -342,12 +340,14 @@ public class BackgroundController {
     @PostMapping("/ReportApproval")
     @ResponseBody
     public ReportApprovalAjax ReportApprovalPost(
-            @RequestBody ReportApprovalAjax ajax
+            @RequestBody ReportApprovalAjax ajax,
                 Model model) {
+        String check1 = ajax.getCheck1();
+        String check2 = ajax.getCheck2();
         logger.info("post ReportApproval: " + check1 + "    " + check2); //log
 
-        String[] reports1 = ajax.getCheck1().split(",");
-        String[] reports2 = ajax.getCheck2().split(",");
+        String[] reports1 = check1.split(",");
+        String[] reports2 = check2.split(",");
         String reportStatus;
         String reportComment = ajax.getReportComment();
         if (ajax.getReportStatus().equals("1"))
@@ -358,7 +358,7 @@ public class BackgroundController {
         String updateSql = "";
         String checkTime = server.currentTime();
 
-        if (!ajax.getCheck1().isEmpty()) {
+        if (!check1.isEmpty()) {
             for (int i = 0; i < reports1.length; i++) {
                 Map<String, Object> generalReport = server.getUndealedGeneralReport(reports1[i]);
                 if (generalReport == null) continue;
@@ -407,7 +407,7 @@ public class BackgroundController {
                 }
             }
         }
-        if (!ajax.getCheck2().isEmpty()) {
+        if (!check2.isEmpty()) {
             for (int i = 0; i < reports2.length; i++) {
                 Map<String, Object> caseReport = server.getUndealedCaseReport(reports2[i]);
                 if (caseReport == null) continue;
@@ -435,7 +435,6 @@ public class BackgroundController {
                         ",'" + checkTime + "'," +
                         reportStatus +
                         ",'" + reportComment + "'";
-                //System.out.print(caseReport.get("members").toString());
                 if (!caseReport.get("members").toString().isEmpty()) {
                     String[] member = caseReport.get("members").toString().split(",");
 
