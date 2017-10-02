@@ -17,10 +17,12 @@ public class HistoryReport {
     private String comment;
     private String leaderName;
     private String members;
-    private String  type;
+    private String type;
+    private String reportPath;
 
-    public HistoryReport(Object reportID,Object userID, Object userName, Object submitTime, Object checkTime, Object category, Object reportText,
-                         Object isPass, Object scoreType, Object comment, Object leaderName, Object members, Object type) {
+    public HistoryReport(Object reportID,Object userID, Object userName, Object submitTime, Object checkTime,
+                         Object category, Object reportText, Object isPass, Object scoreType, Object comment,
+                         Object leaderName, Object members, Object type, Object reportPath) {
 
         int scoreTemp = 0;
         String categoryTmp = "";
@@ -71,10 +73,10 @@ public class HistoryReport {
         if(leaderName.toString() == "")
             leaderName = "无";
 
-        submitTime = submitTime.toString().substring(0 , 16);
+        submitTime = submitTime.toString().substring(0 , submitTime.toString().length()-5);
 
         if(checkTime.toString() != "")
-            checkTime = checkTime.toString().substring(0 , 16);
+            checkTime = checkTime.toString().substring(0 , checkTime.toString().length()-5);
 
         this.reportID = String.valueOf(reportID);
         this.userID = String.valueOf(userID);
@@ -90,12 +92,18 @@ public class HistoryReport {
         this.leaderName = String.valueOf(leaderName);
         this.members = String.valueOf(members);
         this.type = String.valueOf(type);
+        this.reportPath = String.valueOf(reportPath);
     }
 
     /*public void setScore(String score) {
         this.singleScore = score;
     }
 */
+
+    public String getReportPath() {
+        return reportPath;
+    }
+
     public String getReportID() {return reportID;}
 
     public String getUserID() {

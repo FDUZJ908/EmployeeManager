@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -55,7 +52,8 @@ public class BackgroundController {
                                     @RequestParam("type") String type,
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
-                                    @RequestParam("UserId") String UserId) {
+                                    @RequestParam("UserId") String UserId,
+                                    Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
         if (reported.contains(UserId))
             return "failure";
@@ -64,9 +62,10 @@ public class BackgroundController {
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
-        if (server.saveFile(file, pathCurrent) == false)
+        if (!server.saveFile(file, pathCurrent))
             return "failure";
-
+        if (file.getOriginalFilename().equals(""))
+            pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
@@ -78,6 +77,7 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        model.addAttribute("successNum", "00");
         return "success";
     }
 
@@ -87,10 +87,8 @@ public class BackgroundController {
                              Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         logger.info("Request CaseReport: " + UserId); //log
-        if (!server.isUser(UserId)) {
-            model.addAttribute("userID", UserId);
+        if (!server.isUser(UserId))
             return "failure";
-        }
 
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
@@ -112,7 +110,6 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/CaseReport")
-    @ResponseBody
     public String CaseReportPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
@@ -130,6 +127,8 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent))
             return "failure";
+        if (file.getOriginalFilename().equals(""))
+            pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
         server.jdbcTemplate.update("insert into undealedCaseReport " +
@@ -181,6 +180,8 @@ public class BackgroundController {
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent))
             return "failure";
+        if (file.getOriginalFilename().equals(""))
+            pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
                 score + ",'" + server.currentTime() + "'," + score_type;
         server.jdbcTemplate.update("insert into leaderReport " +
@@ -199,6 +200,8 @@ public class BackgroundController {
         return "success";
     }
 
+
+    //slected_type 为设置button点击后颜色准备
     @RequestMapping("/RankingList")
     public String RankingList(@RequestParam("code") String CODE,
                               @RequestParam("state") String STATE,
@@ -222,7 +225,7 @@ public class BackgroundController {
             users.add(user_temp);
         }
         model.addAttribute("list", users);
-        model.addAttribute("selected_type", "总排行");
+        model.addAttribute("selected_type", 3);
 
         return "RankingList";
     }
@@ -247,18 +250,25 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type", type);
+            model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
             return "RankingList";
         } else {
             String selectedType;
-            if (type.equals("领导干部"))
+            if (type.equals("领导干部")) {
+
                 selectedType = "3";
-            else if (type.equals("中层干部"))
+                model.addAttribute("selected_type", 1);
+            } else if (type.equals("中层干部")) {
                 selectedType = "2";
-            else if (type.equals("一般干部"))
+                model.addAttribute("selected_type", 2);
+            } else if (type.equals("一般干部")) {
                 selectedType = "1";
-            else selectedType = "0";
+                model.addAttribute("selected_type", 4);
+            } else {
+                selectedType = "0";
+                model.addAttribute("selected_type", 5);
+            }
             String sql = "select userName,s_score,avatarURL from user where position=" + selectedType + " order by s_score desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
             try {
@@ -272,7 +282,6 @@ public class BackgroundController {
                 User user_temp = new User(map.get("userName"), map.get("s_score"), rank++, map.get("avatarURL"));
                 users.add(user_temp);
             }
-            model.addAttribute("selected_type", type);
             model.addAttribute("list", users);
             return "RankingList";
         }
@@ -287,11 +296,11 @@ public class BackgroundController {
         if (!server.isUser(UserId))
             return "failure";
 
-        String getGeneralReport = "select reportID,userID,category,reportText,submitTime,userName " +
+        String getGeneralReport = "select reportID,userID,category,reportText,submitTime,userName,reportPath " +
                 "from undealedGeneralReport natural join user where leaderName=(select userName from user " +
                 "where userID=?)";
 
-        String getCaseReport = "select reportID,userID,category,reportText,submitTime,members,singleScore,userName " +
+        String getCaseReport = "select reportID,userID,category,reportText,submitTime,members,singleScore,userName,reportPath " +
                 "from undealedCaseReport natural join user " +
                 "where leaderName=(select userName from user where userID=?)";
 
@@ -311,14 +320,18 @@ public class BackgroundController {
         List<GeneralReport> list1 = new ArrayList<GeneralReport>();
         List<CaseReport> list2 = new ArrayList<CaseReport>();
         for (Map<String, Object> map : generalReport) {
+            String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+            System.out.println(pathtmp);
             GeneralReport list1_temp = new GeneralReport(map.get("reportID"), map.get("userID"), map.get("userName"),
-                    map.get("category"), map.get("reportText"), map.get("submitTime"));
+                    map.get("category"), map.get("reportText"), map.get("submitTime"), pathtmp);
             list1.add(list1_temp);
         }
         for (Map<String, Object> map : caseReport) {
+            String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+            System.out.println(pathtmp);
             CaseReport list2_temp = new CaseReport(map.get("reportID"), map.get("userID"), map.get("userName"),
                     map.get("category"), map.get("reportText"), map.get("submitTime"), map.get("members"),
-                    map.get("singleScore"));
+                    map.get("singleScore"), pathtmp);
             list2.add(list2_temp);
         }
         model.addAttribute("list1", list1);
@@ -327,17 +340,17 @@ public class BackgroundController {
     }
 
     @PostMapping("/ReportApproval")
-    public String ReportApprovalPost(@RequestParam("reportStatus") String reportStatus,
-                                     @RequestParam("reportComment") String reportComment,
-                                     @RequestParam("check1") String check1,
-                                     @RequestParam("check2") String check2,
-                                     Model model) {
+    @ResponseBody
+    public ReportApprovalAjax ReportApprovalPost(
+            @RequestBody ReportApprovalAjax ajax
+                Model model) {
         logger.info("post ReportApproval: " + check1 + "    " + check2); //log
 
-        String[] reports1 = check1.split(",");
-        String[] reports2 = check2.split(",");
-
-        if (reportStatus.equals("1"))
+        String[] reports1 = ajax.getCheck1().split(",");
+        String[] reports2 = ajax.getCheck2().split(",");
+        String reportStatus;
+        String reportComment = ajax.getReportComment();
+        if (ajax.getReportStatus().equals("1"))
             reportStatus = "1";
         else
             reportStatus = "0";
@@ -345,7 +358,7 @@ public class BackgroundController {
         String updateSql = "";
         String checkTime = server.currentTime();
 
-        if (!check1.isEmpty()) {
+        if (!ajax.getCheck1().isEmpty()) {
             for (int i = 0; i < reports1.length; i++) {
                 Map<String, Object> generalReport = server.getUndealedGeneralReport(reports1[i]);
                 if (generalReport == null) continue;
@@ -368,17 +381,24 @@ public class BackgroundController {
                 if (reportStatus.equals("0"))
                     singleScore = 0;
 
-                updateSql = "UPDATE user set s_score=s_score + " + singleScore +
-                        " where userID=?";
-                Object args[] = new Object[]{generalReport.get("userID").toString()};
-                server.jdbcTemplate.update(updateSql, args);
+                try {
+                    updateSql = "UPDATE user set s_score=s_score + " + singleScore +
+                            " where userID=?";
+                    Object args[] = new Object[]{generalReport.get("userID").toString()};
+                    server.jdbcTemplate.update(updateSql, args);
 
-                updateSql = "insert into generalReport " +
-                        "(userID,leaderName,category,reportText,reportPath,submitTime,checkTime,isPass,comment) " +
-                        "values(" + sqlMessage + ")";
-                server.jdbcTemplate.update(updateSql);
-                updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
-                server.jdbcTemplate.update(updateSql);
+                    updateSql = "insert into generalReport " +
+                            "(userID,leaderName,category,reportText,reportPath,submitTime,checkTime,isPass,comment) " +
+                            "values(" + sqlMessage + ")";
+                    server.jdbcTemplate.update(updateSql);
+                    updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
+                    server.jdbcTemplate.update(updateSql);
+                    ajax.setCheckResponse("审批成功!");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    ajax.setCheckResponse("一般报告审批失败!");
+                }
+
 
                 try {
                     server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
@@ -387,7 +407,7 @@ public class BackgroundController {
                 }
             }
         }
-        if (!check2.isEmpty()) {
+        if (!ajax.getCheck2().isEmpty()) {
             for (int i = 0; i < reports2.length; i++) {
                 Map<String, Object> caseReport = server.getUndealedCaseReport(reports2[i]);
                 if (caseReport == null) continue;
@@ -427,18 +447,24 @@ public class BackgroundController {
                     }
                 }
 
-                updateSql = "update user set s_score = s_score + " + singleScore +
-                        " where userID=?";
-                Object args2[] = new Object[]{caseReport.get("userID").toString()};
-                server.jdbcTemplate.update(updateSql, args2);
+                try {
+                    updateSql = "update user set s_score = s_score + " + singleScore +
+                            " where userID=?";
+                    Object args2[] = new Object[]{caseReport.get("userID").toString()};
+                    server.jdbcTemplate.update(updateSql, args2);
 
-                updateSql = "insert into caseReport " +
-                        "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
-                        "singleScore,submitTime,checkTime,isPass,comment) " +
-                        "values(" + sqlMessage + ")";
-                server.jdbcTemplate.update(updateSql);
-                updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
-                server.jdbcTemplate.update(updateSql);
+                    updateSql = "insert into caseReport " +
+                            "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
+                            "singleScore,submitTime,checkTime,isPass,comment) " +
+                            "values(" + sqlMessage + ")";
+                    server.jdbcTemplate.update(updateSql);
+                    updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
+                    server.jdbcTemplate.update(updateSql);
+                    ajax.setCheckResponse("审批成功!");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    ajax.setCheckResponse("个案报告审批失败!");
+                }
 
                 try {
                     server.sendMessage(caseReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
@@ -447,8 +473,7 @@ public class BackgroundController {
                 }
             }
         }
-        model.addAttribute("successNum", "03");
-        return "success";
+        return ajax;
     }
 
     @RequestMapping("/HistoryReport")
@@ -468,6 +493,7 @@ public class BackgroundController {
 
     //添加查询与统计
     @PostMapping(value = "/HistoryReport")
+    @ResponseBody
     public String HistoryReportPost(@RequestParam("button") String type,
                                     /*@RequestParam("search") String search,*/
                                     @RequestParam("UserID") String UserId,
@@ -476,7 +502,7 @@ public class BackgroundController {
         logger.info("Post HistoryReport: " + UserId); //log
 
         if (type.equals("我的提交(未审批)")) {
-            String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime " +
+            String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
             List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
             Object args[] = new Object[]{UserId};
@@ -487,14 +513,17 @@ public class BackgroundController {
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), "", map.get("category"),
-                        map.get("reportText"), "", "", "", map.get("leaderName"), "", 10);
+
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
+                        "", map.get("category"), map.get("reportText"), "", "", "", map.
+                        get("leaderName"), "", 10, pathtmp);
                 reports.add(report_temp);
             }
 
             /* caseReport
             * */
-            String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, singleScore, scoreType, members " +
+            String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, singleScore, scoreType, members, reportPath " +
                     "from undealedCaseReport where userID = ? order by submitTime desc";
             List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
             try {
@@ -503,21 +532,25 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), "", map.get("category"),
-                        map.get("reportText"), "", map.get("scoreType"), "", map.get("leaderName"), map.get("members"), 11);
+
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
+                        "", map.get("category"), map.get("reportText"), "", map.get("scoreType"),
+                        "", map.get("leaderName"), map.get("members"), 11, pathtmp);
                 reports.add(report_temp);
             }
 
             model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
+            model.addAttribute("selected_type", 2);
             return "HistoryReport";
         }
 
         if (type.equals("我的提交(已审批)")) {
              /* generalReport
             * */
-            String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment " +
+            String sqlGeneralReport = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport where userID =? order by submitTime desc";
             List<Map<String, Object>> listGeneralReport = new ArrayList<Map<String, Object>>();
             Object args[] = new Object[]{UserId};
@@ -528,14 +561,19 @@ public class BackgroundController {
             }
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : listGeneralReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"), 1, map.get("comment"), map.get("leaderName"), "", 0);
+
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
+                        map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), 1,
+                        map.get("comment"), map.get("leaderName"), "", 0, pathtmp);
+
                 reports.add(report_temp);
             }
 
             /* caseReport
             * */
-            String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, checkTime, isPass, comment, singleScore, scoreType, members " +
+            String sqlCaseReport = "select reportID, leaderName, category, reportText, submitTime, checkTime, isPass, " +
+                    "comment, singleScore, scoreType, members, reportPath " +
                     "from caseReport where userID = ? order by submitTime desc";
             List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
             try {
@@ -544,14 +582,17 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listCaseReport) {
-                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), map.get("leaderName"), map.get("members"), 1);
+
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
+                HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
+                        map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), map.get("scoreType"),
+                        map.get("comment"), map.get("leaderName"), map.get("members"), 1, pathtmp);
                 reports.add(report_temp);
             }
 
             /* leaderReport
             * */
-            String sqlLeaderReport = "select reportID,category, reportText, submitTime, singleScore, scoreType " +
+            String sqlLeaderReport = "select reportID,category, reportText, submitTime, singleScore, scoreType, reportPath " +
                     "from leaderReport where userID = ? order by submitTime desc";
             List<Map<String, Object>> listLeaderReport = new ArrayList<Map<String, Object>>();
             try {
@@ -560,17 +601,19 @@ public class BackgroundController {
                 return e.getMessage();
             }
             for (Map<String, Object> map : listLeaderReport) {
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, "", map.get("submitTime"), "", map.get("category"),
-                        map.get("reportText"), "", map.get("scoreType"), "", "", "", 2);
+                        map.get("reportText"), "", map.get("scoreType"), "", "", "", 2, pathtmp);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
+            model.addAttribute("selected_type", 1);
             return "HistoryReport";
         }
         if (type.equals("我的审批")) {
-            String sqlGeneralReport = "select reportID, userID,category,reportText,submitTime,checkTime,isPass,comment " +
+            String sqlGeneralReport = "select reportID, userID,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport where leaderName = ? order by submitTime desc";
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
             Object args[] = new Object[]{UserName};/* leader's name*/
@@ -583,12 +626,14 @@ public class BackgroundController {
             List<HistoryReport> reports = new ArrayList<HistoryReport>();
             for (Map<String, Object> map : list) {
                 String posterName = server.getUserName(map.get("userID").toString());
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("checkTime"), map.get("category")
-                        , map.get("reportText"), map.get("isPass"), 0, map.get("comment"), UserName, "", 0);
+                        , map.get("reportText"), map.get("isPass"), 0, map.get("comment"), UserName, "", 0, pathtmp);
                 reports.add(report_temp);
             }
 
-            String sqlCaseReport = "select reportID, userID, category, reportText, submitTime,checkTime, isPass, comment, singleScore, scoreType,members " +
+            String sqlCaseReport = "select reportID, userID, category, reportText, submitTime,checkTime, isPass, comment, " +
+                    "singleScore, scoreType,members, reportPath " +
                     "from caseReport where leaderName = ? order by submitTime desc";
             List<Map<String, Object>> listCaseReport = new ArrayList<Map<String, Object>>();
             try {
@@ -598,13 +643,16 @@ public class BackgroundController {
             }
             for (Map<String, Object> map : listCaseReport) {
                 String posterName = server.getUserName(map.get("userID").toString());
+                String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"), map.get("scoreType"), map.get("comment"), UserName, map.get("members"), 1);
+                        map.get("reportText"), map.get("isPass"),
+                        map.get("scoreType"), map.get("comment"), UserName, map.get("members"), 1, pathtmp);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
+            model.addAttribute("selected_type", 3);
             return "HistoryReport";
         }
         return "failure";

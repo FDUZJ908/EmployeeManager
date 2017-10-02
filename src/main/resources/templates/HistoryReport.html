@@ -40,13 +40,31 @@
         userInput.value = "";
         reportSearch();
     }
+	
+	function changeBGC2(){
+		var BGCnum = /*[[${selected_type}]]*/ "";
+		switch(BGCnum){
+			case 1 :
+				var B1=document.getElementById("B1");
+				B1.setAttribute("style","background-color:red;");
+				break;
+			case 2 :
+				var B2=document.getElementById("B2");
+				B2.setAttribute("style","background-color:red;");
+				break;
+			case 3 :
+				var B3=document.getElementById("B3");
+				B3.setAttribute("style","background-color:red;");
+				break;
+		}
+	}
 </script>
 <head>
     <meta charset="UTF-8">
     <title>查询与统计</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
-<body>
+<body onload="changeBGC2()">
 <div class="page">
     <div class="key-search">
         <input type="text" id="userInPut" placeholder="请输入关键字搜索" oninput="reportSearch()">
@@ -68,35 +86,41 @@
 				<button type="button"></button>
 			</div>
 			<div class="history_submitTime">
-				<p th:text="'${report.getSubmitTime()}"></p>
+				<p th:text="${report.getSubmitTime()}"></p>
 			</div>
 		</div>
         <div style="display: flex; flex-direction:column;">
             <div class="history_content">
-                <p th:text="'内容：'+${report.getReportText()}"></p>
+                <p th:text="'内容:&nbsp'+${report.getReportText()}"></p>
+            </div>
+            <div class="approval_right_att">
+                <img th:src="${report.getReportPath()}"/>
+                <button type="button"></button>
             </div>
             <div class="history_members">
-                <p th:text="'成员：'+${report.getMembers()}"></p>
+                <p th:text="'成员:&nbsp'+${report.getMembers()}"></p>
             </div>
         </div>
         <div style="display: flex;">
             <div class="history_score">
-                <p th:text="'分值：'+${report.getSingleScore()}"></p>
+                <p th:text="'分值:&nbsp'+${report.getSingleScore()}"></p>
             </div>
             <div class="history_leader">
-                <p th:text="'领导：'+${report.getLeaderName()}"></p>
+                <p th:text="'领导:&nbsp'+${report.getLeaderName()}"></p>
             </div>
             <div class="history_status">
-                <p th:text="'状态：'+${report.getIsPass()}"></p>
+                <p th:text="'状态:&nbsp'+${report.getIsPass()}"></p>
             </div>
         </div>
         <div style="display:flex;">
             <div class="history_comment">
-                <p th:text="'评语：'+${report.getComment()}"></p>
+                <p th:text="'审批意见:&nbsp'+${report.getComment()}"></p>
             </div>
+            <!--
             <div class="history_checktime">
                 <p th:text="'审批时间：'+${report.getCheckTime()}"></p>
             </div>
+            -->
         </div>
     </div>
     <br/>
@@ -130,8 +154,6 @@
         </div>
     </div>
 </div>
-<div class="space">
-</div>
 <form method="post" nctype="multipart/form-data">
     <select name="UserID" style="display:none">
         <option th:value="${UserID}" th:text="${UserID}"></option>
@@ -141,13 +163,13 @@
     </select>
     <div class=" bottom_box">
         <div class="history_button">
-            <input type="submit" value="我的提交(已审批)" name="button"/>
+            <input type="submit" id="B1" value="我的提交(已审批)" name="button"/>
         </div>
         <div class="history_button">
-            <input type="submit" value="我的提交(未审批)" name="button"/>
+            <input type="submit" id="B2" value="我的提交(未审批)" name="button"/>
         </div>
         <div class="history_button">
-            <input type="submit" value="我的审批" name="button"/>
+            <input type="submit" id="B3" value="我的审批" name="button"/>
         </div>
     </div>
 </form>

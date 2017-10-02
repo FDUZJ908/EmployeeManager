@@ -6,6 +6,88 @@
     <meta charset="UTF-8">
     <title>报告审批</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#approvalSubmit").click(function() {
+            var reportStatus = document.getElementById("reportStatus");
+            var reportComment = document.getElementById("reportComment").value;
+
+            reportStatus = reportStatus.options[reportStatus.selectedIndex].value;
+
+            var check1s = document.getElementsByName("check1");
+            var check2s = document.getElementsByName("check2");
+            var check1 = "";
+            var check2 = "";
+            for (i = 0 ; i < check1s.length-1 ; i++ ) {
+                if (check1s[i].checked)
+                    check1 = check1 + check1s[i].value.toString() + ",";
+                }
+            for (j = 0 ; j < check2s.length-1 ; j++ ) {
+                if (check2s[j].checked)
+                    check2 = check2 + check2s[j].value.toString() + ",";
+                    }
+
+
+            $.ajax({
+                type: "post",
+                url: "ReportApproval",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    'reportStatus':reportStatus.toString(),
+                    'reportComment':reportComment.toString(),
+                    'check1':check1.toString(),
+                    'check2':check2.toString()
+                }),
+                success: function (data) {
+                    alert(data.checkResponse);
+                    var responseCheck1 = data.check1;
+                    var responseCheck2 = data.check2;
+                    var responseCheck1s = new Array();
+                    var responseCheck2s = new Array();
+                    responseCheck1s = responseCheck1.split(",");
+                    responseCheck2s = responseCheck2.split(",");
+
+                    for (i=0 ; i < responseCheck1s.length-1 ; i++) {
+                        var check1ID = "div1_" + responseCheck1s[i];
+                        $("#" + check1ID).remove();
+                    }
+                    for (i=0 ; i < responseCheck2s.length-1 ; i++) {
+                        var check2ID = "div2_" + responseCheck2s[i].toString();
+                        var check2 = document.getElementById(check2ID);
+                        $("#" + check2ID).remove();
+                    }
+                    var checkboxAll = document.getElementById("checkboxAll");
+                    var reportStatus = document.getElementById("reportStatus");
+                    var reportComment = document.getElementById("reportComment");
+                    checkboxAll.checked = false;
+                    reportStatus[0].selected = true;
+                    reportComment.setAttribute("value","");
+                    /*var listLength = $("#listContainer" ).length;
+                    var content = $("#listContainer" ).html();
+                    if (listLength == 0 || content == null)
+                    alert(content);
+                        checkboxAll.setAttribute("style" ,"display:none" );*/
+
+
+                },
+                error: function () {
+                    alert("error!");
+                    var checkboxAll = document.getElementById("checkboxAll");
+                    var reportStatus = document.getElementById("reportStatus");
+                    var reportComment = document.getElementById("reportComment");
+                    checkboxAll.checked = false;
+                    reportStatus[0].selected = true;
+                    reportComment.setAttribute("value","");
+                   /* var listLength = $("#listContainer" ).length;
+                    var content = $("#listContainer" ).html();
+                    if (listLength == 0 || content == null)
+                        checkboxAll.setAttribute("style" ,"display:none" );*/
+                }
+            });
+        });
+        });
+    </script>
 </head>
 
 <body>
@@ -20,21 +102,34 @@
             <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
         </div>
 
-        <button type="button" id="checkboxAll" onclick="selectAll()" value="全选">全选</button>
-
-        <div th:each="list:${list1}" class="approval_content">
+        <div th:if="${list1!=null or list2!=null}" style="margin: 1em 0 1em 0.7em;position:relative;">
+            <input type="checkbox" id="checkboxAll" onclick="selectAll()" value="全选"/>
+        </div>
+        <div id="listContainer">
+        <div th:each="list:${list1}" class="approval_content" th:id="'div1_' + ${list.reportID}">
             <div class="approval_left">
                 <div class="check_box">
-                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}"><span>√</span>
+                    <input type="checkbox" name="check1" id="check" th:value="${list.reportID}">
                 </div>
                 <label for="check"></label>
             </div>
             <div class="approval_right">
-                <div class="approval_right_title">
-                    <p th:text="'提交人'+${list.userName}+'('+${list.submitTime}+')'"></p>
+                <div style="display:flex;flex-direction:rows;align-items:center;">
+                    <div class="approval_right_title">
+                        <p th:text="'提交人:&nbsp'+${list.userName}"></p>
+                    </div>
+
+                    <img th:src="${list.reportPath}"/>
+
+                    <div class="approval_right_att">
+
+                        <button type="button"></button>
+                    </div>
                 </div>
                 <div class="approval_right_content">
-                    <p th:text="'内容:' + ${list.reportText}"></p>
+                    <p th:text="'内容:&nbsp' + ${list.reportText}"></p>
+                </div>
+                <div class="approval_right_attach">
                     <div th:switch="${list.category}">
                         <p th:case="1">一般报告-日常工作(1分)</p>
                         <p th:case="2">一般报告-领导交办(2分</p>
@@ -42,23 +137,34 @@
                         <p th:case="4">一般报告-急难危重(2分)</p>
                         <p th:case="5">一般报告-其他工作(2分)</p>
                     </div>
+                    <p th:text="'提交时间:&nbsp'+${list.submitTime}"></p>
                 </div>
             </div>
         </div>
-        <div th:each="list:${list2}" class="approval_content">
+        <div th:each="list:${list2}" class="approval_content" th:id="div2_ + ${list.reportID}">
             <div class="approval_left">
                 <div class="check_box">
-                    <input type="checkbox" name="check2" id="check2" th:value="${list.reportID}"><span>√</span>
+                    <input type="checkbox" name="check2" id="check2" th:value="${list.reportID}">
                 </div>
                 <label for="check"></label>
             </div>
             <div class="approval_right">
                 <div class="approval_right_title">
-                    <p th:text="'提交人'+${list.userName}+'('+${list.submitTime}+')'"></p>
+                    <p th:text="'提交人:&nbsp'+${list.userName}"></p>
+                </div>
+
+
+                <img th:src="${list.reportPath}"/>
+
+                <div class="approval_right_att">
+
+                    <button type="button"></button>
                 </div>
                 <div class="approval_right_content">
-                    <p th:text="'内容:' + ${list.reportText}"></p>
-                    <p th:text="'小组成员:' + ${list.members}"></p>
+                    <p th:text="'内容:&nbsp' + ${list.reportText}"></p>
+                </div>
+                <div class="approval_right_attach">
+                    <p th:text="'小组成员:&nbsp' + ${list.members}"></p>
                     <div th:switch="${list.category}">
                         <p th:case="1" th:text="'个案报告-工作日常('+${list.singleScore}+'分)'">)</p>
                         <p th:case="2" th:text="'个案报告-领导交办('+${list.singleScore}+'分)'"></p>
@@ -66,10 +172,11 @@
                         <p th:case="4" th:text="'个案报告-急难危重('+${list.singleScore}+'分)'"></p>
                         <p th:case="5" th:text="'个案报告-其他工作('+${list.singleScore}+'分)'"></p>
                     </div>
+                    <p th:text="'提交时间:&nbsp'+${list.submitTime}"></p>
                 </div>
             </div>
         </div>
-
+        </div>
         <br/>
         <br/>
         <br/>
@@ -81,26 +188,23 @@
         <br/><br/>
 
 
-
         <div th:if="${list1!=null and list2!=null}" class="bottom_box">
             <div class="approval_bottom_box">
-                <select name="reportStatus">
+                <select name="reportStatus" id="reportStatus">
                     <option value="1">通过</option>
                     <option value="0">不通过</option>
                 </select>
             </div>
             <div class="approval_bottom_box">
-                <input type="text" name="reportComment" placeholder="请输入审批意见"/>
+                <input type="text" name="reportComment" id="reportComment" placeholder="请输入审批意见"/>
             </div>
             <div class="approval_bottom_box">
-                <input class="submit" type="submit" value="确定审批"/>
+                <input class="submit" type="button" value="确定审批" id="approvalSubmit" onclick="test()"/>
             </div>
         </div>
         <input type="hidden" name="check1">
         <input type="hidden" name="check2">
     </form>
-</div>
-<div class="space">
 </div>
 
 </body>
@@ -171,7 +275,38 @@
         }
 
     }
+
+    function reset(data) {
+        alert(0);
+        var responseCheck1 = data.check1;
+        var responseCheck2 = data.check2;
+        var responseCheck1s = new Array();
+        var responseCheck2s = new Array();
+        alert(responseCheck2);
+        responseCheck1s = responseCheck1.split(",");
+        responseCheck2s = responseCheck2.split(",");
+        for (i=0 ; i < responseCheck1s.length-1 ; i++) {
+            var check1ID = "div1_" + responseCheck1s[i];
+            var check1 = document.getElementById(check1ID);
+            check1.setAttribute("style","display:none");
+        }
+        for (i=0 ; i < responseCheck2s.length-1 ; i++) {
+            var check2ID = "div2_" + responseCheck2s[i];
+            var check2 = document.getElementById(check2ID);
+            alert(i);
+            check2.setAttribute("style","display:none");
+        }
+        var checkboxAll = document.getElementById("checkboxAll");
+        var reportStatus = document.getElementById("reportStatus");
+        var reportComment = document.getElementById("reportComment");
+        alert(1111);
+        checkboxAll.checked = false;
+        reportStatus[0].selected = true;
+        reportComment.setAttribute("value","");
+
+    }
        /*]]>*/
+
 
 </script>
 </html>

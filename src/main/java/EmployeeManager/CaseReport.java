@@ -9,8 +9,10 @@ public class CaseReport {
     private String submitTime;
     private String members;
     private String singleScore;
+    private String reportPath;
 
-    CaseReport(Object ReportID, Object UserID, Object UserName, Object Category, Object ReportText, Object SubmitTime, Object Members, Object SingleScore) {
+    CaseReport(Object ReportID, Object UserID, Object UserName, Object Category, Object ReportText,
+               Object SubmitTime, Object Members, Object SingleScore, Object reportPath) {
         this.reportID = String.valueOf(ReportID);
         this.userId = String.valueOf(UserID);
         this.userName = String.valueOf(UserName);
@@ -19,6 +21,15 @@ public class CaseReport {
         this.submitTime = String.valueOf(SubmitTime);
         this.members = String.valueOf(Members);
         this.singleScore = String.valueOf(SingleScore);
+        this.reportPath = String.valueOf(reportPath);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getReportPath() {
+        return reportPath;
     }
 
     public String getCategory() {
