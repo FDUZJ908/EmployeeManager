@@ -35,7 +35,6 @@ public class BackgroundController {
             model.addAttribute("errorNum","00");
             return "failure";
         }
-        String latestReport = server.getLatestGeneralReport(UserId);
 
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
@@ -43,7 +42,6 @@ public class BackgroundController {
 
         model.addAttribute("userName", userName);
         model.addAttribute("UserId", UserId);
-        model.addAttribute("latestReport", latestReport);
         model.addAttribute("list", DLeaders);
         return "GeneralReport";
     }
@@ -57,9 +55,10 @@ public class BackgroundController {
                                     Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
         if (reported.contains(UserId)) {
-            model.addAttribute("errorNum", "00");
+            model.addAttribute("errorNum", "05");
             return "failure";
         }
+
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -350,19 +349,18 @@ public class BackgroundController {
                 Model model) {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
-        logger.info("post ReportApproval: " + check1 + "    " + check2); //log
+        logger.info("post ReportApproval: check1-:" + check1 + "; check2-" + check2); //log
 
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
-        String reportStatus;
+        String reportStatus=ajax.getReportStatus();
         String reportComment = ajax.getReportComment();
-        if (ajax.getReportStatus().equals("1"))
-            reportStatus = "1";
-        else
-            reportStatus = "0";
 
         String updateSql = "";
         String checkTime = server.currentTime();
+
+        logger.info("'"+check1+"'");
+        logger.info("'"+check2+"'");
 
         if (!check1.isEmpty()) {
             for (int i = 0; i < reports1.length; i++) {
@@ -414,6 +412,7 @@ public class BackgroundController {
             }
         }
         if (!check2.isEmpty()) {
+            logger.info(String.valueOf(reports2.length));
             for (int i = 0; i < reports2.length; i++) {
                 Map<String, Object> caseReport = server.getUndealedCaseReport(reports2[i]);
                 if (caseReport == null) continue;
@@ -422,6 +421,7 @@ public class BackgroundController {
                 int scoreType;
 
                 if (reportStatus.equals("1")) {
+                    logger.info(caseReport.get("scoreType").toString());
                     if (caseReport.get("scoreType").toString().equals("1")) {
                         singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
                     } else
@@ -521,7 +521,7 @@ public class BackgroundController {
 
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
-                        "", map.get("category"), map.get("reportText"), "", "", "", map.
+                        "", map.get("category"), map.get("reportText"), "", "","", "", map.
                         get("leaderName"), "", 10, pathtmp);
                 reports.add(report_temp);
             }
@@ -540,7 +540,7 @@ public class BackgroundController {
 
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
-                        "", map.get("category"), map.get("reportText"), "", map.get("scoreType"),
+                        "", map.get("category"), map.get("reportText"), "",map.get("singleScore"), map.get("scoreType"),
                         "", map.get("leaderName"), map.get("members"), 11, pathtmp);
                 reports.add(report_temp);
             }
@@ -569,7 +569,7 @@ public class BackgroundController {
 
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
-                        map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), 1,
+                        map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"),"", 1,
                         map.get("comment"), map.get("leaderName"), "", 0, pathtmp);
 
                 reports.add(report_temp);
@@ -590,7 +590,7 @@ public class BackgroundController {
 
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, UserName, map.get("submitTime"),
-                        map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), map.get("scoreType"),
+                        map.get("checkTime"), map.get("category"), map.get("reportText"), map.get("isPass"), map.get("singleScore"),map.get("scoreType"),
                         map.get("comment"), map.get("leaderName"), map.get("members"), 1, pathtmp);
                 reports.add(report_temp);
             }
@@ -608,7 +608,7 @@ public class BackgroundController {
             for (Map<String, Object> map : listLeaderReport) {
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), UserId, "", map.get("submitTime"), "", map.get("category"),
-                        map.get("reportText"), "", map.get("scoreType"), "", "", "", 2, pathtmp);
+                        map.get("reportText"), "",map.get("singleScore"), map.get("scoreType"), "", "", "", 2, pathtmp);
                 reports.add(report_temp);
             }
             model.addAttribute("UserID", UserId);
@@ -633,7 +633,7 @@ public class BackgroundController {
                 String posterName = server.getUserName(map.get("userID").toString());
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("checkTime"), map.get("category")
-                        , map.get("reportText"), map.get("isPass"), 0, map.get("comment"), UserName, "", 0, pathtmp);
+                        , map.get("reportText"), map.get("isPass"), "",1, map.get("comment"), UserName, "", 0, pathtmp);
                 reports.add(report_temp);
             }
 
@@ -650,7 +650,7 @@ public class BackgroundController {
                 String posterName = server.getUserName(map.get("userID").toString());
                 String pathtmp = map.get("reportPath").toString().replaceAll("/root", "");
                 HistoryReport report_temp = new HistoryReport(map.get("reportID"), map.get("userID"), posterName, map.get("submitTime"), map.get("checkTime"), map.get("category"),
-                        map.get("reportText"), map.get("isPass"),
+                        map.get("reportText"), map.get("isPass"), map.get("singleScore"),
                         map.get("scoreType"), map.get("comment"), UserName, map.get("members"), 1, pathtmp);
                 reports.add(report_temp);
             }

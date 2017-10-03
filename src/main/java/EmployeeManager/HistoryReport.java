@@ -21,37 +21,41 @@ public class HistoryReport {
     private String reportPath;
 
     public HistoryReport(Object reportID,Object userID, Object userName, Object submitTime, Object checkTime,
-                         Object category, Object reportText, Object isPass, Object scoreType, Object comment,
+                         Object category, Object reportText, Object isPass, Object singleScore, Object scoreType, Object comment,
                          Object leaderName, Object members, Object type, Object reportPath) {
 
         int scoreTemp = 0;
         String categoryTmp = "";
         int categoryTemp = Integer.parseInt(String.valueOf(category));
-        switch (categoryTemp) {
-            default:
-                scoreTemp = 0;
-                categoryTmp = "";
-                break;
-            case 1:
-                scoreTemp = 1;
-                categoryTmp = "日常工作";
-                break;
-            case 2:
-                scoreTemp = 2;
-                categoryTmp = "领导交办";
-                break;
-            case 3:
-                scoreTemp = 2;
-                categoryTmp = "阶段汇总";
-                break;
-            case 4:
-                scoreTemp = 2;
-                categoryTmp = "急难险重";
-                break;
-            case 5:
-                scoreTemp = 2;
-                categoryTmp = "其他工作";
-                break;
+        if (Integer.parseInt(String.valueOf(type))== 0 ||Integer.parseInt(String.valueOf(type))== 10)
+            switch (categoryTemp) {
+                default:
+                    scoreTemp = 0;
+                    categoryTmp = "";
+                    break;
+                case 1:
+                    scoreTemp = 1;
+                    categoryTmp = "日常工作";
+                    break;
+                case 2:
+                    scoreTemp = 2;
+                    categoryTmp = "领导交办";
+                    break;
+                case 3:
+                    scoreTemp = 2;
+                    categoryTmp = "阶段汇总";
+                    break;
+                case 4:
+                    scoreTemp = 2;
+                    categoryTmp = "急难险重";
+                    break;
+                case 5:
+                    scoreTemp = 2;
+                    categoryTmp = "其他工作";
+                    break;
+            }
+        else {
+            scoreTemp = Integer.parseInt(String.valueOf(singleScore));
         }
 
         if (Integer.parseInt(String.valueOf(type))>= 10)
