@@ -91,7 +91,7 @@
             <div id="memberList" class="unselected-members">
             </div>
             <div class="submit_box">
-                <input type="submit" value="提交报告">
+                <input type="button" value="提交报告" id="caseSubmit">
             </div>
             <input name="members" id="members" style="display:none" value="">
         </form>
@@ -109,9 +109,44 @@
 </script>
 
 <script type="text/javascript">
-	$('#file').on("change",function(){
-		$('#att').text("已上传√");
-	});
+    $(document).ready(function(){
+
+        $("#file").on("change",function(){
+		$("#att").text("已上传√");
+	    });
+
+        $("#caseSubmit").click(function () {
+
+        var result = checkDL();
+
+        if (result == false)
+            return false;
+
+        var caseForm = document.getElementById("caseForm");
+        var formData = new FormData(caseForm);
+
+        $.ajax({
+        url : "CaseReport",
+        type : "POST",
+        data : formData,
+        // 告诉jQuery不要去处理发送的数据
+        processData : false,
+        // 告诉jQuery不要去设置Content-Type请求头
+        contentType : false,
+        beforeSend:function(){
+        console.log("正在进行，请稍候");
+        },
+        success : function(responseStr) {
+            alert(responseStr);
+            reset();
+        },
+        error : function(responseStr) {
+            alert("error");
+        }
+        });
+
+        });
+    });
 </script>
 
 <script th:inline="javascript">
@@ -173,6 +208,8 @@
          } else {
              file.value = "";
          }
+         $("#att").text("上传附件");
+
         var resetType =  document.getElementById("resetType");
         var resetScore_type = document.getElementById("resetScore_type");
         var resetDepartment = document.getElementById("resetDepartment");
@@ -183,6 +220,7 @@
             resetLeader.selected = true;
         $("#score").val(null);
         $("#checkMemberDiv").empty();
+
 
     }
 

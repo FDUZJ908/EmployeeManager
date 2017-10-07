@@ -47,6 +47,7 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/GeneralReport")
+    @ResponseBody
     public String GeneralReportPost(@RequestParam("content") String content,
                                     @RequestParam("type") String type,
                                     @RequestParam("leader") String leader,
@@ -55,8 +56,7 @@ public class BackgroundController {
                                     Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
         if (reported.contains(UserId)) {
-            model.addAttribute("errorNum", "05");
-            return "failure";
+            return "今天已经提交过一般报告!";
         }
 
         String currentTime = server.currentTime();
@@ -64,8 +64,7 @@ public class BackgroundController {
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            model.addAttribute("errorNum", "02");
-            return "failure";
+            return "文件上传失败！";
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
@@ -80,8 +79,7 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        model.addAttribute("successNum", "00");
-        return "success";
+        return "一般报告提交成功！";
     }
 
     @RequestMapping("/CaseReport")
@@ -108,6 +106,7 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/CaseReport")
+    @ResponseBody
     public String CaseReportPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
@@ -124,7 +123,7 @@ public class BackgroundController {
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent))
-            return "failure";
+            return "文件上传失败！";
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
@@ -138,8 +137,7 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        model.addAttribute("successNum", "01");
-        return "success";
+        return "个案报告提交成功！";
     }
 
     @RequestMapping("/LeadershipReport")
@@ -163,6 +161,7 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/LeadershipReport")
+    @ResponseBody
     public String LeadershipPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
@@ -178,8 +177,7 @@ public class BackgroundController {
         server.mkDir(UserId);
         String pathCurrent = path + UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            model.addAttribute("errorNum","02");
-            return "failure";
+            return "文件上传失败！";
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
@@ -197,8 +195,7 @@ public class BackgroundController {
         Object args[] = new Object[]{UserId};
         server.jdbcTemplate.update(sqlLeaderScore, args);
 
-        model.addAttribute("successNum", "02");
-        return "success";
+        return "领导报告提交成功！";
     }
 
 

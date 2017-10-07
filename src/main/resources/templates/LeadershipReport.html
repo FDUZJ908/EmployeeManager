@@ -15,7 +15,7 @@
     </div>
     -->
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()">
+        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()" id="leaderForm">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
@@ -66,7 +66,7 @@
             <div id="memberList" class="unselected-members">
             </div>
             <div class="submit_box">
-                <input type="submit" value="提交报告" >
+                <input type="button" value="提交报告" id="leaderSubmit">
             </div>
             <input name="members" id="members" style="display:none" value="">
         </form>
@@ -83,9 +83,44 @@
 </script>
 
 <script type="text/javascript">
-	$('#file').on("change",function(){
-		$('#att').text("已上传√");
-	});
+	 $(document).ready(function(){
+        $("#file").on("change",function(){
+		$("#att").text("已上传√");
+	    });
+
+        $("#leaderSubmit").click(function () {
+
+
+        var result = checkDL();
+
+        if (result == false)
+            return false;
+
+        var leaderForm = document.getElementById("leaderForm");
+        var formData = new FormData(leaderForm);
+
+        $.ajax({
+        url : "LeaderShipReport",
+        type : "POST",
+        data : formData,
+        // 告诉jQuery不要去处理发送的数据
+        processData : false,
+        // 告诉jQuery不要去设置Content-Type请求头
+        contentType : false,
+        beforeSend:function(){
+        console.log("正在进行，请稍候");
+        },
+        success : function(responseStr) {
+            alert(responseStr);
+            reset();
+        },
+        error : function(responseStr) {
+            alert("error");
+        }
+        });
+
+        });
+    });
 </script>
 
 <script th:inline="javascript">
