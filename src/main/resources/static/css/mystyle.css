@@ -210,9 +210,12 @@ hr {
     font-size: 1em;
 	margin: 0.5em 0;
 	background-color: rgb(255,255,255);
-	border-radius: 2em;
 	border-color: rgb(255,255,255);
 	padding: 0 1em;
+	/*添加阴影*/
+	-moz-box-shadow:2px 2px 2px #333333;
+	-webkit-box-shadow:2px 2px 2px #333333;
+	box-shadow:2px 2px 2px #333333;
 }
 
 .report_box label{
@@ -220,7 +223,8 @@ hr {
 	-moz-box-sizing: border-box;
     -webkit-box-sizing:border-box;
 	display: block;
-	font-size: 3em;
+	font-size: 4em;
+	font-weight: bold;
     border: none;
     letter-spacing: 1px;
 	margin: 0.5em 0 0.5em 0;
@@ -946,4 +950,27 @@ hr {
 */
 
 
+
+.QRCode{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	padding: auto;
+	position: absolute;
+	width: 70%;
+	height: 40%;
+	left: 15%;
+	top: 30%;
+}
+
+.QRbutton{
+	position: absolute;
+	width: 30%;
+	height: 5%;
+	left: 35%;
+	top: 75%;
+	font-size: 3em;
+	color: rgb(255,255,255);
+	background-color: rgb(80,119,170);
+}
 

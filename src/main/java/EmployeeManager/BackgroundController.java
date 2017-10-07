@@ -494,6 +494,7 @@ public class BackgroundController {
         String UserName = server.getUserName(UserId);
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
+        model.addAttribute("selected_type", 3); //进入页面时默认总排行
         return "HistoryReport";
     }
 

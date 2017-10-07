@@ -24,7 +24,7 @@
                 <textarea name="content" id="content" required="required"> </textarea>
                 <div class="select-file">
                     <input type="file" name="file" id="file"/>
-                    <label for="file" id="att">上传附件
+                    <label for="file" id="att" style="font-size:3em;">上传附件
                     </label>
                 </div>
             </div>
@@ -78,13 +78,12 @@
     </div>
 </select>
 </body>
-<script src="/js/jquery-3.2.1.js" type="text/javascript">
-
-</script>
-
+<script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 <script type="text/javascript">
-	$('#file').on("change",function(){
-		$('#att').text("已上传√");
+	$(document).ready(function(){
+			$("#file").on("change",function(){
+			$("#att").text("已上传√");
+			});
 	});
 </script>
 

@@ -1,17 +1,37 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>二维码</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="http://static.runoob.com/assets/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
+
 </head>
-
-
-<body>
-<div id="qrcode">
+<body onload="loadDepartment()">
+<div class="QRCode">
+    <div id="qrcode">
+    </div>
 </div>
+<button class="QRbutton" onclick="window.location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2FQRCode&response_type=code&scope=snsapi_base&state=true#wechat_redirect'">刷新</button>
+
 </body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+	var timestamp = /*[[${timestamp}]]*/;
+    var creator = /*[[${creator}]]*/;
+    timestamp=String(timestamp);
+	var qrcode = new QRCode(document.getElementById("qrcode"), {
+	text: "http://shiftlin.top:4908/redirectQR?timestamp=" + timestamp + "&creator=" + creator;
+	text: "https://www.baidu.com",
+	width : 256,
+	height : 256
+});
+    /*]]>*/
+</script>
+<!--
 <script th:inline="javascript">
     /*<![CDATA[*/
     var QRCode;
@@ -486,7 +506,5 @@
     new QRCode(document.getElementById("qrcode"), "http://shiftlin.top:4908/redirectQR?timestamp=" + timestamp + "&creator=" + creator);
     /*]]>*/
 </script>
-
-<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2FQRCode&response_type=code&scope=snsapi_base&state=true#wechat_redirect''>刷新</a>
-
+-->
 </html>
