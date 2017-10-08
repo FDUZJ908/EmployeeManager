@@ -17,6 +17,8 @@ public class CaseReport {
 
     static String[] Attrs = {"reportID", "userID", "userName", "category", "reportText", "submitTime", "members", "singleScore", "reportPath"};
 
+    CaseReport(){}
+
     CaseReport(Map<String, Object> argv)
     {
         this.reportID = argv.get("reportID").toString();

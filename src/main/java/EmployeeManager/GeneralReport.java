@@ -15,6 +15,8 @@ public class GeneralReport {
 
     static String[] Attrs={"reportID","userID","userName","category","reportText","submitTime","reportPath"};
 
+    GeneralReport(){}
+
     GeneralReport(Map<String, Object> argv)
     {
         this.reportID = argv.get("reportID").toString();

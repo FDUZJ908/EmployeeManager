@@ -11,6 +11,8 @@ public class User {
     private String s_score;
     private String avatarURL;
 
+    User(){}
+
     User(Map<String, Object> argv) {
         userName = argv.get("userName").toString();
         s_score = argv.get("s_score").toString();

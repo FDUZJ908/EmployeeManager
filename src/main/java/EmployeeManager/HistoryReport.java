@@ -26,6 +26,8 @@ public class HistoryReport {
     private String leaderName;
     private String reportPath;
 
+    public HistoryReport(){}
+
     public HistoryReport(Map<String, Object> argv) {
         reportID = argv.get("reportID").toString();
         userID = argv.get("userID").toString();
