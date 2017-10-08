@@ -24,6 +24,7 @@ public class GeneralReport {
         this.reportText = argv.get("reportText").toString();
         this.submitTime = argv.get("submitTime").toString();
         this.reportPath = argv.get("reportPath").toString();
+        this.submitTime = this.submitTime.substring(0 , this.submitTime.lastIndexOf(":"));
     }
 
     public String getUserId() {
