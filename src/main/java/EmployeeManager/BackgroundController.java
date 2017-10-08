@@ -418,10 +418,32 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
+
         String UserName = server.getUserName(UserId);
+        Map<String, Object> defValue = new HashMap<String, Object>();
+        defValue.put("Username", UserName);
+        defValue.put("userID", UserId);
+
+        String sqlGen = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                "from generalReport where userID =? order by submitTime desc";
+        Object args[] = new Object[]{UserId};
+        defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
+        List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+
+        String sqlCase = "select reportID, leaderName, category, reportText, submitTime, checkTime, isPass, " +
+                "comment, singleScore, scoreType, members, reportPath " +
+                "from caseReport where userID = ? order by submitTime desc";
+        defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
+        reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+
+        String sqlLeader = "select reportID,category, reportText, submitTime, singleScore, scoreType, reportPath " +
+                "from leaderReport where userID = ? order by submitTime desc";
+        defValue.put("type", HistoryReport.APPROVED);
+        reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
-        //model.addAttribute("list", reports);
+        model.addAttribute("list", reports);
         model.addAttribute("selected_type", 1); //进入页面时我的提交(已审批)
         return "HistoryReport";
     }
