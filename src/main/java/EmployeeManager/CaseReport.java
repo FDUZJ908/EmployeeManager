@@ -2,9 +2,9 @@ package EmployeeManager;
 
 import java.util.Map;
 
-import static EmployeeManager.Server.path;
-
 public class CaseReport {
+    static String[] Attrs = {"reportID", "userID", "userName", "category", "reportText", "submitTime", "members", "singleScore", "reportPath"};
+
     private String reportID;
     private String userID;
     private String userName;
@@ -15,22 +15,21 @@ public class CaseReport {
     private String singleScore;
     private String reportPath;
 
-    static String[] Attrs = {"reportID", "userID", "userName", "category", "reportText", "submitTime", "members", "singleScore", "reportPath"};
+    CaseReport() {
+    }
 
-    CaseReport(){}
-
-    CaseReport(Map<String, Object> argv)
-    {
+    CaseReport(Map<String, Object> argv) {
         this.reportID = argv.get("reportID").toString();
-        this.userID =argv.get("userID").toString();
+        this.userID = argv.get("userID").toString();
         this.userName = argv.get("userName").toString();
         this.category = argv.get("category").toString();
         this.reportText = argv.get("reportText").toString();
         this.submitTime = argv.get("submitTime").toString();
         this.members = argv.get("members").toString();
         this.singleScore = argv.get("singleScore").toString();
-        this.reportPath = argv.get("reportPath").toString().substring(path.length());
+        this.reportPath =argv.get("reportPath").toString();
     }
+
     /*
     CaseReport(Object ReportID, Object UserID, Object UserName, Object Category, Object ReportText,
                Object SubmitTime, Object Members, Object SingleScore, Object reportPath) {

@@ -3,7 +3,6 @@ package EmployeeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +21,6 @@ public class BackgroundController {
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
     Set<String> reported = new HashSet<String>();
     int QRTimeout = 30 * 60 * 1000;
-    @Value("${web.upload-path}")
-    private String path;
 
     @RequestMapping("/GeneralReport")
     public String GeneralReport(@RequestParam("state") String STATE,
@@ -62,7 +59,7 @@ public class BackgroundController {
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
-        String pathCurrent = path + UserId + "/" + currentFileName;
+        String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
             return "文件上传失败！";
         }
@@ -121,7 +118,7 @@ public class BackgroundController {
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
-        String pathCurrent = path + UserId + "/" + currentFileName;
+        String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent))
             return "文件上传失败！";
         if (file.getOriginalFilename().equals(""))
@@ -175,7 +172,7 @@ public class BackgroundController {
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
-        String pathCurrent = path + UserId + "/" + currentFileName;
+        String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
             return "文件上传失败！";
         }
@@ -309,7 +306,7 @@ public class BackgroundController {
         String sqlCase = "select reportID,userID,category,reportText,submitTime,members,singleScore,userName,reportPath " +
                 "from undealedCaseReport natural join user " +
                 "where leaderName=(select userName from user where userID=?)";
-        List<GeneralReport> listGen = server.jdbcTemplate.query(sqlGen, new Object[]{UserId}, new Mapper<GeneralReport>(GeneralReport.class));
+        //List<GeneralReport> listGen = server.jdbcTemplate.query(sqlGen, new Object[]{UserId}, new Mapper<GeneralReport>(GeneralReport.class));
         List<CaseReport> listCase = server.jdbcTemplate.query(sqlCase, new Object[]{UserId}, new Mapper<CaseReport>(CaseReport.class));
        /* Object args[] = new Object[]{UserId};
         List<Map<String, Object>> generalReport;
@@ -339,7 +336,7 @@ public class BackgroundController {
                     map.get("singleScore"), pathtmp);
             list2.add(list2_temp);
         }*/
-        model.addAttribute("list1", listGen);
+        model.addAttribute("list1", listCase);
         model.addAttribute("list2", listCase);
         return "ReportApproval";
     }
@@ -507,7 +504,7 @@ public class BackgroundController {
         logger.info("Post HistoryReport: " + UserId); //log
         Map<String, Object> defValue = new HashMap<String, Object>();
         defValue.put("Username", UserName);
-
+        defValue.put("userID", UserId);
         if (type.equals("我的提交(未审批)")) {
             String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
@@ -763,9 +760,8 @@ public class BackgroundController {
         }
         String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
-        if (checkin.getUsers().contains(userID))
-        {
-            model.addAttribute("errorNum" , "02");
+        if (checkin.getUsers().contains(userID)) {
+            model.addAttribute("errorNum", "02");
             return "failure";// avoid scanning QRcode repeatly
         }
         server.award(userID, 2);

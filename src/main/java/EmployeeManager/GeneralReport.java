@@ -2,8 +2,6 @@ package EmployeeManager;
 
 import java.util.Map;
 
-import static EmployeeManager.Server.path;
-
 public class GeneralReport {
     private String reportID;
     private String userID;
@@ -25,7 +23,7 @@ public class GeneralReport {
         this.category = argv.get("category").toString();
         this.reportText = argv.get("reportText").toString();
         this.submitTime = argv.get("submitTime").toString();
-        this.reportPath = argv.get("reportPath").toString().substring(path.length());
+        this.reportPath = argv.get("reportPath").toString();
     }
     /*
     GeneralReport(Object ReportID, Object UserID, Object UserName, Object Category,

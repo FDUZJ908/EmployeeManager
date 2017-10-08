@@ -1,6 +1,5 @@
 package EmployeeManager;
 
-import org.hibernate.dialect.SybaseAnywhereDialect;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class Server {
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
 
     @Value("${web.upload-path}")
-    public static String path;
+    private String path;
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
@@ -162,7 +161,7 @@ public class Server {
 
     public boolean saveFile(MultipartFile file, String pathCurrent) {
         if (!file.isEmpty()) {
-
+            pathCurrent = path + "/" + pathCurrent;
             File f = new File(pathCurrent);
             try {
                 if (!f.exists())
@@ -212,7 +211,7 @@ public class Server {
         if (!dir.exists())
             try {
                 dir.mkdir();
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
     }
@@ -248,7 +247,7 @@ public class Server {
         try {
             generalReport = jdbcTemplate.queryForList(sql);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return null;
         }
         for (Map<String, Object> map : generalReport) {
