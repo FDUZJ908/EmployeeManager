@@ -28,6 +28,7 @@ public class CaseReport {
         this.members = argv.get("members").toString();
         this.singleScore = argv.get("singleScore").toString();
         this.reportPath =argv.get("reportPath").toString();
+        this.submitTime = this.submitTime.substring(0 , this.submitTime.lastIndexOf(":"));
     }
 
     public String getUserId() {

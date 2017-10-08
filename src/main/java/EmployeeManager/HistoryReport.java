@@ -65,6 +65,8 @@ public class HistoryReport {
         submitTime = argv.get("submitTime").toString();//-5
         checkTime = argv.get("checkTime").toString();//
 
+        submitTime = submitTime.substring(0 , submitTime.lastIndexOf(":"));
+
         if ((typeNum & APPROVED) > 0)
             isPass = (argv.get("isPass").toString().equals("true")) ? "通过" : "不通过";
         else isPass = "待审批";
