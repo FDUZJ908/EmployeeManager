@@ -25,17 +25,6 @@ public class GeneralReport {
         this.submitTime = argv.get("submitTime").toString();
         this.reportPath = argv.get("reportPath").toString();
     }
-    /*
-    GeneralReport(Object ReportID, Object UserID, Object UserName, Object Category,
-                  Object ReportText, Object SubmitTime, Object reportPath) {
-        this.reportID = String.valueOf(ReportID);
-        this.userId = String.valueOf(UserID);
-        this.userName = String.valueOf(UserName);
-        this.category = String.valueOf(Category);
-        this.reportText = String.valueOf(ReportText);
-        this.submitTime = String.valueOf(SubmitTime);
-        this.reportPath = String.valueOf(reportPath);
-    }*/
 
     public String getUserId() {
         return userID;
