@@ -956,21 +956,18 @@ hr {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
 	padding: auto;
-	position: absolute;
-	width: 70%;
-	height: 40%;
-	left: 15%;
-	top: 30%;
+	margin: 30% auto 0 auto;
+	background-color: red;
 }
 
 .QRbutton{
-	position: absolute;
-	width: 30%;
-	height: 5%;
-	left: 35%;
-	top: 75%;
-	font-size: 3em;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	padding: auto;
+	margin: 10% auto 0 auto;
+	width: 50%;
+	font-size: 2em;
 	color: rgb(255,255,255);
 	background-color: rgb(80,119,170);
 }
-
