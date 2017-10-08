@@ -421,6 +421,7 @@ public class BackgroundController {
         String UserName = server.getUserName(UserId);
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
+        //model.addAttribute("list", reports);
         model.addAttribute("selected_type", 1); //进入页面时我的提交(已审批)
         return "HistoryReport";
     }
@@ -437,24 +438,23 @@ public class BackgroundController {
         Map<String, Object> defValue = new HashMap<String, Object>();
         defValue.put("Username", UserName);
         defValue.put("userID", UserId);
+        int selectType=0;
+        List<HistoryReport> reports=new ArrayList<HistoryReport>();
 
         if (type.equals("我的提交(未审批)")) {
             String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL);
-            List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
             /* caseReport
             * */
             String sqlCase = "select reportID, leaderName, category, reportText, submitTime, singleScore, scoreType, members, reportPath " +
                     "from undealedCaseReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE);
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
-            model.addAttribute("UserID", UserId);
-            model.addAttribute("UserName", UserName);
-            model.addAttribute("list", reports);
-            model.addAttribute("selected_type", 2);
-            return "HistoryReport";
+            selectType=2;
+
         }else
         if (type.equals("我的提交(已审批)")) {
              /* generalReport
@@ -463,7 +463,7 @@ public class BackgroundController {
                     "from generalReport where userID =? order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
-            List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
 
             /* caseReport
             * */
@@ -478,33 +478,31 @@ public class BackgroundController {
                     "from leaderReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
-            model.addAttribute("UserID", UserId);
-            model.addAttribute("UserName", UserName);
-            model.addAttribute("list", reports);
-            model.addAttribute("selected_type", 1);
-            return "HistoryReport";
+            selectType=1;
         }else
         if (type.equals("我的审批")) {
             String sqlGen = "select reportID, userID,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport where leaderName = ? order by submitTime desc";
             Object args[] = new Object[]{UserName};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
-            List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
 
             String sqlCase = "select reportID, userID, category, reportText, submitTime,checkTime, isPass, comment, " +
                     "singleScore, scoreType,members, reportPath " +
                     "from caseReport where leaderName = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
-            model.addAttribute("UserID", UserId);
-            model.addAttribute("UserName", UserName);
-            model.addAttribute("list", reports);
-            model.addAttribute("selected_type", 3);
-            return "HistoryReport";
+            selectType=3;
         }
-        model.addAttribute("errorNum", "01");
-        return "failure";
-
+        if(selectType==0) {
+            model.addAttribute("errorNum", "01");
+            return "failure";
+        }
+        model.addAttribute("UserID", UserId);
+        model.addAttribute("UserName", UserName);
+        model.addAttribute("list", reports);
+        model.addAttribute("selected_type", selectType);
+        return "HistoryReport";
     }
 
     @RequestMapping("/Synchronizer")
