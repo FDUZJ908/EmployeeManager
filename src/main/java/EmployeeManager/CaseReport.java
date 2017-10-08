@@ -1,8 +1,12 @@
 package EmployeeManager;
 
+import java.util.Map;
+
+import static EmployeeManager.Server.path;
+
 public class CaseReport {
     private String reportID;
-    private String userId;
+    private String userID;
     private String userName;
     private String category;
     private String reportText;
@@ -11,6 +15,21 @@ public class CaseReport {
     private String singleScore;
     private String reportPath;
 
+    static String[] Attrs = {"reportID", "userID", "userName", "category", "reportText", "submitTime", "members", "singleScore", "reportPath"};
+
+    CaseReport(Map<String, Object> argv)
+    {
+        this.reportID = argv.get("reportID").toString();
+        this.userID =argv.get("userID").toString();
+        this.userName = argv.get("userName").toString();
+        this.category = argv.get("category").toString();
+        this.reportText = argv.get("reportText").toString();
+        this.submitTime = argv.get("submitTime").toString();
+        this.members = argv.get("members").toString();
+        this.singleScore = argv.get("singleScore").toString();
+        this.reportPath = argv.get("reportPath").toString().substring(path.length());
+    }
+    /*
     CaseReport(Object ReportID, Object UserID, Object UserName, Object Category, Object ReportText,
                Object SubmitTime, Object Members, Object SingleScore, Object reportPath) {
         this.reportID = String.valueOf(ReportID);
@@ -23,9 +42,9 @@ public class CaseReport {
         this.singleScore = String.valueOf(SingleScore);
         this.reportPath = String.valueOf(reportPath);
     }
-
+    */
     public String getUserId() {
-        return userId;
+        return userID;
     }
 
     public String getReportPath() {

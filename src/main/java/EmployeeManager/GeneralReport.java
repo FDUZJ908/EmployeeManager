@@ -1,17 +1,31 @@
 package EmployeeManager;
 
-/**
- * Created by 11437 on 2017/8/4.
- */
+import java.util.Map;
+
+import static EmployeeManager.Server.path;
+
 public class GeneralReport {
     private String reportID;
-    private String userId;
+    private String userID;
     private String userName;
     private String category;
     private String reportText;
     private String submitTime;
     private String reportPath;
 
+    static String[] Attrs={"reportID","userID","userName","category","reportText","submitTime","reportPath"};
+
+    GeneralReport(Map<String, Object> argv)
+    {
+        this.reportID = argv.get("reportID").toString();
+        this.userID =argv.get("userID").toString();
+        this.userName = argv.get("userName").toString();
+        this.category = argv.get("category").toString();
+        this.reportText = argv.get("reportText").toString();
+        this.submitTime = argv.get("submitTime").toString();
+        this.reportPath = argv.get("reportPath").toString().substring(path.length());
+    }
+    /*
     GeneralReport(Object ReportID, Object UserID, Object UserName, Object Category,
                   Object ReportText, Object SubmitTime, Object reportPath) {
         this.reportID = String.valueOf(ReportID);
@@ -21,10 +35,10 @@ public class GeneralReport {
         this.reportText = String.valueOf(ReportText);
         this.submitTime = String.valueOf(SubmitTime);
         this.reportPath = String.valueOf(reportPath);
-    }
+    }*/
 
     public String getUserId() {
-        return userId;
+        return userID;
     }
 
     public String getReportPath() {
