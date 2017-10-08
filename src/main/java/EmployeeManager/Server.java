@@ -41,7 +41,7 @@ public class Server {
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
 
     @Value("${web.upload-path}")
-    private String path;
+    public static String path;
 
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = (int) (System.currentTimeMillis() / 1000);
@@ -147,8 +147,7 @@ public class Server {
                 return null;
             }
             for (Map<String, Object> leader : dLeader) {
-                User user_temp = new User(leader.get("userName"), leader.get("userID"));
-                users.add(user_temp);
+                users.add(new User(leader.get("userName"), leader.get("userID")));
             }
         }
         return users;
