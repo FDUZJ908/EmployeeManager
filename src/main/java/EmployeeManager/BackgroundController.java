@@ -333,7 +333,6 @@ public class BackgroundController {
                     ajax.setCheckResponse("一般报告审批失败!");
                 }
 
-
                 try {
                     server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
                 } catch (Exception e) {
@@ -434,9 +433,11 @@ public class BackgroundController {
                                     @RequestParam("UserName") String UserName,
                                     Model model) {
         logger.info("Post HistoryReport: " + UserId); //log
+
         Map<String, Object> defValue = new HashMap<String, Object>();
         defValue.put("Username", UserName);
         defValue.put("userID", UserId);
+
         if (type.equals("我的提交(未审批)")) {
             String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
@@ -454,8 +455,7 @@ public class BackgroundController {
             model.addAttribute("list", reports);
             model.addAttribute("selected_type", 2);
             return "HistoryReport";
-        }
-
+        }else
         if (type.equals("我的提交(已审批)")) {
              /* generalReport
             * */
@@ -483,16 +483,19 @@ public class BackgroundController {
             model.addAttribute("list", reports);
             model.addAttribute("selected_type", 1);
             return "HistoryReport";
-        }
+        }else
         if (type.equals("我的审批")) {
-            Object args[] = new Object[]{UserName};
             String sqlGen = "select reportID, userID,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport where leaderName = ? order by submitTime desc";
-            List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class));
+            Object args[] = new Object[]{UserName};
+            defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
+            List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+
             String sqlCase = "select reportID, userID, category, reportText, submitTime,checkTime, isPass, comment, " +
                     "singleScore, scoreType,members, reportPath " +
                     "from caseReport where leaderName = ? order by submitTime desc";
-            reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class)));
+            defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
+            reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             model.addAttribute("UserID", UserId);
             model.addAttribute("UserName", UserName);
             model.addAttribute("list", reports);
