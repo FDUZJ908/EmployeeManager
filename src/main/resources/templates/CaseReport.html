@@ -23,7 +23,7 @@
                 <label>报告内容:</label>
                 <textarea name="content" id="content" required="required"> </textarea>
                 <div class="select-file">
-                    <input type="file" name="file" id="file"/>
+                    <input type="file" name="file" id="file" onchange="changeFile()"/>
                     <label for="file" id="att" style="font-size:3em;">上传附件
                     </label>
                 </div>
@@ -97,6 +97,11 @@
         </form>
     </div>
 </div>
+
+<div class="uploadProcess" id="innerDiv">
+            <p>正在提交报告...</p>
+</div>
+
 <select name="members_hide" id="members_hide" style="display:none">
     <div th:each="AllUser:${AllUsers}">
         <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
@@ -109,12 +114,7 @@
 </script>
 
 <script type="text/javascript">
-<<<<<<< HEAD
     $(document).ready(function(){
-
-        $("#file").on("change",function(){
-		$("#att").text("已上传√");
-	    });
 
         $("#caseSubmit").click(function () {
 
@@ -135,13 +135,18 @@
         // 告诉jQuery不要去设置Content-Type请求头
         contentType : false,
         beforeSend:function(){
-        console.log("正在进行，请稍候");
+        $("#innerDiv").fadeIn("fast");
+        },
+        complete : function() {
+                    $("#innerDiv").fadeOut("fast");
         },
         success : function(responseStr) {
-            alert(responseStr);
             reset();
+            alert(responseStr);
+
         },
         error : function(responseStr) {
+            $("#innerDiv").fadeOut("fast");
             alert("error");
         }
         });
@@ -188,6 +193,11 @@
 
         checkMemberDivToInput();
 
+    }
+
+    function changeFile() {
+
+		$("#att").text("已上传√");
     }
     function checkMemberDivToInput() {
         /* check the department and leader*/
