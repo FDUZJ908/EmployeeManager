@@ -34,10 +34,13 @@
                 if (check1s[i].checked)
                     check1 = check1 + check1s[i].value.toString() + ",";
                 }
+
             for (j = 0 ; j < check2s.length-1 ; j++ ) {
                 if (check2s[j].checked)
                     check2 = check2 + check2s[j].value.toString() + ",";
-                    }
+                }
+            check1 = check1.substring( 0 , check1.length-1);
+            check2 = check2.substring( 0 , check2.length-1);
 
 
             $.ajax({
@@ -50,6 +53,12 @@
                     'check1':check1.toString(),
                     'check2':check2.toString()
                 }),
+                beforeSend:function(){
+                $("#processDiv").fadeIn("fast");
+                },
+                complete : function() {
+                    $("#processDiv").fadeOut("fast");
+                },
                 success: function (data) {
                     alert(data.checkResponse);
                     var responseCheck1 = data.check1;
@@ -59,11 +68,11 @@
                     responseCheck1s = responseCheck1.split(",");
                     responseCheck2s = responseCheck2.split(",");
 
-                    for (i=0 ; i < responseCheck1s.length-1 ; i++) {
+                    for (i=0 ; i < responseCheck1s.length ; i++) {
                         var check1ID = "div1_" + responseCheck1s[i];
                         $("#" + check1ID).remove();
                     }
-                    for (i=0 ; i < responseCheck2s.length-1 ; i++) {
+                    for (i=0 ; i < responseCheck2s.length ; i++) {
                         var check2ID = "div2_" + responseCheck2s[i].toString();
                         var check2 = document.getElementById(check2ID);
                         $("#" + check2ID).remove();
@@ -74,13 +83,6 @@
                     checkboxAll.checked = false;
                     reportStatus[0].selected = true;
                     reportComment.setAttribute("value","");
-                    /*var listLength = $("#listContainer" ).length;
-                    var content = $("#listContainer" ).html();
-                    if (listLength == 0 || content == null)
-                    alert(content);
-                        checkboxAll.setAttribute("style" ,"display:none" );*/
-
-
                 },
                 error: function () {
                     alert("error!");
@@ -90,10 +92,6 @@
                     checkboxAll.checked = false;
                     reportStatus[0].selected = true;
                     reportComment.setAttribute("value","");
-                   /* var listLength = $("#listContainer" ).length;
-                    var content = $("#listContainer" ).html();
-                    if (listLength == 0 || content == null)
-                        checkboxAll.setAttribute("style" ,"display:none" );*/
                 }
             });
         });
@@ -196,7 +194,7 @@
 
         <div id="outerDiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
             <div id="innerDiv" style="position:absolute;">
-                <img id="holonomicImg" style="border:5px solid #fff margin:5px auto; display:block;width:90%; height:auto;left:5%;" src="" />
+                <img id="holonomicImg" style="margin:auto; display:block;width:100%; height:auto;" src="" />
             </div>
         </div>
         
@@ -217,6 +215,10 @@
         <input type="hidden" name="check1">
         <input type="hidden" name="check2">
     </form>
+</div>
+
+<div class="uploadProcess" id="processDiv">
+    <p>正在审批报告...</p>
 </div>
 
 </body>

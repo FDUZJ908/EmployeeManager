@@ -7,7 +7,7 @@
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
     <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 </head>
-<body onload="reset()">
+<body>
 <div class="page">
     <!--
     <div class="page-title">
@@ -23,7 +23,7 @@
                 <label>报告内容:</label>
                 <textarea name="content" id="content" required="required"> </textarea>
                 <div class="select-file">
-                    <input type="file" name="file" id="file"/>
+                    <input type="file" name="file" id="file" onchange="changeFile()"/>
                     <label for="file" id="att" style="font-size:3em;">上传附件
                     </label>
                 </div>
@@ -77,13 +77,14 @@
         <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
     </div>
 </select>
+<div class="uploadProcess" id="innerDiv" >
+    <p>正在提交报告...</p>
+</div>
+
 </body>
 <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 <script type="text/javascript">
 	 $(document).ready(function(){
-        $("#file").on("change",function(){
-		$("#att").text("已上传√");
-	    });
 
         $("#leaderSubmit").click(function () {
 
@@ -97,7 +98,7 @@
         var formData = new FormData(leaderForm);
 
         $.ajax({
-        url : "LeaderShipReport",
+        url : "LeadershipReport",
         type : "POST",
         data : formData,
         // 告诉jQuery不要去处理发送的数据
@@ -105,7 +106,10 @@
         // 告诉jQuery不要去设置Content-Type请求头
         contentType : false,
         beforeSend:function(){
-        console.log("正在进行，请稍候");
+        $("#innerDiv").fadeIn("fast");
+        },
+        complete : function() {
+                    $("#innerDiv").fadeOut("fast");
         },
         success : function(responseStr) {
             alert(responseStr);
@@ -122,6 +126,10 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
+    function changeFile () {
+    		$("#att").text("已上传√");
+
+    }
     function checkDL () {
         var content = document.getElementById("content");
         var score = document.getElementById("score");

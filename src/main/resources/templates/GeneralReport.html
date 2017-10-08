@@ -10,10 +10,6 @@
     <script type="text/javascript">
     $(document).ready(function(){
 
-        $("#file").on("change",function(){
-		$("#att").text("已上传√");
-	    });
-
         $("#generalSubmit").click(function () {
 
         var result = checkDL();
@@ -34,7 +30,10 @@
         // 告诉jQuery不要去设置Content-Type请求头
         contentType : false,
         beforeSend:function(){
-        console.log("正在进行，请稍候");
+        $("#innerDiv").fadeIn("fast");
+        },
+        complete : function() {
+                    $("#innerDiv").fadeOut("fast");
         },
         success : function(responseStr) {
             alert(responseStr);
@@ -67,7 +66,7 @@
                 <label>报告内容:</label>
                 <textarea name="content" id="content" required="required"> </textarea>
                 <div class="select-file">
-                    <input type="file" name="file" id="file"/>
+                    <input type="file" name="file" id="file" onchange="changeFile()"/>
                     <label for="file" id="att" style="font-size:3em;">上传附件
                     </label>
                 </div>
@@ -117,6 +116,9 @@
         </form>
     </div>
 </div>
+<div class="uploadProcess" id="innerDiv" >
+    <p>正在提交报告...</p>
+</div>
 </body>
 
 
@@ -146,6 +148,10 @@
             return false;
 
 
+    }
+
+    function changeFile () {
+    		$("#att").text("已上传√");
     }
     function departmentRedirect() {
         var department_hide = document.getElementById("department_hide");

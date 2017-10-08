@@ -753,24 +753,25 @@ public class BackgroundController {
         long timestamp = Long.parseLong(STATE.substring(p + 1));
         if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp)  // invalid QRcode
         {
-            model.addAttribute("errorNum", "03");
+            model.addAttribute("errorNum", "01");
             return "failure";
         }
         if (System.currentTimeMillis() - timestamp > QRTimeout)  // invalid QRcode
         {
-            model.addAttribute("errorNum", "03");
+            model.addAttribute("errorNum", "01");
             return "failure";
         }
         String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
-        if (checkin.getUsers().contains(userID)) {
-            model.addAttribute("errorNum", "04");
+        if (checkin.getUsers().contains(userID))
+        {
+            model.addAttribute("errorNum" , "02");
             return "failure";// avoid scanning QRcode repeatly
         }
         server.award(userID, 2);
         checkin.add(userID);
         model.addAttribute("userID", userID);
-        return "checkinSuccess";
+        return "success";
     }
 
     /*
