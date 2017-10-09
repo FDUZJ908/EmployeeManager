@@ -26,7 +26,8 @@ public class HistoryReport {
     private String leaderName;
     private String reportPath;
 
-    public HistoryReport(){}
+    public HistoryReport() {
+    }
 
     public HistoryReport(Map<String, Object> argv) {
         reportID = argv.get("reportID").toString();
@@ -65,10 +66,13 @@ public class HistoryReport {
         submitTime = argv.get("submitTime").toString();//-5
         checkTime = argv.get("checkTime").toString();//
 
-        submitTime = submitTime.substring(0 , submitTime.lastIndexOf(":"));
+        submitTime = submitTime.substring(0, submitTime.lastIndexOf(":"));
 
-        if ((typeNum & APPROVED) > 0)
+        if ((typeNum & LEADER) > 0)
+            isPass = "通过";
+        else if ((typeNum & APPROVED) > 0) {
             isPass = (argv.get("isPass").toString().equals("true")) ? "通过" : "不通过";
+        }
         else isPass = "待审批";
 
         members = argv.get("members").toString();

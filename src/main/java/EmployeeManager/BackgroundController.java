@@ -77,7 +77,7 @@ public class BackgroundController {
 
         reported.add(UserId);
         try {
-            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, approvalAgentID);
+            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, reportAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -141,7 +141,7 @@ public class BackgroundController {
                 "values(" + sqlMessage + ")");
 
         try {
-            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, approvalAgentID);
+            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, reportAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -295,7 +295,6 @@ public class BackgroundController {
                                                  Model model) {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
-        logger.info("post ReportApproval: check1-:" + check1 + "; check2-" + check2); //log
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
         String reportStatus = ajax.getReportStatus();
@@ -367,7 +366,7 @@ public class BackgroundController {
                 int scoreType;
 
                 if (reportStatus.equals("1")) {
-                    if (caseReport.get("scoreType").toString().equals("1")) {
+                    if (caseReport.get("scoreType").toString().equals("true")) {
                         singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
                     } else
                         singleScore = -Integer.parseInt(caseReport.get("singleScore").toString());
@@ -442,7 +441,7 @@ public class BackgroundController {
 
         String UserName = server.getUserName(UserId);
         Map<String, Object> defValue = new HashMap<String, Object>();
-        defValue.put("Username", UserName);
+        defValue.put("userName", UserName);
         defValue.put("userID", UserId);
 
         String sqlGen = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
@@ -459,7 +458,7 @@ public class BackgroundController {
 
         String sqlLeader = "select reportID,category, reportText, submitTime, singleScore, scoreType, reportPath " +
                 "from leaderReport where userID = ? order by submitTime desc";
-        defValue.put("type", HistoryReport.APPROVED);
+        defValue.put("type", HistoryReport.LEADER);
         reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
 
         Collections.sort(reports, new Comparator<HistoryReport>() {
@@ -484,7 +483,7 @@ public class BackgroundController {
         logger.info("Post HistoryReport: " + UserId); //log
 
         Map<String, Object> defValue = new HashMap<String, Object>();
-        defValue.put("Username", UserName);
+        defValue.put("userName", UserName);
         defValue.put("userID", UserId);
         int selectType=0;
         List<HistoryReport> reports=new ArrayList<HistoryReport>();
@@ -524,20 +523,22 @@ public class BackgroundController {
             * */
             String sqlLeader = "select reportID,category, reportText, submitTime, singleScore, scoreType, reportPath " +
                     "from leaderReport where userID = ? order by submitTime desc";
-            defValue.put("type", HistoryReport.APPROVED);
+            defValue.put("type", HistoryReport.LEADER);
             reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             selectType=1;
         }else
         if (type.equals("我的审批")) {
-            String sqlGen = "select reportID, userID,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                    "from generalReport where leaderName = ? order by submitTime desc";
+            defValue.put("leaderName",UserName);
+
+            String sqlGen = "select reportID, userID, userName, category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                    "from generalReport natural join user where leaderName = ? order by submitTime desc";
             Object args[] = new Object[]{UserName};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
 
-            String sqlCase = "select reportID, userID, category, reportText, submitTime,checkTime, isPass, comment, " +
+            String sqlCase = "select reportID, userID, userName, category, reportText, submitTime,checkTime, isPass, comment, " +
                     "singleScore, scoreType,members, reportPath " +
-                    "from caseReport where leaderName = ? order by submitTime desc";
+                    "from caseReport natural join user where leaderName = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             selectType=3;

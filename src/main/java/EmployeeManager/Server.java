@@ -24,14 +24,18 @@ public class Server {
     static final String corpid = "wx7635106ee1705d6d";
     static final String submitSecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
     static final String contactSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
-    static final String approvalSecret = "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E";
+    static final String reportSecret = "x0VeHuzpagYuJmrymzJayHmN3vrzgtcISA2Q_8qhLG0";
+    /*static final String approvalSecret = "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E";
     static final String reportSecret = "xVBKh9GKuDGd_nJp8TBRzWzWBHkIVDFPjxewNKhBEzA";
     static final int approvalAgentID = 1000004;
-    static final int reportAgentID = 1000005;
+    static final int reportAgentID = 1000005;*/
+    static final int reportAgentID = 1000017;
+
 
     static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
-        put(approvalAgentID, approvalSecret);
         put(reportAgentID, reportSecret);
+        //put(approvalAgentID, approvalSecret);
+        //put(reportAgentID, reportSecret);
     }};
 
     @Autowired
@@ -114,7 +118,7 @@ public class Server {
 
     public String getUserName(String userId) {
 
-        String dIDSql = "select userName from user where userID=?";
+        String dIDSql = "select userName from user where userID=? limit 1";
         Object args[] = new Object[]{userId};
         List<Map<String, Object>> userNameCursor;
         try {
