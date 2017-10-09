@@ -793,7 +793,7 @@ hr {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	width: 55%;
+	width: 60%;
 	text-align: left;
 	font-size: 3.5em;
 	/*border-bottom: 1px solid black;*/
@@ -802,29 +802,6 @@ hr {
 .history_title p{
 	margin: 0.2em auto;
 	font-weight: bold;
-}
-
-.history_file{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing:border-box;
-	width: 5%;
-	text-align: center;
-}
-
-.history_file button{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing:border-box;
-	margin: auto;
-	width: 4.5em;
-	height: 4.5em;
-	border: none;
-	background: center;
-	background-size: 100% 100%;
-	background-repeat:no-repeat;
-	background-image: url(/images/attachment.png);
-
 }
 
 .history_submitTime{
@@ -839,6 +816,42 @@ hr {
 .history_submitTime p{
 	margin: 0.5em auto;
 }
+
+.history_type{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	width: 45%;
+	height: 20%;
+	text-align: left;
+	font-size: 2.75em;
+}
+
+.history_type p{
+	margin: 0.2em auto;
+}
+
+.history_file{
+	width: 55%;
+	height: 20%;
+}
+
+.history_file button{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	margin: auto;
+	width: 5em;
+	height: 5em;
+	border: none;
+	background: center;
+	background-size: 100% 100%;
+	background-repeat:no-repeat;
+	background-image: url(/images/attachment.png);
+}
+
+
+
 
 .history_content{
 	box-sizing: border-box;
@@ -956,13 +969,14 @@ hr {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	width: 100%;
+	/*width: 100%;
 	height: 50%;
 	position: fixed;
 	top: 25%;
 	display: flex;
     flex-direction: column;
-    align-items:center;
+    align-items:center;*/
+    margin-top: 20%;
 }
 
 
@@ -970,11 +984,12 @@ hr {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-    position: fixed;
+   /* position: fixed;
     left: 25%;
     top: 75%;
 	width: 50%;
-	height: 10%;
+	height: 10%;*/
+	margin-top: 10%;
 	font-size: 2em;
 	color: rgb(255,255,255);
 	background-color: rgb(80,119,170);
