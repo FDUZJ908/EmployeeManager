@@ -6,16 +6,27 @@ public class ReportApprovalAjax {
     private String check1;
     private String check2;
     private String checkResponse;
+    private String checkNum;
 
-    public ReportApprovalAjax(String reportStatus, String reportComment, String check1, String check2, String checkResponse) {
+    public ReportApprovalAjax(String reportStatus, String reportComment, String check1, String check2, String checkResponse, String checkNum) {
         this.reportStatus = reportStatus;
         this.reportComment = reportComment;
         this.check1 = check1;
         this.check2 = check2;
         this.checkResponse = checkResponse;
+        this.checkNum = checkNum;
+    }
+
+    public String getCheckNum() {
+        return checkNum;
+    }
+
+    public void setCheckNum(String checkNum) {
+        this.checkNum = checkNum;
     }
 
     public ReportApprovalAjax () {
+
 
     }
 

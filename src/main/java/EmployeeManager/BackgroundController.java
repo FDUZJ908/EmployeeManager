@@ -45,15 +45,18 @@ public class BackgroundController {
 
     @PostMapping(value = "/GeneralReport")
     @ResponseBody
-    public String GeneralReportPost(@RequestParam("content") String content,
+    public ResponseMsg GeneralReportPost(@RequestParam("content") String content,
                                     @RequestParam("type") String type,
                                     @RequestParam("leader") String leader,
                                     @RequestParam("file") MultipartFile file,
                                     @RequestParam("UserId") String UserId,
                                     Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
+        ResponseMsg responseMsg = new ResponseMsg("",""); // create ajax response
         if (reported.contains(UserId)) {
-            return "今天已经提交过一般报告!";
+            responseMsg.setMsg("今天已经提交过一般报告!");
+            responseMsg.setNum("0");
+            return responseMsg;
         }
 
         String currentTime = server.currentTime();
@@ -61,7 +64,9 @@ public class BackgroundController {
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            return "文件上传失败！";
+            responseMsg.setMsg("文件上传失败！");
+            responseMsg.setNum("0");
+            return responseMsg;
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
@@ -76,7 +81,9 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "一般报告提交成功！";
+        responseMsg.setMsg("一般报告提交成功！");
+        responseMsg.setNum("1");
+        return responseMsg;
     }
 
     @RequestMapping("/CaseReport")
@@ -104,7 +111,7 @@ public class BackgroundController {
 
     @PostMapping(value = "/CaseReport")
     @ResponseBody
-    public String CaseReportPost(@RequestParam("members") String members,
+    public ResponseMsg CaseReportPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
                                  @RequestParam("type") String type,
@@ -114,13 +121,17 @@ public class BackgroundController {
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
         logger.info("Post CaseReport: " + UserId); //log
+        ResponseMsg responseMsg = new ResponseMsg("",""); // create ajax response
 
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
-        if (!server.saveFile(file, pathCurrent))
-            return "文件上传失败！";
+        if (!server.saveFile(file, pathCurrent)) {
+            responseMsg.setMsg("文件上传失败！");
+            responseMsg.setNum("0");
+            return responseMsg;
+        }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
@@ -134,7 +145,9 @@ public class BackgroundController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "个案报告提交成功！";
+        responseMsg.setMsg("个案报告提交成功！");
+        responseMsg.setNum("1");
+        return responseMsg;
     }
 
     @RequestMapping("/LeadershipReport")
@@ -159,7 +172,7 @@ public class BackgroundController {
 
     @PostMapping(value = "/LeadershipReport")
     @ResponseBody
-    public String LeadershipPost(@RequestParam("members") String members,
+    public ResponseMsg LeadershipPost(@RequestParam("members") String members,
                                  @RequestParam("UserId") String UserId,
                                  @RequestParam("content") String content,
                                  @RequestParam("type") String type,
@@ -168,13 +181,15 @@ public class BackgroundController {
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
-
+        ResponseMsg responseMsg = new ResponseMsg("","");// create ajax response
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            return "文件上传失败！";
+            responseMsg.setMsg("文件上传失败！");
+            responseMsg.setNum("0");
+            return responseMsg;
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
@@ -191,8 +206,9 @@ public class BackgroundController {
         String sqlLeaderScore = "UPDATE user set s_score=s_score + " + singleScore + " where userID=?";
         Object args[] = new Object[]{UserId};
         server.jdbcTemplate.update(sqlLeaderScore, args);
-
-        return "领导报告提交成功！";
+        responseMsg.setMsg("领导报告提交成功！");
+        responseMsg.setNum("1");
+        return responseMsg;
     }
 
 
@@ -280,7 +296,6 @@ public class BackgroundController {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
         logger.info("post ReportApproval: check1-:" + check1 + "; check2-" + check2); //log
-
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
         String reportStatus = ajax.getReportStatus();
@@ -328,9 +343,12 @@ public class BackgroundController {
                     updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
                     server.jdbcTemplate.update(updateSql);
                     ajax.setCheckResponse("审批成功!");
+                    ajax.setCheckNum("1");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
-                    ajax.setCheckResponse("一般报告审批失败!");
+                    ajax.setCheckResponse("审批失败!");
+                    ajax.setCheckNum("0");
+                    return ajax;
                 }
 
                 try {
@@ -393,9 +411,12 @@ public class BackgroundController {
                     updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
                     server.jdbcTemplate.update(updateSql);
                     ajax.setCheckResponse("审批成功!");
+                    ajax.setCheckNum("1");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
-                    ajax.setCheckResponse("个案报告审批失败!");
+                    ajax.setCheckResponse("审批失败!");
+                    ajax.setCheckNum("0");
+                    return ajax;
                 }
 
                 try {
@@ -441,6 +462,11 @@ public class BackgroundController {
         defValue.put("type", HistoryReport.APPROVED);
         reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
 
+        Collections.sort(reports, new Comparator<HistoryReport>() {
+            public int compare(HistoryReport o1, HistoryReport o2) {
+                return o2.getSubmitTime().compareTo(o1.getSubmitTime());
+            }
+        });
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
         model.addAttribute("list", reports);
@@ -520,6 +546,13 @@ public class BackgroundController {
             model.addAttribute("errorNum", "01");
             return "failure";
         }
+
+        Collections.sort(reports, new Comparator<HistoryReport>() {
+            public int compare(HistoryReport o1, HistoryReport o2) {
+                return o2.getSubmitTime().compareTo(o1.getSubmitTime());
+            }
+        });
+
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
         model.addAttribute("list", reports);

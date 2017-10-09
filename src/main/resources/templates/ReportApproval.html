@@ -21,6 +21,12 @@
     });
         
         $("#approvalSubmit").click(function() {
+
+            var result = checkDL();
+
+            if (result == false)
+            return false;
+
             var reportStatus = document.getElementById("reportStatus");
             var reportComment = document.getElementById("reportComment").value;
 
@@ -61,6 +67,7 @@
                 },
                 success: function (data) {
                     alert(data.checkResponse);
+                    if (data.checkNum == "1") {
                     var responseCheck1 = data.check1;
                     var responseCheck2 = data.check2;
                     var responseCheck1s = new Array();
@@ -83,6 +90,7 @@
                     checkboxAll.checked = false;
                     reportStatus[0].selected = true;
                     reportComment.setAttribute("value","");
+                    }
                 },
                 error: function () {
                     alert("error!");

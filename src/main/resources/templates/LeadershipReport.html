@@ -111,11 +111,13 @@
         complete : function() {
                     $("#innerDiv").fadeOut("fast");
         },
-        success : function(responseStr) {
-            alert(responseStr);
-            reset();
+         success : function(responseMsg) {
+            alert(responseMsg.msg);
+            if(responseMsg.num == "1")
+                reset();
+
         },
-        error : function(responseStr) {
+        error : function(responseMsg) {
             alert("error");
         }
         });
@@ -246,6 +248,7 @@
             }
         }
     }
+
 
     function reset() {
         var content = document.getElementById("content");

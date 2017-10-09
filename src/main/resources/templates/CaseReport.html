@@ -140,12 +140,13 @@
         complete : function() {
                     $("#innerDiv").fadeOut("fast");
         },
-        success : function(responseStr) {
-            reset();
-            alert(responseStr);
+        success : function(responseMsg) {
+            alert(responseMsg.msg);
+            if(responseMsg.num == "1")
+                reset();
 
         },
-        error : function(responseStr) {
+        error : function(responseMsg) {
             $("#innerDiv").fadeOut("fast");
             alert("error");
         }
@@ -209,6 +210,7 @@
         }
         members.setAttribute("value",members.value.toString().substring(0,members.value.toString().length-1))
     }
+
 
     function reset() {
         var content = document.getElementById("content");
