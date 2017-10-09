@@ -667,7 +667,7 @@ public class BackgroundController {
                                     @RequestParam("file") MultipartFile file) {
         String filename=file.getOriginalFilename();
         String suffix=filename.substring(filename.lastIndexOf("."));
-        String avatarURL=userID+"/"+userID+"."+suffix;
+        String avatarURL=userID+"/"+userID+suffix;
 
         if(!server.saveFile(file,avatarURL)) return new ResponseMsg("0","文件上传失败");
         else return new ResponseMsg("1",avatarURL);

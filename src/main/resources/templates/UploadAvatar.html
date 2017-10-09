@@ -12,24 +12,31 @@
     <script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
 </head>
 <body>
-<div class="QRCode">
-    <img id="avatar" th:src="${avatarURL}" style="width : 256,height : 256;">
-</div>
+<!--div style="display: flex;flex-direction: column; align-items:center;	width: 100%;height: 100%;"-->
 
+<div style="display: flex;flex-direction: column; align-items:center;	width: 100%;height: 100%;">
+    <div style="margin-top:10%;" id="avatarDiv">
+        <img id="avatar" th:src="${avatarURL}" style="width:256px; height:256px;">
+    </div>
+<div>
+    <button id="avatarSubmit">upload</button>
+</div>
+    <div>
 <form method="post" enctype="multipart/form-data" id="avatarForm">
-    <div class="select-file">
+    <div>
         <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()"/>
         <label for="file" id="att" style="font-size:3em;">上传附件</label>
     </div>
 
     <input type="hidden" name="userID" th:value = "${userID}">
 </form>
+    </div>
 
+</div>
 <div class="uploadProcess" id="innerDiv">
     <p>正在提交头像...</p>
 </div>
 
-<button class="QRbutton" id="avatarSubmit">upload</button>
 
 <script th:inline="javascript">
 	/*<![CDATA[*/
@@ -44,8 +51,13 @@
     }
 
     function setAvatar (URL) {
-    var avatar = document.getElementById("avatar");
-    avatar.setAttribute("src",URL);
+    $("#avatar").remove();
+    var avatarNew = document.createElement("img");
+    avatarNew.setAttribute("id", "avatar");
+    avatarNew.setAttribute("src", URL.toString());
+    avatarNew.setAttribute("style", "width:256px; height:256px;");
+    var avatarDiv = document.getElementById("avatarDiv");
+    avatarDiv.appendChild(avatarNew);
     }
 	/*]]>*/
 </script>

@@ -185,8 +185,8 @@ public class Server {
     public String getAvatarURL(String userID) {
         String[] files=new File(path+"/"+userID+"/").list();
         for(String file:files)
-            if(file.indexOf(userID+".")==0) return userID+"/"+file;
-        String sql="select avatarURL from user where userID==? limit 1";
+            if (file.indexOf(userID + ".") == 0) return userID + "/" + file;
+        String sql="select avatarURL from user where userID=? limit 1";
         Map<String,Object> result=jdbcTemplate.queryForMap(sql,userID);
         if(result!=null) return result.get("avatarURL").toString();
         else return "";
