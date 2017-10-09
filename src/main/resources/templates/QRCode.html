@@ -12,12 +12,14 @@
     <script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
 </head>
 <body>
+
+<div style="display: flex;flex-direction: column; align-items:center;	width: 100%;height: 100%;">
 <div class="QRCode">
     <div id="qrcode"></div>
 </div>
 
 <button class="QRbutton" onclick="window.location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2FQRCode&response_type=code&scope=snsapi_base&state=true#wechat_redirect'">刷新</button>
-
+</div>
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	var timestamp = /*[[${timestamp}]]*/;
