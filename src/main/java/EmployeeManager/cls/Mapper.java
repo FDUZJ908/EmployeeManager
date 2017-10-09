@@ -1,4 +1,4 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -17,12 +17,12 @@ public class Mapper<T> implements RowMapper<T> {
     private Class<T> cls;
     private Map<String, Object> defValue;
 
-    Mapper(Class<T> _cls) {
+    public Mapper(Class<T> _cls) {
         cls = _cls;
         defValue = new HashMap<String, Object>();
     }
 
-    Mapper(Class<T> _cls, Map<String, Object> _defValue) {
+    public Mapper(Class<T> _cls, Map<String, Object> _defValue) {
         cls = _cls;
         defValue = _defValue;
     }

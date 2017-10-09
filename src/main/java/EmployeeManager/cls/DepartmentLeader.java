@@ -1,4 +1,4 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 public class DepartmentLeader {
     private String department;

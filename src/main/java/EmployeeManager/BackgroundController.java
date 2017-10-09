@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import EmployeeManager.cls.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -291,7 +292,7 @@ public class BackgroundController {
     @PostMapping("/ReportApproval")
     @ResponseBody
     public ReportApprovalAjax ReportApprovalPost(@RequestBody ReportApprovalAjax ajax,
-                                                 Model model) {
+                                                                 Model model) {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
         String[] reports1 = check1.split(",");
@@ -655,7 +656,9 @@ public class BackgroundController {
             return "failure";
         }
 
-        String avatarURL=server.getAvatarURL(userID);
+        String sql="select avatarURL from user where userID=? limit 1";
+        Map<String,Object> result=server.jdbcTemplate.queryForMap(sql,userID);
+        String avatarURL=(result==null)?"":result.get("avatarURL").toString();
         model.addAttribute("userID",userID);
         model.addAttribute("avatarURL",avatarURL);
         return "UploadAvatar";
@@ -665,12 +668,17 @@ public class BackgroundController {
     @ResponseBody
     public ResponseMsg UploadAvatar(@RequestParam("userID") String userID,
                                     @RequestParam("file") MultipartFile file) {
+        logger.info("Post UploadAvatar: " + userID); //log
+
         String filename=file.getOriginalFilename();
         String suffix=filename.substring(filename.lastIndexOf("."));
         String avatarURL=userID+"/"+userID+suffix;
 
-        if(!server.saveFile(file,avatarURL)) return new ResponseMsg("0","文件上传失败");
-        else return new ResponseMsg("1",avatarURL);
+        if(server.saveFile(file,avatarURL)){
+            String sql="update user set avatarURL=? where userID=?";
+            server.jdbcTemplate.update(sql,avatarURL,userID);
+            return new ResponseMsg("1",avatarURL);
+        }else  return new ResponseMsg("0","文件上传失败");
     }
 
     /*
