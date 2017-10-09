@@ -94,8 +94,14 @@
     -->
     <div th:each="report:${list}" class="history_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
        <div style="display: flex;flex-direction: row;align-items:center;">
-			<div class="history_title">
-                <p th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+${report.getCategory()}"></p>
+			<div class="history_title" th:switch="${report.getType()}">
+                <p th:case="1" th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+'一般报告'"></p>
+                <p th:case="4097" th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+'一般报告'"></p>
+                <p th:case="16" th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+'个案报告'"></p>
+                <p th:case="4112" th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+'个案报告'"></p>
+                <p th:case="256" th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+'领导报告'"></p>
+                <p th:case="4352" th:text="${report.getUserName()}+'&nbsp&nbsp&nbsp&nbsp'+'领导报告'"></p>
+
             </div>
 			<!--div class="history_file">
                 <button type="button" th:value="${report.reportPath}"></button>
@@ -107,21 +113,27 @@
 		</div>
         <div style="display: flex; flex-direction:column;">
             <div class="history_content">
-                <p th:text="'内容:&nbsp'+${report.getReportText()}"></p>
+                <p th:text="${report.getCategory()}"></p>
             </div>
+
             <div class="approval_right_att">
                 <button th:if="${!report.reportPath.isEmpty()}" type="button" th:value="${report.reportPath}"></button>
             </div>
+
+            <div class="history_content">
+                <p th:text="'内容:&nbsp'+${report.getReportText()}"></p>
+            </div>
+
             <div class="history_members">
-                <p th:text="'成员:&nbsp'+${report.getMembers()}"></p>
+                <p th:if="${!report.members.isEmpty()}" th:text="'成员:&nbsp'+${report.getMembers()}"></p>
             </div>
         </div>
         <div style="display: flex;">
             <div class="history_score">
-                <p th:text="'分值:&nbsp'+${report.getSingleScore()}"></p>
+                <p th:if="${!report.singleScore.isEmpty()}" th:text="'分值:&nbsp'+${report.getSingleScore()}"></p>
             </div>
             <div class="history_leader">
-                <p th:text="'领导:&nbsp'+${report.getLeaderName()}"></p>
+                <p th:if="${!report.leaderName.isEmpty()}" th:text="'领导:&nbsp'+${report.getLeaderName()}"></p>
             </div>
             <div class="history_status">
                 <p th:text="'状态:&nbsp'+${report.getIsPass()}"></p>
@@ -129,7 +141,7 @@
         </div>
         <div style="display:flex;">
             <div class="history_comment">
-                <p th:text="'审批意见:&nbsp'+${report.getComment()}"></p>
+                <p th:if="${!report.comment.isEmpty()}" th:text="'审批意见:&nbsp'+${report.getComment()}"></p>
             </div>
             <!--
             <div class="history_checktime">

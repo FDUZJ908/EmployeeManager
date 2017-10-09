@@ -29,6 +29,9 @@ public class CaseReport {
         this.singleScore = argv.get("singleScore").toString();
         this.reportPath =argv.get("reportPath").toString();
         this.submitTime = this.submitTime.substring(0 , this.submitTime.lastIndexOf(":"));
+        if (argv.get("members").toString() == "") {
+            this.members = "无";
+        }
     }
 
     public String getUserId() {

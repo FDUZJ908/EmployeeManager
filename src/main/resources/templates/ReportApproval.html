@@ -116,10 +116,10 @@
     -->
     <form method="post" class="submit-form" nctype="multipart/form-data" onsubmit="return checkDL()">
         <div class="approval_content">
-            <label th:if="${list1==null and list2==null}">暂无未审批报告</label>
+            <label th:if="${list1=='' and list2==''}">暂无未审批报告</label>
         </div>
 
-        <div th:if="${list1!=null or list2!=null}" style="margin: 1em 0 1em 0.7em;position:relative;">
+        <div th:if="${list1!='' and list2!=''}" style="margin: 1em 0 1em 0.7em;position:relative;">
             <input type="checkbox" id="checkboxAll" onclick="selectAll()" value="全选"/>
         </div>
         <div id="listContainer">

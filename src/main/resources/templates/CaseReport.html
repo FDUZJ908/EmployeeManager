@@ -178,6 +178,11 @@
             alert("任务分值必须为数字！")
             return false;
         }
+
+        if ("-".indexOf(score.value.toString())!= -1) {
+            alert("任务分值不能为负数！")
+            return false;
+        }
         
         if (department.options[department.selectedIndex].text == "请选择部门") {
             alert("请选择部门！");
