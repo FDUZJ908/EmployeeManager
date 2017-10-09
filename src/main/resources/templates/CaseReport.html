@@ -163,7 +163,7 @@
         var score = document.getElementById("score");
         var department = document.getElementById("department");
         var leader = document.getElementById("leader");
-
+        var sub = "-";
         if (content.value.toString() == "") {
             alert("报告内容不能为空！");
             return false;
@@ -179,7 +179,7 @@
             return false;
         }
 
-        if ("-".indexOf(score.value.toString())!= -1) {
+        if (score.value.toString().indexOf(sub)!= -1) {
             alert("任务分值不能为负数！")
             return false;
         }

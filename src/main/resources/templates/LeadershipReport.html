@@ -135,6 +135,7 @@
     function checkDL () {
         var content = document.getElementById("content");
         var score = document.getElementById("score");
+        var sub = "-";
 
         if (content.value.toString() == "") {
             alert("报告内容不能为空！");
@@ -146,12 +147,13 @@
             return false;
         }
 
+
         if (isNaN(score.value.toString())) {
             alert("任务分值必须为数字！")
             return false;
         }
 
-        if ("-".indexOf(score.value.toString())!= -1) {
+        if (score.value.toString().indexOf(sub)!= -1) {
             alert("任务分值不能为负数！")
             return false;
         }
