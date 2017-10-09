@@ -182,6 +182,16 @@ public class Server {
         return true;
     }
 
+    public String getAvatarURL(String userID) {
+        String[] files=new File(path+"/"+userID+"/").list();
+        for(String file:files)
+            if(file.indexOf(userID+".")==0) return userID+"/"+file;
+        String sql="select avatarURL from user where userID==? limit 1";
+        Map<String,Object> result=jdbcTemplate.queryForMap(sql,userID);
+        if(result!=null) return result.get("avatarURL").toString();
+        else return "";
+    }
+
     public List<String> checkMember(String members) {
         //分解队伍成员
         String[] member = members.split(",");
