@@ -222,7 +222,7 @@ public class BackgroundController {
                               Model model) {
         logger.info("Request RankingList" ); //log
 
-        String sql = "select userName,s_score,avatarURL from user order by s_score desc";
+        String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
@@ -237,7 +237,7 @@ public class BackgroundController {
         logger.info("Post RankingList: " + type); //log
 
         if (type.equals("总排行")) {
-            String sql = "select userName,s_score,avatarURL from user order by s_score desc";
+            String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
@@ -258,7 +258,7 @@ public class BackgroundController {
                 selectedType = "0";
                 model.addAttribute("selected_type", 5);
             }
-            String sql = "select userName,s_score,avatarURL from user where position=" + selectedType + " order by s_score desc";
+            String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("list", users);
             if(STATE.equals("PC")) return "Rank";
