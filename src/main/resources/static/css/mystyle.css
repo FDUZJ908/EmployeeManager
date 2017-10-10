@@ -730,6 +730,39 @@ hr {
     vertical-align: middle;
 }
 
+
+.rank_box_PC{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	width: 100%;
+	min-height: 10%;
+	max-height: 10%;
+	font-size: 0.8em;
+	display: flex;
+	flex-direction: rows;
+	align-items:center;
+	background-color: rgb(255,255,255);
+	margin-bottom: 0.1em;
+}
+
+.rank_box_left_PC{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	display: block;
+	width: 15%;
+	height: 100%;
+    float: left;
+}
+
+.rank_box_left_PC img{
+    height: 73px;
+    width: 73px;
+    display: block;
+    vertical-align: middle;
+}
+
 .rank_box_right{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
