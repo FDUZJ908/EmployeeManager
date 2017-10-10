@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import EmployeeManager.cls.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static EmployeeManager.User.userAttrs;
-import static EmployeeManager.User.userKeys;
+import static EmployeeManager.cls.User.userAttrs;
+import static EmployeeManager.cls.User.userKeys;
 
 @Component
 public class Server {

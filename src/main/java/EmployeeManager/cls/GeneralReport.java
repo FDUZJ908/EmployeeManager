@@ -1,4 +1,4 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 import java.util.Map;
 
@@ -11,11 +11,11 @@ public class GeneralReport {
     private String submitTime;
     private String reportPath;
 
-    static String[] Attrs={"reportID","userID","userName","category","reportText","submitTime","reportPath"};
+    public static String[] Attrs={"reportID","userID","userName","category","reportText","submitTime","reportPath"};
 
-    GeneralReport(){}
+    public GeneralReport(){}
 
-    GeneralReport(Map<String, Object> argv)
+    public GeneralReport(Map<String, Object> argv)
     {
         this.reportID = argv.get("reportID").toString();
         this.userID =argv.get("userID").toString();

@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import EmployeeManager.cls.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
-import static EmployeeManager.Server.*;
+import static EmployeeManager.Server.reportAgentID;
+import static EmployeeManager.Server.submitSecret;
 
 @Controller
 public class BackgroundController {
@@ -21,6 +23,8 @@ public class BackgroundController {
     Map<String, Checkin> checkins = new HashMap<String, Checkin>();
     Set<String> reported = new HashSet<String>();
     int QRTimeout = 30 * 60 * 1000;
+    String mesgToLeader = "您有一份新报告需要审批，可进入 报告查询-审批报告 查看。";
+    String mesgToSubordinate = "您有一份报告已被审批，可进入 报告查询-我的报告 查看。";
 
     @RequestMapping("/GeneralReport")
     public String GeneralReport(@RequestParam("state") String STATE,
@@ -46,13 +50,13 @@ public class BackgroundController {
     @PostMapping(value = "/GeneralReport")
     @ResponseBody
     public ResponseMsg GeneralReportPost(@RequestParam("content") String content,
-                                    @RequestParam("type") String type,
-                                    @RequestParam("leader") String leader,
-                                    @RequestParam("file") MultipartFile file,
-                                    @RequestParam("UserId") String UserId,
-                                    Model model) {
+                                         @RequestParam("type") String type,
+                                         @RequestParam("leader") String leader,
+                                         @RequestParam("file") MultipartFile file,
+                                         @RequestParam("UserId") String UserId,
+                                         Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
-        ResponseMsg responseMsg = new ResponseMsg("",""); // create ajax response
+        ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
         if (reported.contains(UserId)) {
             responseMsg.setMsg("今天已经提交过一般报告!");
             responseMsg.setNum("0");
@@ -77,7 +81,7 @@ public class BackgroundController {
 
         reported.add(UserId);
         try {
-            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, reportAgentID);
+            server.sendMessage(leader, mesgToLeader, true, reportAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -112,16 +116,16 @@ public class BackgroundController {
     @PostMapping(value = "/CaseReport")
     @ResponseBody
     public ResponseMsg CaseReportPost(@RequestParam("members") String members,
-                                 @RequestParam("UserId") String UserId,
-                                 @RequestParam("content") String content,
-                                 @RequestParam("type") String type,
-                                 @RequestParam("score_type") String score_type,
-                                 @RequestParam("score") String score,
-                                 @RequestParam("leader") String leader,
-                                 @RequestParam("file") MultipartFile file,
-                                 Model model) {
+                                      @RequestParam("UserId") String UserId,
+                                      @RequestParam("content") String content,
+                                      @RequestParam("type") String type,
+                                      @RequestParam("score_type") String score_type,
+                                      @RequestParam("score") String score,
+                                      @RequestParam("leader") String leader,
+                                      @RequestParam("file") MultipartFile file,
+                                      Model model) {
         logger.info("Post CaseReport: " + UserId); //log
-        ResponseMsg responseMsg = new ResponseMsg("",""); // create ajax response
+        ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
 
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
@@ -141,7 +145,7 @@ public class BackgroundController {
                 "values(" + sqlMessage + ")");
 
         try {
-            server.sendMessage(leader, "您有一份新报告需要审批，可进入 报告审批 查看。", true, reportAgentID);
+            server.sendMessage(leader, mesgToLeader, true, reportAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -173,15 +177,15 @@ public class BackgroundController {
     @PostMapping(value = "/LeadershipReport")
     @ResponseBody
     public ResponseMsg LeadershipPost(@RequestParam("members") String members,
-                                 @RequestParam("UserId") String UserId,
-                                 @RequestParam("content") String content,
-                                 @RequestParam("type") String type,
-                                 @RequestParam("score_type") String score_type,
-                                 @RequestParam("score") String score,
-                                 @RequestParam("file") MultipartFile file,
-                                 Model model) {
+                                      @RequestParam("UserId") String UserId,
+                                      @RequestParam("content") String content,
+                                      @RequestParam("type") String type,
+                                      @RequestParam("score_type") String score_type,
+                                      @RequestParam("score") String score,
+                                      @RequestParam("file") MultipartFile file,
+                                      Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
-        ResponseMsg responseMsg = new ResponseMsg("","");// create ajax response
+        ResponseMsg responseMsg = new ResponseMsg("", "");// create ajax response
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
@@ -213,16 +217,12 @@ public class BackgroundController {
 
 
     //slected_type 为设置button点击后颜色准备
-    @RequestMapping("/RankingList") //rank
+    @RequestMapping("/RankingList")
     public String RankingList(@RequestParam("code") String CODE,
                               @RequestParam("state") String STATE,
                               Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
-        logger.info("Request RankingList: " + UserId); //log
-        if (!server.isUser(UserId)) {
-            model.addAttribute("errorNum", "00");
-            return "failure";
-        }
+        logger.info("Request RankingList" ); //log
+
         String sql = "select userName,s_score,avatarURL from user order by s_score desc";
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
         model.addAttribute("list", users);
@@ -231,7 +231,7 @@ public class BackgroundController {
         return "RankingList";
     }
 
-    @PostMapping(value = "/RankingList") //rank
+    @PostMapping(value = "/RankingList")
     public String RankingListPost(@RequestParam("button") String type,
                                   Model model) {
         logger.info("Post RankingList: " + type); //log
@@ -292,7 +292,7 @@ public class BackgroundController {
     @PostMapping("/ReportApproval")
     @ResponseBody
     public ReportApprovalAjax ReportApprovalPost(@RequestBody ReportApprovalAjax ajax,
-                                                 Model model) {
+                                                                 Model model) {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
         String[] reports1 = check1.split(",");
@@ -351,7 +351,7 @@ public class BackgroundController {
                 }
 
                 try {
-                    server.sendMessage(generalReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
+                    server.sendMessage(generalReport.get("userID").toString(), mesgToSubordinate, false, reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -419,7 +419,7 @@ public class BackgroundController {
                 }
 
                 try {
-                    server.sendMessage(caseReport.get("userID").toString(), "您有一份报告已被审批，可进入 我的报告 查看。", false, reportAgentID);
+                    server.sendMessage(caseReport.get("userID").toString(), mesgToSubordinate, false, reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -485,8 +485,8 @@ public class BackgroundController {
         Map<String, Object> defValue = new HashMap<String, Object>();
         defValue.put("userName", UserName);
         defValue.put("userID", UserId);
-        int selectType=0;
-        List<HistoryReport> reports=new ArrayList<HistoryReport>();
+        int selectType = 0;
+        List<HistoryReport> reports = new ArrayList<HistoryReport>();
 
         if (type.equals("我的提交(未审批)")) {
             String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
@@ -500,10 +500,9 @@ public class BackgroundController {
                     "from undealedCaseReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE);
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
-            selectType=2;
+            selectType = 2;
 
-        }else
-        if (type.equals("我的提交(已审批)")) {
+        } else if (type.equals("我的提交(已审批)")) {
              /* generalReport
             * */
             String sqlGen = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
@@ -525,10 +524,9 @@ public class BackgroundController {
                     "from leaderReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.LEADER);
             reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
-            selectType=1;
-        }else
-        if (type.equals("我的审批")) {
-            defValue.put("leaderName",UserName);
+            selectType = 1;
+        } else if (type.equals("我的审批")) {
+            defValue.put("leaderName", UserName);
 
             String sqlGen = "select reportID, userID, userName, category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport natural join user where leaderName = ? order by submitTime desc";
@@ -541,9 +539,9 @@ public class BackgroundController {
                     "from caseReport natural join user where leaderName = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
-            selectType=3;
+            selectType = 3;
         }
-        if(selectType==0) {
+        if (selectType == 0) {
             model.addAttribute("errorNum", "01");
             return "failure";
         }
@@ -606,17 +604,17 @@ public class BackgroundController {
         return "QRCode";
     }
 
-    @RequestMapping("/redirectQR")
+    @RequestMapping("/RedirectQR")
     public String redirectQR(@RequestParam("timestamp") String timestamp,
                              @RequestParam("creator") String creator,
                              Model model) {
         logger.info("Request redirectQR: " + creator + "-" + timestamp); //log
 
         model.addAttribute("state", creator + "-" + timestamp);
-        return "redirectQR";
+        return "RedirectQR";
     }
 
-    @RequestMapping("/checkin")
+    @RequestMapping("/Checkin")
     public String checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
@@ -645,6 +643,42 @@ public class BackgroundController {
         checkin.add(userID);
         model.addAttribute("userID", userID);
         return "success";
+    }
+
+    @RequestMapping("/UploadAvatar")
+    public String UploadAvatar(@RequestParam("code") String CODE,
+                               @RequestParam("state") String STATE,
+                               Model model) {
+        String userID = server.getUserId(CODE, submitSecret);
+        logger.info("Request UploadAvatar: " + userID); //log
+        if (!server.isUser(userID)) {
+            model.addAttribute("errorNum", "00");
+            return "failure";
+        }
+
+        String sql="select avatarURL from user where userID=? limit 1";
+        Map<String,Object> result=server.jdbcTemplate.queryForMap(sql,userID);
+        String avatarURL=(result==null)?"":result.get("avatarURL").toString();
+        model.addAttribute("userID",userID);
+        model.addAttribute("avatarURL",avatarURL);
+        return "UploadAvatar";
+    }
+
+    @PostMapping("/UploadAvatar")
+    @ResponseBody
+    public ResponseMsg UploadAvatar(@RequestParam("userID") String userID,
+                                    @RequestParam("file") MultipartFile file) {
+        logger.info("Post UploadAvatar: " + userID); //log
+
+        String filename=file.getOriginalFilename();
+        String suffix=filename.substring(filename.lastIndexOf("."));
+        String avatarURL=userID+"/"+userID+suffix;
+
+        if(server.saveFile(file,avatarURL)){
+            String sql="update user set avatarURL=? where userID=?";
+            server.jdbcTemplate.update(sql,avatarURL,userID);
+            return new ResponseMsg("1",avatarURL);
+        }else  return new ResponseMsg("0","文件上传失败");
     }
 
     /*

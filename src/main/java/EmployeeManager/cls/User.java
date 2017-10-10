@@ -1,4 +1,4 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 import java.util.Map;
 
@@ -11,9 +11,9 @@ public class User {
     private String s_score;
     private String avatarURL;
 
-    User(){}
+    public User(){}
 
-    User(Map<String, Object> argv) {
+    public User(Map<String, Object> argv) {
         userName = argv.get("userName").toString();
         s_score = argv.get("s_score").toString();
         avatarURL = argv.get("avatarURL").toString();
@@ -26,7 +26,7 @@ public class User {
         this.avatarURL = String.valueOf(avatarURL);
     }*/
 
-    User(Object userName, Object Score) {
+    public User(Object userName, Object Score) {
         this.userName = String.valueOf(userName);
         this.s_score = String.valueOf(Score);
     }

@@ -1,4 +1,4 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 import java.util.HashSet;
 import java.util.Set;

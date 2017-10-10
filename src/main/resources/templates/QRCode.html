@@ -26,7 +26,7 @@
     var creator = /*[[${creator}]]*/;
     timestamp=String(timestamp);
 	var qrcode = new QRCode(document.getElementById("qrcode"), {
-		text: 'http://shiftlin.top:4908/redirectQR?timestamp=' + timestamp + "&creator=" + creator,
+		text: 'http://shiftlin.top:4908/RedirectQR?timestamp=' + timestamp + "&creator=" + creator,
 		width : 256,
 		height : 256
 	});

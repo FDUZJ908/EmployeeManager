@@ -1,9 +1,9 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 import java.util.Map;
 
 public class CaseReport {
-    static String[] Attrs = {"reportID", "userID", "userName", "category", "reportText", "submitTime", "members", "singleScore", "reportPath"};
+    public static String[] Attrs = {"reportID", "userID", "userName", "category", "reportText", "submitTime", "members", "singleScore", "reportPath"};
 
     private String reportID;
     private String userID;
@@ -15,10 +15,10 @@ public class CaseReport {
     private String singleScore;
     private String reportPath;
 
-    CaseReport() {
+    public CaseReport() {
     }
 
-    CaseReport(Map<String, Object> argv) {
+    public CaseReport(Map<String, Object> argv) {
         this.reportID = argv.get("reportID").toString();
         this.userID = argv.get("userID").toString();
         this.userName = argv.get("userName").toString();

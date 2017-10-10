@@ -1,11 +1,10 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 public class ResponseMsg {
     private String num;
     private String msg;
 
     public ResponseMsg() {
-
     }
 
     public ResponseMsg(String num, String msg) {
