@@ -7,33 +7,48 @@
     <title>上传头像</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
+    <script src="/js/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="../css/jquery.Jcrop.min.css">
+    <link rel="stylesheet" href="../css/jquery.Jcrop.css">
+    <script src="/js/jquery.Jcrop.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.Jcrop.min.js"></script>
+    <script src="/js/jquery.color.js"></script>
+
+
 </head>
 <body>
-<!--div style="display: flex;flex-direction: column; align-items:center;	width: 100%;height: 100%;"-->
 
-<div style="display: flex;flex-direction: column; align-items:center;	width: 100%;height: 100%;">
-    <div style="margin-top:10%;" id="avatarDiv">
-        <img id="avatar" th:src="${avatarURL}" style="width:256px; height:256px;">
-    </div>
-<div>
-    <button id="avatarSubmit">upload</button>
+<div id="avatarDiv" style="height:60%;width:100%;background:#fff;position:relative;">
+    <img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;display:block;height:auto;width:auto;max-height:100%;max-width:100%;">
 </div>
-    <div>
-<form method="post" enctype="multipart/form-data" id="avatarForm">
-    <div>
-        <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()"/>
-        <label for="file" id="att" style="font-size:3em;">上传附件</label>
-    </div>
 
-    <input type="hidden" name="userID" th:value = "${userID}">
-</form>
-    </div>
 
+<div style="height: 10%;margin-top:20%;">
+    <input type="hidden" id="x" name="x">
+    <input type="hidden" id="y" name="y">
+    <input type="hidden" id="w" name="w">
+    <input type="hidden" id="h" name="h">
+    <button id="avatarSubmit"  style="width:300px;height:100px;display:block;font-size:3em;margin:auto;color: rgb(255,255,255);background-color: rgb(80,119,170);">确定更改</button>
 </div>
-<div class="uploadProcess" id="innerDiv">
+
+<div style="height: 10%;margin:auto;">
+    <form method="post" enctype="multipart/form-data" id="avatarForm">
+        <div class="select-ava">
+            <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()" />
+            <label for="file" id="att" style="font-size:3em;color:rgb(80,119,170);">选择头像
+            </label>
+        </div>
+
+        <input type="hidden" name="userID" th:value = "${userID}">
+    </form>
+</div>
+
+
+
+
+<div class="uploadProcess" id="innerDiv" style="display:none;">
     <p>正在提交头像...</p>
 </div>
 
@@ -41,13 +56,13 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	function checkDL () {
-	var con = confirm("确认提交报告？");
+	var con = confirm("确认提交头像？");
         if (con == false)
             return false;
 	}
     function changeFile() {
 
-		$("#att").text("已上传√");
+		$("#att").text("已上传头像√");
     }
 
     function setAvatar (URL) {
@@ -55,17 +70,47 @@
     var avatarNew = document.createElement("img");
     avatarNew.setAttribute("id", "avatar");
     avatarNew.setAttribute("src", URL.toString());
-    avatarNew.setAttribute("style", "width:256px; height:256px;");
+    avatarNew.setAttribute("style", "position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;display:block;height:auto;width:auto;max-height:100%;max-width:100%;");
     var avatarDiv = document.getElementById("avatarDiv");
     avatarDiv.appendChild(avatarNew);
     }
 	/*]]>*/
 </script>
 
+
+<script>
+	var jcropApi;
+	$('#avatarDiv').Jcrop({
+	allowSelect: false,
+	aspectRatio: 1,
+    setSelect: [ 150,150,850,850 ],
+	onSelect: updateCoords
+	}, function() {
+	jcropApi = this;
+	})
+;
+	function updateCoords(c){
+	$('#x').val(c.x);
+	$('#y').val(c.y);
+	$('#w').val(c.x+700);
+	$('#h').val(c.y+700);
+	};
+
+	function checkCoords(){
+		if (parseInt($('#w').val())) {
+		return true;
+	};
+	alert('请先选择头像，再提交。');
+	return false;
+	};
+
+</script>
+
 <script type="text/javascript">
     $(document).ready(function(){
 
         $("#avatarSubmit").click(function () {
+		checkCoords();
 
         var result = checkDL();
 

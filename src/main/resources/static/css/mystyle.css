@@ -156,6 +156,29 @@ hr {
 }
 
 
+.select-ava{
+	display: flex;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.select-ava label{
+	display: block;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	text-align: center;
+	background-color: rgb(237,238,240);
+	border-radius: 1em;
+	font-size: 1em;
+	cursor: pointer;
+	margin: 0 0 0.5em 0 !important;
+}
+
+.select-ava input[type="file"]{
+	display: none;
+}
+
 
 
 /*submit report*/
