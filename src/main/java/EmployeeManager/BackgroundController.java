@@ -664,6 +664,12 @@ public class BackgroundController {
     @PostMapping("/UploadAvatar")
     @ResponseBody
     public ResponseMsg UploadAvatar(@RequestParam("userID") String userID,
+                                    @RequestParam("x1") String x1,
+                                    @RequestParam("x2") String x2,
+                                    @RequestParam("y1") String y1,
+                                    @RequestParam("y2") String y2,
+                                    @RequestParam("w") String w,
+                                    @RequestParam("h") String h,
                                     @RequestParam("file") MultipartFile file) {
         String filename=file.getOriginalFilename();
         String suffix=filename.substring(filename.lastIndexOf("."));
