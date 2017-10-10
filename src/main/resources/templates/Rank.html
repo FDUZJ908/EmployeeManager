@@ -20,8 +20,8 @@
         <div class="rank_box_left"><p th:text="${rowStat.count}"></p></div>
         <div class="rank_box_left_PC"><img th:src="@{${everyone.getAvatarURL()}}"/></div>
         <div class="rank_box_left"><p th:text="${everyone.getUsername()}"></p></div>
-        <div class="rank_box_left"><p></p></div>  <!--  ְ�� -->
-        <div class="rank_box_left"><p></p></div>  <!--  ְ�� -->
+        <div class="rank_box_left"><p th:text="${everyone.getDuty()}"></p></div>
+        <div class="rank_box_left"><p th:text="${everyone.getTitle()}"></p></div>
         <div class="rank_box_right"><p th:text="${everyone.getScore()}"></p></div>
     </div>
     <!--
