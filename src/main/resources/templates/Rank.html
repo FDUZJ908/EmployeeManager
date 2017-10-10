@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>»ý·Ö°ñ</title>
+    <title>ç§¯åˆ†æ¦œ</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
@@ -12,7 +12,7 @@
 <div class="page" style="width:1024px;height:768px;">
     <!--
     <div class="page-title">
-        <h3 th:text="'»ý·Ö°ñ-'+${selected_type}"></h3>
+        <h3 th:text="'ï¿½ï¿½ï¿½Ö°ï¿½-'+${selected_type}"></h3>
     </div>
     -->
     <hr>
@@ -20,8 +20,8 @@
         <div class="rank_box_left"><p th:text="${rowStat.count}"></p></div>
         <div class="rank_box_left_PC"><img th:src="@{${everyone.getAvatarURL()}}"/></div>
         <div class="rank_box_left"><p th:text="${everyone.getUsername()}"></p></div>
-        <div class="rank_box_left"><p></p></div>  <!--  Ö°³Æ -->
-        <div class="rank_box_left"><p></p></div>  <!--  Ö°¼¶ -->
+        <div class="rank_box_left"><p></p></div>  <!--  Ö°ï¿½ï¿½ -->
+        <div class="rank_box_left"><p></p></div>  <!--  Ö°ï¿½ï¿½ -->
         <div class="rank_box_right"><p th:text="${everyone.getScore()}"></p></div>
     </div>
     <!--
@@ -48,12 +48,13 @@
 
 
 <form method="post" nctype="multipart/form-data">
+    <input value="PC" name="STATE" style="display:none;"/>
     <div class="bottom_box">
-        <div class="rank_button"><input type="submit" id="B1" value="Áìµ¼¸É²¿" name="button"></div>
-        <div class="rank_button"><input type="submit" id="B2" value="ÖÐ²ã¸É²¿" name="button"></div>
-        <div class="rank_button"><input type="submit" id="B3" value="×ÜÅÅÐÐ" name="button"></div>
-        <div class="rank_button"><input type="submit" id="B4" value="Ò»°ã¸É²¿" name="button"></div>
-        <div class="rank_button"><input type="submit" id="B5" value="´å¼¶¸É²¿" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B1" value="é¢†å¯¼å¹²éƒ¨" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B2" value="ä¸­å±‚å¹²éƒ¨" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B3" value="æ€»æŽ’è¡Œ" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B4" value="ä¸€èˆ¬å¹²éƒ¨" name="button"></div>
+        <div class="rank_button"><input type="submit" id="B5" value="æ‘çº§å¹²éƒ¨" name="button"></div>
     </div>
 </form>
 </body>

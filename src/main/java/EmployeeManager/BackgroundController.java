@@ -218,8 +218,7 @@ public class BackgroundController {
 
     //slected_type 为设置button点击后颜色准备
     @RequestMapping("/RankingList")
-    public String RankingList(@RequestParam("code") String CODE,
-                              @RequestParam("state") String STATE,
+    public String RankingList(@RequestParam("state") String STATE,
                               Model model) {
         logger.info("Request RankingList" ); //log
 
@@ -227,12 +226,13 @@ public class BackgroundController {
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
-
+        if(STATE.equals("PC")) return "Rank";
         return "RankingList";
     }
 
     @PostMapping(value = "/RankingList")
     public String RankingListPost(@RequestParam("button") String type,
+                                  @RequestParam("state") String STATE,
                                   Model model) {
         logger.info("Post RankingList: " + type); //log
 
@@ -241,6 +241,7 @@ public class BackgroundController {
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
+            if(STATE.equals("PC")) return "Rank";
             return "RankingList";
         } else {
             String selectedType;
@@ -260,6 +261,7 @@ public class BackgroundController {
             String sql = "select userName,s_score,avatarURL from user where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("list", users);
+            if(STATE.equals("PC")) return "Rank";
             return "RankingList";
         }
     }
