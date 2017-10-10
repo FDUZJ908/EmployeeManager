@@ -9,6 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+
 import java.util.*;
 
 import static EmployeeManager.Server.reportAgentID;
@@ -224,6 +230,7 @@ public class BackgroundController {
 
         String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
+
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
         if(STATE.equals("PC")) return "Rank";
@@ -669,23 +676,70 @@ public class BackgroundController {
     @PostMapping("/UploadAvatar")
     @ResponseBody
     public ResponseMsg UploadAvatar(@RequestParam("userID") String userID,
-                                    @RequestParam("x1") String x1,
-                                    @RequestParam("x2") String x2,
-                                    @RequestParam("y1") String y1,
-                                    @RequestParam("y2") String y2,
+                                    @RequestParam("x") String x,
+                                    @RequestParam("y") String y,
                                     @RequestParam("w") String w,
                                     @RequestParam("h") String h,
+                                    @RequestParam("srcURL") String srcURL,
                                     @RequestParam("file") MultipartFile file) {
         logger.info("Post UploadAvatar: " + userID); //log
 
         String filename=file.getOriginalFilename();
         String suffix=filename.substring(filename.lastIndexOf("."));
         String avatarURL=userID+"/"+userID+suffix;
+        System.out.println(srcURL);
+
+
+        try{
+
+            File testFile =new File("srcURL.txt");
+
+            //if file doesnt exists, then create it
+            if(!testFile.exists()){
+                testFile.createNewFile();
+            }
+
+            //true = append file
+            FileWriter fileWritter = new FileWriter(testFile.getName(),true);
+            BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+            bufferWritter.write(srcURL);
+            bufferWritter.close();
+
+
+            System.out.println("Done");
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        try
+        {
+            //Base64解码
+            byte[] b = decoder.decodeBuffer(srcURL);
+            for(int i=0;i<b.length;++i)
+            {
+                if(b[i]<0)
+                {//调整异常数据
+                    b[i]+=256;
+                }
+            }
+            //生成jpeg图片
+            String imgFilePath = "srcURLPic.jpg";//新生成的图片
+            OutputStream out = new FileOutputStream(imgFilePath);
+            out.write(b);
+            out.flush();
+            out.close();
+        }
+        catch (Exception e)
+        {
+        }
 
         if(server.saveFile(file,avatarURL)){
             String sql="update user set avatarURL=? where userID=?";
             server.jdbcTemplate.update(sql,avatarURL,userID);
-            return new ResponseMsg("1",avatarURL);
+            return new ResponseMsg("1",srcURL);
         }else  return new ResponseMsg("0","文件上传失败");
     }
 

@@ -333,7 +333,7 @@
             for (i = leader.length - 1; i > 0; i--)
                 leader.options.remove(i);
             for (i = 1; i < department_hide.length; i++) {
-                if (department_hide[i].text == selectedD  /*&& userName != department_hide[i].value*/) {
+                if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
                         leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
                 }
             }
