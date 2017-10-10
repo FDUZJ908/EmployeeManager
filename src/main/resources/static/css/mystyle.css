@@ -156,6 +156,29 @@ hr {
 }
 
 
+.select-ava{
+	display: flex;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.select-ava label{
+	display: block;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	text-align: center;
+	background-color: rgb(237,238,240);
+	border-radius: 1em;
+	font-size: 1em;
+	cursor: pointer;
+	margin: 0 0 0.5em 0 !important;
+}
+
+.select-ava input[type="file"]{
+	display: none;
+}
+
 
 
 /*submit report*/
@@ -726,6 +749,39 @@ hr {
 .rank_box_left img{
     height: 100%;
     width: 100%;
+    display: block;
+    vertical-align: middle;
+}
+
+
+.rank_box_PC{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	width: 100%;
+	min-height: 10%;
+	max-height: 10%;
+	font-size: 0.8em;
+	display: flex;
+	flex-direction: rows;
+	align-items:center;
+	background-color: rgb(255,255,255);
+	margin-bottom: 0.1em;
+}
+
+.rank_box_left_PC{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	display: block;
+	width: 15%;
+	height: 100%;
+    float: left;
+}
+
+.rank_box_left_PC img{
+    height: 73px;
+    width: 73px;
     display: block;
     vertical-align: middle;
 }

@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import EmployeeManager.cls.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -217,29 +218,30 @@ public class BackgroundController {
 
     //slected_type 为设置button点击后颜色准备
     @RequestMapping("/RankingList")
-    public String RankingList(@RequestParam("code") String CODE,
-                              @RequestParam("state") String STATE,
+    public String RankingList(@RequestParam("state") String STATE,
                               Model model) {
         logger.info("Request RankingList" ); //log
 
-        String sql = "select userName,s_score,avatarURL from user order by s_score desc";
+        String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
-
+        if(STATE.equals("PC")) return "Rank";
         return "RankingList";
     }
 
     @PostMapping(value = "/RankingList")
     public String RankingListPost(@RequestParam("button") String type,
+                                  @RequestParam("state") String STATE,
                                   Model model) {
         logger.info("Post RankingList: " + type); //log
 
         if (type.equals("总排行")) {
-            String sql = "select userName,s_score,avatarURL from user order by s_score desc";
+            String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
+            if(STATE.equals("PC")) return "Rank";
             return "RankingList";
         } else {
             String selectedType;
@@ -256,9 +258,10 @@ public class BackgroundController {
                 selectedType = "0";
                 model.addAttribute("selected_type", 5);
             }
-            String sql = "select userName,s_score,avatarURL from user where position=" + selectedType + " order by s_score desc";
+            String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("list", users);
+            if(STATE.equals("PC")) return "Rank";
             return "RankingList";
         }
     }
@@ -291,7 +294,7 @@ public class BackgroundController {
     @PostMapping("/ReportApproval")
     @ResponseBody
     public ReportApprovalAjax ReportApprovalPost(@RequestBody ReportApprovalAjax ajax,
-                                                 Model model) {
+                                                                 Model model) {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
         String[] reports1 = check1.split(",");
@@ -655,7 +658,9 @@ public class BackgroundController {
             return "failure";
         }
 
-        String avatarURL=server.getAvatarURL(userID);
+        String sql="select avatarURL from user where userID=? limit 1";
+        Map<String,Object> result=server.jdbcTemplate.queryForMap(sql,userID);
+        String avatarURL=(result==null)?"":result.get("avatarURL").toString();
         model.addAttribute("userID",userID);
         model.addAttribute("avatarURL",avatarURL);
         return "UploadAvatar";
@@ -671,12 +676,17 @@ public class BackgroundController {
                                     @RequestParam("w") String w,
                                     @RequestParam("h") String h,
                                     @RequestParam("file") MultipartFile file) {
+        logger.info("Post UploadAvatar: " + userID); //log
+
         String filename=file.getOriginalFilename();
         String suffix=filename.substring(filename.lastIndexOf("."));
         String avatarURL=userID+"/"+userID+suffix;
 
-        if(!server.saveFile(file,avatarURL)) return new ResponseMsg("0","文件上传失败");
-        else return new ResponseMsg("1",avatarURL);
+        if(server.saveFile(file,avatarURL)){
+            String sql="update user set avatarURL=? where userID=?";
+            server.jdbcTemplate.update(sql,avatarURL,userID);
+            return new ResponseMsg("1",avatarURL);
+        }else  return new ResponseMsg("0","文件上传失败");
     }
 
     /*

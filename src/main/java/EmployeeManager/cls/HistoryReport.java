@@ -1,15 +1,15 @@
-package EmployeeManager;
+package EmployeeManager.cls;
 
 import java.util.Map;
 
 public class HistoryReport {
 
-    static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "reportText", "submitTime", "checkTime", "isPass",
+    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "reportText", "submitTime", "checkTime", "isPass",
             "members", "comment", "singleScore", "scoreType", "leaderName", "reportPath"};
-    static int GENERAL = 0x0001;
-    static int CASE = 0x0010;
-    static int LEADER = 0x0100;
-    static int APPROVED = 0x1000;
+    public static int GENERAL = 0x0001;
+    public static int CASE = 0x0010;
+    public static int LEADER = 0x0100;
+    public static int APPROVED = 0x1000;
     private String reportID;
     private String userID;
     private String userName;
