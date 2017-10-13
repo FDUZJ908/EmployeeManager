@@ -12,7 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 
 import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 
 import java.util.*;
@@ -685,63 +690,22 @@ public class BackgroundController {
         logger.info("Post UploadAvatar: " + userID); //log
 
         String filename=file.getOriginalFilename();
-        String suffix=filename.substring(filename.lastIndexOf("."));
-        String avatarURL=userID+"/"+userID+suffix;
-        System.out.println(srcURL);
+        String suffix="png";
+        String avatarURL=userID+"/"+userID+ "." + suffix;
+        String avatarURLSub=userID+"/"+userID+"sub."+suffix;
+        String srcURLFile = srcURL.substring(srcURL.indexOf(",")+1);
+
+        server.base64ToImg(srcURLFile,avatarURL);
 
 
-        try{
-
-            File testFile =new File("srcURL.txt");
-
-            //if file doesnt exists, then create it
-            if(!testFile.exists()){
-                testFile.createNewFile();
+            if (server.imgSub(avatarURL,avatarURLSub,suffix, Integer.parseInt(x),Integer.parseInt(y),Integer.parseInt(w),Integer.parseInt(h))) {
+                String sql = "update user set avatarURL=? where userID=?";
+                server.jdbcTemplate.update(sql, avatarURLSub, userID);
+                return new ResponseMsg("1", avatarURLSub);
             }
-
-            //true = append file
-            FileWriter fileWritter = new FileWriter(testFile.getName(),true);
-            BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-            bufferWritter.write(srcURL);
-            bufferWritter.close();
-
-
-            System.out.println("Done");
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-
-        BASE64Decoder decoder = new BASE64Decoder();
-        try
-        {
-            //Base64解码
-            byte[] b = decoder.decodeBuffer(srcURL);
-            for(int i=0;i<b.length;++i)
-            {
-                if(b[i]<0)
-                {//调整异常数据
-                    b[i]+=256;
-                }
-            }
-            //生成jpeg图片
-            String imgFilePath = "srcURLPic.jpg";//新生成的图片
-            OutputStream out = new FileOutputStream(imgFilePath);
-            out.write(b);
-            out.flush();
-            out.close();
-        }
-        catch (Exception e)
-        {
-        }
-
-        if(server.saveFile(file,avatarURL)){
-            String sql="update user set avatarURL=? where userID=?";
-            server.jdbcTemplate.update(sql,avatarURL,userID);
-            return new ResponseMsg("1",srcURL);
-        }else  return new ResponseMsg("0","文件上传失败");
+        return new ResponseMsg("0",srcURL);
     }
+
 
     /*
     @RequestMapping("/Reservation")
