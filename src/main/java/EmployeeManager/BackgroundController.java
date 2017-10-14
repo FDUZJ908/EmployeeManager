@@ -55,10 +55,10 @@ public class BackgroundController {
                                          Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
         ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
-        if(!server.reported.containsKey(UserId))
-            server.reported.put(UserId,server.maxReportCount);
-        int remaining=server.reported.get(UserId);
-        if (remaining<=0) {
+        if (!server.reported.containsKey(UserId))
+            server.reported.put(UserId, server.maxReportCount);
+        int remaining = server.reported.get(UserId);
+        if (remaining <= 0) {
             responseMsg.setMsg("超过每天提交次数上限！请明天再提交。");
             responseMsg.setNum("0");
             return responseMsg;
@@ -80,7 +80,7 @@ public class BackgroundController {
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
 
-        server.reported.put(UserId,--remaining);
+        server.reported.put(UserId, --remaining);
         try {
             server.sendMessage(leader, mesgToLeader, true, reportAgentID);
         } catch (Exception e) {
@@ -652,12 +652,14 @@ public class BackgroundController {
             return "failure";
         }
 
-
         if (qrCode.checkins.contains(userID)) {
             model.addAttribute("errorNum", "02");
             return "failure";// avoid scanning QRcode repeatly
         }
-        if (server.award(userID, qrCode.value) > 0) qrCode.checkins.add(userID);
+        if (server.award(userID, qrCode.value) > 0)
+            synchronized (this) {
+                qrCode.checkins.add(userID); //若提前分配好内存则可以删除synchronized
+            }
         else {
             model.addAttribute("errorNum", "-1");
             return "failure";

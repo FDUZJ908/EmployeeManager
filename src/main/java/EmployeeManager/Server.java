@@ -50,7 +50,7 @@ public class Server {
     Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
     Map<String, Integer> reported = new HashMap<String, Integer>();
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
-    int maxReportCount=0;
+    int maxReportCount = 0;
 
     @Value("${web.upload-path}")
     private String path;
@@ -524,7 +524,7 @@ public class Server {
         }
     }
 
-    public QRCode getQRCode(String userID) {
+    public synchronized QRCode getQRCode(String userID) {
         String time = currentTime();
         int QRID = -1;
         Set<Integer> keys = QRCodes.keySet();
@@ -536,7 +536,9 @@ public class Server {
         if (QRID != -1) return QRCodes.get(QRID);
         String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '%?%' LIMIT 1";
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{userID}, new Mapper<QRCode>(QRCode.class));
+            QRCode qrCode = jdbcTemplate.queryForObject(sql, new Object[]{userID}, new Mapper<QRCode>(QRCode.class));
+            QRCodes.put(qrCode.QRID, qrCode);
+            return qrCode;
         } catch (Exception e) {
             return null;
         }
