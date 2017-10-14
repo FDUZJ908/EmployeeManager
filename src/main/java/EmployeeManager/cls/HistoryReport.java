@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class HistoryReport {
 
-    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "reportText", "submitTime", "checkTime", "isPass",
+    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "typeValue","reportText", "submitTime", "checkTime", "isPass",
             "members", "comment", "singleScore", "scoreType", "leaderName", "reportPath"};
     public static int GENERAL = 0x0001;
     public static int CASE = 0x0010;
@@ -34,39 +34,20 @@ public class HistoryReport {
         userID = argv.get("userID").toString();
         userName = argv.get("userName").toString();
         type = argv.get("type").toString();
+        category = argv.get("category").toString();
+
         int typeNum = Integer.parseInt(type);
-        int categoryNum = Integer.parseInt(argv.get("category").toString());
-        switch (categoryNum) {
-            default:
-                singleScore = "0";
-                category = "";
-                break;
-            case 1:
-                singleScore = "1";
-                category = "日常工作";
-                break;
-            case 2:
-                singleScore = "2";
-                category = "领导交办";
-                break;
-            case 3:
-                singleScore = "2";
-                category = "阶段汇总";
-                break;
-            case 4:
-                singleScore = "2";
-                category = "急难险重";
-                break;
-            case 5:
-                singleScore = "2";
-                category = "其他工作";
-                break;
-        }
+
+
+
         reportText = argv.get("reportText").toString();
         submitTime = argv.get("submitTime").toString();//-5
         checkTime = argv.get("checkTime").toString();//
 
         submitTime = submitTime.substring(0, submitTime.lastIndexOf(":"));
+        if((typeNum & GENERAL) > 0) {
+            singleScore = argv.get("typeValue").toString();
+        }
 
         if ((typeNum & LEADER) > 0)
             isPass = "通过";

@@ -34,7 +34,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
-
+        List<ReportType> reportType= server.getReportType();
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         String userName = server.getUserName(UserId);
@@ -42,6 +42,7 @@ public class BackgroundController {
         model.addAttribute("userName", userName);
         model.addAttribute("UserId", UserId);
         model.addAttribute("list", DLeaders);
+        model.addAttribute("reportType", reportType);
         return "GeneralReport";
     }
 
@@ -75,7 +76,7 @@ public class BackgroundController {
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
-        String sqlMessage = "'" + UserId + "','" + leader + "'," + type + ",'" + content + "','" + pathCurrent + "','" +
+        String sqlMessage = "'" + UserId + "','" + leader + "','" + type + "','" + content + "','" + pathCurrent + "','" +
                 currentTime + "'";
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
@@ -101,7 +102,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
-
+        List<ReportType> reportType= server.getReportType();
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
         // Department-Leader-LeaderID
@@ -111,6 +112,7 @@ public class BackgroundController {
         model.addAttribute("userName", userName);
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
+        model.addAttribute("reportType", reportType);
         return "CaseReport";
     }
 
@@ -139,7 +141,7 @@ public class BackgroundController {
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
-        String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "'," + type + ",'" + content + "','" +
+        String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "','" + type + "','" + content + "','" +
                 pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
         server.jdbcTemplate.update("insert into undealedCaseReport " +
                 "(userID,leaderName,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
@@ -165,6 +167,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
+        List<ReportType> reportType= server.getReportType();
         String userName = server.getUserName(UserId);
         int userPrivilege = server.getUserPrivilege(UserId);
         int scoreLimit = server.getLeaderScoreLimit(userPrivilege);
@@ -175,6 +178,7 @@ public class BackgroundController {
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
         model.addAttribute("scoreLimit", scoreLimit);
+        model.addAttribute("reportType", reportType);
         return "LeadershipReport";
     }
 
@@ -201,7 +205,7 @@ public class BackgroundController {
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
-        String sqlMessage = "'" + UserId + "','" + members + "'," + type + ",'" + content + "','" + pathCurrent + "'," +
+        String sqlMessage = "'" + UserId + "','" + members + "','" + type + "','" + content + "','" + pathCurrent + "'," +
                 score + ",'" + server.currentTime() + "'," + score_type;
         server.jdbcTemplate.update("insert into leaderReport " +
                 "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
@@ -282,9 +286,9 @@ public class BackgroundController {
             return "failure";
         }
 
-        String sqlGen = "select reportID,userID,category,reportText,submitTime,userName,reportPath " +
-                "from undealedGeneralReport natural join user where leaderName=(select userName from user " +
-                "where userID=?)";
+        String sqlGen = "select reportID,userID,category,typeValue,reportText,submitTime,userName,reportPath " +
+                "from undealedGeneralReport natural join user , reportType where leaderName=(select userName from user " +
+                "where userID=?) and undealedGeneralReport.category = reportType.typeName";
 
         String sqlCase = "select reportID,userID,category,reportText,submitTime,members,singleScore,userName,reportPath " +
                 "from undealedCaseReport natural join user " +
@@ -321,21 +325,20 @@ public class BackgroundController {
                 int singleScore;
 
                 sqlMessage = "'" + generalReport.get("userID").toString() + "'" +
-                        ",'" + generalReport.get("leaderName").toString() + "'," +
+                        ",'" + generalReport.get("leaderName").toString() + "','" +
                         generalReport.get("category").toString() +
-                        ",'" + generalReport.get("reportText").toString() + "'" +
+                        "','" + generalReport.get("reportText").toString() + "'" +
                         ",'" + generalReport.get("reportPath").toString() + "'" +
                         ",'" + generalReport.get("submitTime").toString() + "'" +
                         ",'" + checkTime + "'," +
                         reportStatus +
                         ",'" + reportComment + "'";
-                if (generalReport.get("category").toString().equals("1"))
-                    singleScore = 1;
-                else
-                    singleScore = 2;
-                if (reportStatus.equals("0"))
-                    singleScore = 0;
-
+                singleScore = server.getTypeValue(generalReport.get("category").toString());
+                if (singleScore == 0) {
+                    ajax.setCheckResponse("invalid score!");
+                    ajax.setCheckNum("0");
+                    return ajax;
+                }
                 try {
                     updateSql = "UPDATE user set s_score=s_score + " + singleScore +
                             " where userID=?";
@@ -451,8 +454,8 @@ public class BackgroundController {
         defValue.put("userName", UserName);
         defValue.put("userID", UserId);
 
-        String sqlGen = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                "from generalReport where userID =? order by submitTime desc";
+        String sqlGen = "select reportID,leaderName,category,typeValue,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                "from generalReport,reportType where userID =? and generalReport.category = reportType.typeName order by submitTime desc";
         Object args[] = new Object[]{UserId};
         defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
         List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -496,8 +499,8 @@ public class BackgroundController {
         List<HistoryReport> reports = new ArrayList<HistoryReport>();
 
         if (type.equals("我的提交(未审批)")) {
-            String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
-                    "from undealedGeneralReport where userID =? order by submitTime desc";
+            String sqlGen = "select reportID,leaderName,category,typeValue,reportText,submitTime,reportPath " +
+                    "from undealedGeneralReport , reportType where userID =? and undealedGeneralReport.category = reportType.typeName order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -512,8 +515,8 @@ public class BackgroundController {
         } else if (type.equals("我的提交(已审批)")) {
              /* generalReport
             * */
-            String sqlGen = "select reportID,leaderName,category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                    "from generalReport where userID =? order by submitTime desc";
+            String sqlGen = "select reportID,leaderName,category,typeValue,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                    "from generalReport , reportType where userID =? and generalReport.category = reportType.typeName order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -535,8 +538,8 @@ public class BackgroundController {
         } else if (type.equals("我的审批")) {
             defValue.put("leaderName", UserName);
 
-            String sqlGen = "select reportID, userID, userName, category,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                    "from generalReport natural join user where leaderName = ? order by submitTime desc";
+            String sqlGen = "select reportID, userID, userName, category,typeValue ,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                    "from generalReport natural join user , reportType where leaderName = ? and generalReport.category = reportType.typeName order by submitTime desc";
             Object args[] = new Object[]{UserName};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -633,7 +636,7 @@ public class BackgroundController {
                           @RequestParam("state") String STATE,
                           Model model) {
         String userID = server.getUserId(CODE, submitSecret);
-        logger.info("Request checkin: " + userID + " - " + STATE); //log
+        logger.info("Request checkin: " + userID + " / " + STATE); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
             return "failure";

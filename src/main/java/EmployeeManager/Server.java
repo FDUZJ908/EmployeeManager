@@ -534,12 +534,13 @@ public class Server {
             else if (qrCode.QREntry.contains(userID)) QRID = key;
         }
         if (QRID != -1) return QRCodes.get(QRID);
-        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '%?%' LIMIT 1";
+        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '"+userID+"' LIMIT 1";
         try {
-            QRCode qrCode = jdbcTemplate.queryForObject(sql, new Object[]{userID}, new Mapper<QRCode>(QRCode.class));
+            QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
             QRCodes.put(qrCode.QRID, qrCode);
             return qrCode;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -641,22 +642,12 @@ public class Server {
             ImageReader reader = it.next();
             //获取图片流
             iis = ImageIO.createImageInputStream(is);
-
             reader.setInput(iis, true);
-
-
             ImageReadParam param = reader.getDefaultReadParam();
-
-
             Rectangle rect = new Rectangle(x, y, w, h);
-
-
             param.setSourceRegion(rect);
-
             BufferedImage bi = reader.read(0, param);
-
             ImageIO.write(bi, suffix, new File(avatarURLSub));
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
@@ -666,6 +657,43 @@ public class Server {
         }
 
         return true;
+    }
+
+    public List<ReportType> getReportType() {
+        List<ReportType> reportType = new ArrayList<ReportType>();
+        List<Map<String, Object>> reportTypeCursor;
+        String reportTypeSql = "select typeName , typeValue from reportType";
+        try {
+            reportTypeCursor = jdbcTemplate.queryForList(reportTypeSql);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        for (Map<String, Object> map : reportTypeCursor) {
+            ReportType reportType_temp = new ReportType(map.get("typeName").toString(), map.get("typeValue").toString());
+            reportType.add(reportType_temp);
+        }
+        return reportType;
+    }
+
+    public int getTypeValue(String typeName) {
+        List<Map<String, Object>> typeValueCursor;
+        int value = 0;
+        String typeValueSql = "select typeValue from reportType where typeName=? LIMIT 1";
+        Object args[] = new Object[]{typeName};
+        try {
+            typeValueCursor = jdbcTemplate.queryForList(typeValueSql, args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
+        for (Map<String, Object> map : typeValueCursor) {
+            value = Integer.parseInt(map.get("typeValue").toString());
+            break;
+        }
+        return value;
     }
 
 }

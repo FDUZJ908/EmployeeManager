@@ -14,14 +14,17 @@ public class QRCode {
     public int value;
     public String QREntry;
     public String flag;
+    public static String[] Attrs={"QRID","s_time","e_time","value","QREntry","flag"};
 
     public Set<String> checkins;
 
+    public QRCode(){}
+
     public QRCode(Map<String, Object> argv){
-        QRID=(Integer)argv.get("QRID");
+        QRID=(Integer)(argv.get("QRID"));
         s_time=argv.get("s_time").toString();
-        e_time=argv.get("t_time").toString();
-        value=(Integer)argv.get("value");
+        e_time=argv.get("e_time").toString();
+        value=(Integer)(argv.get("value"));
         QREntry=argv.get("QREntry").toString();
         flag=argv.get("flag").toString();
 

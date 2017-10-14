@@ -7,11 +7,17 @@ public class GeneralReport {
     private String userID;
     private String userName;
     private String category;
+    private String singleScore;
     private String reportText;
+
+    public String getSingleScore() {
+        return singleScore;
+    }
+
     private String submitTime;
     private String reportPath;
 
-    public static String[] Attrs={"reportID","userID","userName","category","reportText","submitTime","reportPath"};
+    public static String[] Attrs={"reportID","userID","userName","category","typeValue","reportText","submitTime","reportPath"};
 
     public GeneralReport(){}
 
@@ -21,6 +27,7 @@ public class GeneralReport {
         this.userID =argv.get("userID").toString();
         this.userName = argv.get("userName").toString();
         this.category = argv.get("category").toString();
+        this.singleScore = argv.get("typeValue").toString();
         this.reportText = argv.get("reportText").toString();
         this.submitTime = argv.get("submitTime").toString();
         this.reportPath = argv.get("reportPath").toString();
