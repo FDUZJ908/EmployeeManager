@@ -241,7 +241,7 @@ public class BackgroundController {
 
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
-        if(STATE.equals("PC")) return "Rank";
+        if(STATE.equals("PC")) return "rank/Rank";
         return "RankingList";
     }
 
@@ -752,4 +752,8 @@ public class BackgroundController {
     }
 
     */
+    @RequestMapping("/")
+    public String index() {
+        return "index";
+    }
 }
