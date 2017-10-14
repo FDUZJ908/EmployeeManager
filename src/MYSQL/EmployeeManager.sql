@@ -15,59 +15,23 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
-
 --
--- Table structure for table `reportType`
+-- Table structure for table `QRcode`
 --
 
-DROP TABLE IF EXISTS `reportType`;
-
+DROP TABLE IF EXISTS `QRcode`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-
 /*!40101 SET character_set_client = utf8 */;
-
-
-CREATE TABLE `reportType` (
-  `typeID` int(11) NOT NULL AUTO_INCREMENT,
-  `typeName` char(32) NOT NULL,
-  `typeValue` int(11) NOT NULL DEFAULT '0',
-  `typeRemark` char(64) DEFAULT NULL,
-  PRIMARY KEY (`typeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+CREATE TABLE `QRcode` (
+  `QRID` int(11) NOT NULL AUTO_INCREMENT,
+  `s_time` datetime NOT NULL,
+  `e_time` datetime NOT NULL,
+  `value` int(11) DEFAULT NULL,
+  `QREntry` char(64) DEFAULT NULL,
+  `flag` datetime DEFAULT NULL,
+  PRIMARY KEY (`QRID`)
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `caseReport`
---
-
-DROP TABLE IF EXISTS `privilege`;
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-
-/*!40101 SET character_set_client = utf8 */;
-
-CREATE TABLE `privilege` (
-
-  `pID` int(11) NOT NULL AUTO_INCREMENT,
-
-  `privilege` int(11) NOT NULL,
-  
-  `weekday` char(16) ,
-  
-  `pushTime` time ,
-  
-  `leaderPostLimit` int(11) ,
-  
-  `leaderScoreLimit` int(11),
-  
-  PRIMARY KEY (`pID`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
-
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
 
 --
 -- Table structure for table `caseReport`
@@ -89,11 +53,11 @@ CREATE TABLE `caseReport` (
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
-  `COMMENT` text,
+  `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_2` (`userID`),
   CONSTRAINT `FK_Reference_2` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,11 +95,11 @@ CREATE TABLE `generalReport` (
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
-  `COMMENT` text,
+  `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_1` (`userID`),
   CONSTRAINT `FK_Reference_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,30 +120,46 @@ CREATE TABLE `leaderReport` (
   `singleScore` int(11) DEFAULT '0',
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
-  `isPass` tinyint(1) DEFAULT NULL,
-  `COMMENT` text,
+  `isPass` tinyint(1) DEFAULT '1',
+  `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_3` (`userID`),
   CONSTRAINT `FK_Reference_3` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `photo`
+-- Table structure for table `privilege`
 --
 
-DROP TABLE IF EXISTS `photo`;
+DROP TABLE IF EXISTS `privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `photo` (
-  `photoID` int(11) NOT NULL,
-  `userID` char(32) NOT NULL,
-  `details` text,
-  `photoPath` text NOT NULL,
-  PRIMARY KEY (`photoID`),
-  KEY `FK_Reference_4` (`userID`),
-  CONSTRAINT `FK_Reference_4` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `privilege` (
+  `pID` int(11) NOT NULL AUTO_INCREMENT,
+  `privilege` int(11) NOT NULL,
+  `weekday` char(16) DEFAULT NULL,
+  `pushTime` time DEFAULT NULL,
+  `leaderPostLimit` int(11) DEFAULT NULL,
+  `leaderScoreLimit` int(11) DEFAULT NULL,
+  PRIMARY KEY (`pID`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `reportType`
+--
+
+DROP TABLE IF EXISTS `reportType`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `reportType` (
+  `typeID` int(11) NOT NULL AUTO_INCREMENT,
+  `typeName` char(32) NOT NULL,
+  `typeValue` int(11) NOT NULL DEFAULT '0',
+  `typeRemark` char(64) DEFAULT NULL,
+  PRIMARY KEY (`typeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,11 +182,11 @@ CREATE TABLE `undealedCaseReport` (
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
-  `COMMENT` text,
+  `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_6` (`userID`),
   CONSTRAINT `FK_Reference_6` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -226,11 +206,11 @@ CREATE TABLE `undealedGeneralReport` (
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
-  `COMMENT` text,
+  `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_8` (`userID`),
   CONSTRAINT `FK_Reference_8` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,7 +235,6 @@ CREATE TABLE `user` (
   `email` char(32) DEFAULT NULL,
   `remark` text,
   `privilege` int(11) NOT NULL DEFAULT '0',
-  `QRcodeEntry` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -277,4 +256,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-08 22:09:00
+-- Dump completed on 2017-10-14 20:16:44
