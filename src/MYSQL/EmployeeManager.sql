@@ -15,6 +15,60 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+
+--
+-- Table structure for table `reportType`
+--
+
+DROP TABLE IF EXISTS `reportType`;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+
+/*!40101 SET character_set_client = utf8 */;
+
+
+CREATE TABLE `reportType` (
+  `typeID` int(11) NOT NULL AUTO_INCREMENT,
+  `typeName` char(32) NOT NULL,
+  `typeValue` int(11) NOT NULL DEFAULT '0',
+  `typeRemark` char(64) DEFAULT NULL,
+  PRIMARY KEY (`typeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `caseReport`
+--
+
+DROP TABLE IF EXISTS `privilege`;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `privilege` (
+
+  `pID` int(11) NOT NULL AUTO_INCREMENT,
+
+  `privilege` int(11) NOT NULL,
+  
+  `weekday` char(16) ,
+  
+  `pushTime` time ,
+  
+  `leaderPostLimit` int(11) ,
+  
+  `leaderScoreLimit` int(11),
+  
+  PRIMARY KEY (`pID`)
+
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
 --
 -- Table structure for table `caseReport`
 --
@@ -200,6 +254,8 @@ CREATE TABLE `user` (
   `gender` char(1) DEFAULT NULL,
   `email` char(32) DEFAULT NULL,
   `remark` text,
+  `privilege` int(11) NOT NULL DEFAULT '0',
+  `QRcodeEntry` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -115,7 +115,7 @@ public class BackgroundController {
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
         // Department-Leader-LeaderID
-        List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
+        List<String> DLeaders = server.getLeaderInCase(UserId);
 
         model.addAttribute("UserId", UserId);
         model.addAttribute("userName", userName);
@@ -176,12 +176,15 @@ public class BackgroundController {
             return "failure";
         }
         String userName = server.getUserName(UserId);
+        int userPrivilege = server.getUserPrivilege(UserId);
+        int scoreLimit = server.getLeaderScoreLimit(userPrivilege);
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
-        List<String> AllUsers = server.getAllUsers();
+        List<String> AllUsers = server.getAllDepartmentUsers(UserId, userPrivilege);
         model.addAttribute("UserId", UserId);
         model.addAttribute("userName", userName);
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
+        model.addAttribute("scoreLimit", scoreLimit);
         return "LeadershipReport";
     }
 

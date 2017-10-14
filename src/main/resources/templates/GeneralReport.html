@@ -89,7 +89,6 @@
             <div class="report_box">
                 <label>工作部门:</label>
                 <select name="department" id="department" onchange="departmentRedirect()">
-                    <option id="resetDepartment">请选择部门</option>
                     <div th:each="department:${list}">
                         <option th:value="${department.leader}" th:text="${department.department}"></option>
                     </div>
@@ -98,7 +97,6 @@
 
             <div style="display:none">
                 <select id="department_hide" >
-                    <option>请选择部门</option>
                     <div th:each="department:${list}">
                         <option th:value="${department.leader}" th:text="${department.department}"></option>
                     </div>
@@ -107,7 +105,6 @@
             <div class="report_box">
                 <label>审批领导:</label>
                 <select name="leader" id="leader">
-                    <option id=resetLeader">请选择领导</option>
                 </select>
             </div>
 
@@ -161,9 +158,9 @@
         var leader = document.getElementById("leader");
         var userName = /*[[${userName}]]*/ "";
         var selectedD = department.options[department.selectedIndex].text;
-        for (i = leader.length - 1; i > 0; i--)
+        for (i = leader.length - 1; i >= 0; i--)
             leader.options.remove(i);
-        for (i = 1; i < department_hide.length; i++) {
+        for (i = 0; i < department_hide.length; i++) {
             if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
                 leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
             }
@@ -174,17 +171,18 @@
     function loadDepartment() {
         var department = document.getElementById("department");
         var i,j,n;
-        for (i = department.length-1; i >0 ; i--) {
+        for (i = department.length-1; i >=0 ; i--) {
             j = i;
-            for (n = 1; n < j; n++) {
+            for (n = 0; n < j; n++) {
                 if (department.options[n].text == department.options[j].text){
                     department.options.remove(j);
                     break;
                 }
             }
         }
-        reset();
+        departmentRedirect();
     }
+
 
     function reset() {
         var content = document.getElementById("content");
@@ -196,12 +194,14 @@
              file.value = "";
          }
         $("#att").text("上传附件");
+         $("#department").get(0).selectedIndex = 0;
+
+         departmentRedirect();
+
+         $("#leader").get(0).selectedIndex = 0;
         var resetType =  document.getElementById("resetType");
-        var resetDepartment = document.getElementById("resetDepartment");
-        var resetLeader = document.getElementById("resetLeader");
             resetType.selected = true;
-            resetDepartment.selected = true;
-            resetLeader.selected = true;
+
             $("#score").val(null);
 
     }

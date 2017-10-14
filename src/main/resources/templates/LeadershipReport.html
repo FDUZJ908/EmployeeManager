@@ -15,13 +15,13 @@
     </div>
     -->
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()" id="leaderForm">
+        <form method="post" enctype="multipart/form-data"  id="leaderForm">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
             <div class="report_box">
                 <label>报告内容:</label>
-                <textarea name="content" id="content" required="required"> </textarea>
+                <textarea name="content" id="content" required="required"></textarea>
                 <div class="select-file">
                     <input type="file" name="file" id="file" onchange="changeFile()"/>
                     <label for="file" id="att" style="font-size:3em;">上传附件
@@ -132,11 +132,12 @@
     		$("#att").text("已上传√");
 
     }
+
     function checkDL () {
         var content = document.getElementById("content");
         var score = document.getElementById("score");
         var sub = "-";
-
+        var scoreLimit =  /*[[${scoreLimit}]]*/ "";
         if (content.value.toString() == "") {
             alert("报告内容不能为空！");
             return false;
@@ -158,6 +159,10 @@
             return false;
         }
 
+        if (parseInt(score.value.toString()) > parseInt(scoreLimit.toString())) {
+            alert("任务分值超出最大值:" + scoreLimit.toString());
+            return false;
+        }
         var con = confirm("确认提交报告？");
         if (con == false)
             return false;
@@ -200,11 +205,6 @@
     function addMembers(memberName) {
         var member = document.getElementById(memberName.value);
         addCheckBox(member.value);
-        var div = document.getElementById("memberList");
-        var delMember = document.getElementById(member.value);
-        div.removeChild(delMember);
-        var userInput = document.getElementById('userInput');
-        userInput.value="";
         memberSearch();
     }
 
@@ -272,7 +272,9 @@
             resetScore_type.selected = true;
         $("#score").val(null);
         $("#checkMemberDiv").empty();
-
+        var userInput = document.getElementById('userInput');
+        userInput.value="";
+        memberSearch();
     }
 
     /*]]>*/
