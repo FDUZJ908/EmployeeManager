@@ -15,7 +15,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import sun.misc.BASE64Decoder;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -645,6 +644,43 @@ public class Server {
         }
 
         return true;
+    }
+
+    public List<ReportType> getReportType () {
+        List<ReportType> reportType = new ArrayList<ReportType>();
+        List<Map<String,Object>> reportTypeCursor= new ArrayList<Map<String, Object>>();
+        String reportTypeSql = "select typeName , typeValue from reportType";
+        try {
+            reportTypeCursor = jdbcTemplate.queryForList(reportTypeSql);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        for (Map<String, Object> map : reportTypeCursor) {
+            ReportType reportType_temp =new ReportType(map.get("typeName").toString(), map.get("typeValue").toString());
+            reportType.add(reportType_temp);
+        }
+        return reportType;
+    }
+
+    public int getTypeValue (String typeName) {
+        List<Map<String,Object>> typeValueCursor = new ArrayList<Map<String, Object>>();
+        int value=0;
+        String typeValueSql = "select typeValue from reportType where typeName=? LIMIT 1";
+        Object args[] = new Object[]{typeName};
+        try {
+            typeValueCursor = jdbcTemplate.queryForList(typeValueSql,args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
+        for (Map<String, Object> map : typeValueCursor) {
+           value = Integer.parseInt(map.get("typeValue").toString());
+           break;
+        }
+        return value;
     }
 
 }

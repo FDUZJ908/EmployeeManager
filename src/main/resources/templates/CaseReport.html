@@ -7,7 +7,7 @@
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
     <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 </head>
-<body>
+<body onload="loadType()">
 <div class="page">
     <!--
     <div class="page-title">
@@ -31,12 +31,10 @@
 
             <div class="report_box">
                 <label>任务类型:</label>
-                <select name="type">
-                    <option value="4" id="resetType">危难险重</option>
-                    <option value="1">日常工作</option>
-                    <option value="2">领导交办</option>
-                    <option value="3">阶段汇总</option>
-                    <option value="5">其他工作</option>
+                <select name="type" id="type">
+                    <div th:each="reportType:${reportType}">
+                        <option th:value="${reportType.getTypeName()}" th:text="${reportType.getTypeName()}"></option>
+                    </div>
                 </select>
             </div>
 
@@ -203,9 +201,7 @@
          }
          $("#att").text("上传附件");
 
-        var resetType =  document.getElementById("resetType");
         var resetScore_type = document.getElementById("resetScore_type");
-            resetType.selected = true;
             resetScore_type.selected = true;
 
          $("#leader").get(0).selectedIndex = 0;
@@ -214,10 +210,14 @@
         var userInput = document.getElementById('userInput');
         userInput.value="";
         memberSearch();
+        loadType();
+
 
 
     }
-
+    function loadType() {
+    $("#type").val('急难危重');
+    }
 
     function addDiv(value) {
         var mydiv = document.getElementById("checkMemberDiv");

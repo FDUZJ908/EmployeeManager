@@ -78,11 +78,9 @@
             <div class="report_box">
                 <label>任务类型:</label>
                 <select name="type" id="type">
-                    <option value="1" id="resetType">日常工作</option>
-                    <option value="2">领导交办</option>
-                    <option value="3">阶段汇总</option>
-                    <option value="4">危难险重</option>
-                    <option value="5">其他工作</option>
+                    <div th:each="reportType:${reportType}">
+                        <option th:value="${reportType.getTypeName()}" th:text="${reportType.getTypeName()}"></option>
+                    </div>
                 </select>
             </div>
 
@@ -181,6 +179,11 @@
             }
         }
         departmentRedirect();
+        loadType();
+    }
+
+    function loadType() {
+    $("#type").val('日常工作');
     }
 
 
@@ -199,10 +202,10 @@
          departmentRedirect();
 
          $("#leader").get(0).selectedIndex = 0;
-        var resetType =  document.getElementById("resetType");
-            resetType.selected = true;
 
-            $("#score").val(null);
+         $("#score").val(null);
+
+         loadType();
 
     }
 
