@@ -10,18 +10,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
-import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import sun.misc.BASE64Decoder;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
 
 import static EmployeeManager.cls.User.userAttrs;
 import static EmployeeManager.cls.User.userKeys;
@@ -39,17 +38,19 @@ public class Server {
     static final int reportAgentID = 1000005;*/
     static final int reportAgentID = 1000017;
 
-
     static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
         put(reportAgentID, reportSecret);
         //put(approvalAgentID, approvalSecret);
         //put(reportAgentID, reportSecret);
     }};
-
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
+
+    Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
+    Map<String, Integer> reported = new HashMap<String, Integer>();
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
+    int maxReportCount=0;
 
     @Value("${web.upload-path}")
     private String path;
@@ -161,7 +162,7 @@ public class Server {
         return userPrivilege;
     }
 
-    public int getLeaderScoreLimit (int userPrivilege) {
+    public int getLeaderScoreLimit(int userPrivilege) {
         String scoreLimitSql = "select leaderScoreLimit from privilege where privilege = ?";
         Object args[] = new Object[]{userPrivilege};
         List<Map<String, Object>> scoreLimitCursor;
@@ -362,8 +363,8 @@ public class Server {
             }
             for (Map<String, Object> user : allUsers) {
                 String User = user.get("userName").toString();
-                if(!AllUsers.contains(User) && Integer.parseInt(user.get("privilege").toString()) < userPrivilege)
-                        AllUsers.add(User);
+                if (!AllUsers.contains(User) && Integer.parseInt(user.get("privilege").toString()) < userPrivilege)
+                    AllUsers.add(User);
             }
         }
         return AllUsers;
@@ -405,7 +406,6 @@ public class Server {
     }
 
 
-
     public List<String> getLeaderInCase(String userId) {
         List<String> DLeader = new ArrayList<String>();
         int userPrivilege = getUserPrivilege(userId);
@@ -419,10 +419,10 @@ public class Server {
             return null;
         }
 
-            for (Map<String, Object> leader : department) {
-                String DLeader_temp = leader.get("userName").toString();
-                DLeader.add(DLeader_temp);
-            }
+        for (Map<String, Object> leader : department) {
+            String DLeader_temp = leader.get("userName").toString();
+            DLeader.add(DLeader_temp);
+        }
         return DLeader;
     }
 
@@ -524,13 +524,32 @@ public class Server {
         }
     }
 
-    public void award(String userid, int score) {
-        String updatesql = "UPDATE user set s_score=s_score + " + score + " where userID=?";
+    public QRCode getQRCode(String userID) {
+        String time = currentTime();
+        int QRID = -1;
+        Set<Integer> keys = QRCodes.keySet();
+        for (int key : keys) {
+            QRCode qrCode = QRCodes.get(key);
+            if (time.compareTo(qrCode.e_time) > 0) QRCodes.remove(key);
+            else if (qrCode.QREntry.contains(userID)) QRID = key;
+        }
+        if (QRID != -1) return QRCodes.get(QRID);
+        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '%?%' LIMIT 1";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{userID}, new Mapper<QRCode>(QRCode.class));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public int award(String userid, int score) {
+        String updatesql = "UPDATE user SET s_score=s_score + " + score + " WHERE userID=?";
         Object args[] = new Object[]{userid};
         try {
-            jdbcTemplate.update(updatesql, args);
+            return jdbcTemplate.update(updatesql, args);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return 0;
         }
     }
 
@@ -580,7 +599,7 @@ public class Server {
     }
 
 
-    public Boolean base64ToImg (String srcURLFile ,String avatarURL) {
+    public Boolean base64ToImg(String srcURLFile, String avatarURL) {
         BASE64Decoder decoder = new BASE64Decoder();
         try {
             //Base64解码
@@ -591,7 +610,7 @@ public class Server {
                 }
             }
             //生成图片
-                avatarURL = path + "/" + "CaiYu.png";
+            avatarURL = path + "/" + "CaiYu.png";
 
             OutputStream out = new FileOutputStream("CaiYu.png");
             out.write(b);
@@ -608,10 +627,10 @@ public class Server {
         return true;
     }
 
-    public Boolean imgSub (String avatarURL,String avatarURLSub,String suffix, int x , int y , int w , int h) {
+    public Boolean imgSub(String avatarURL, String avatarURLSub, String suffix, int x, int y, int w, int h) {
         try {
-            FileInputStream is = null ;
-            ImageInputStream iis =null ;
+            FileInputStream is = null;
+            ImageInputStream iis = null;
             avatarURL = path + "/" + avatarURL;
             avatarURLSub = path + "/" + avatarURLSub;
             is = new FileInputStream(avatarURL);
@@ -621,18 +640,18 @@ public class Server {
             //获取图片流
             iis = ImageIO.createImageInputStream(is);
 
-            reader.setInput(iis,true) ;
+            reader.setInput(iis, true);
 
 
             ImageReadParam param = reader.getDefaultReadParam();
 
 
-            Rectangle rect = new Rectangle(x,y,w,h);
+            Rectangle rect = new Rectangle(x, y, w, h);
 
 
             param.setSourceRegion(rect);
 
-            BufferedImage bi = reader.read(0,param);
+            BufferedImage bi = reader.read(0, param);
 
             ImageIO.write(bi, suffix, new File(avatarURLSub));
 

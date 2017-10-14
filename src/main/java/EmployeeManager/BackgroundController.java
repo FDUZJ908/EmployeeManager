@@ -9,17 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-
-import sun.misc.BASE64Decoder;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-
 import java.util.*;
 
 import static EmployeeManager.Server.reportAgentID;
@@ -31,9 +20,7 @@ public class BackgroundController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     Server server;
-    Map<String, Checkin> checkins = new HashMap<String, Checkin>();
-    Set<String> reported = new HashSet<String>();
-    int QRTimeout = 30 * 60 * 1000;
+
     String mesgToLeader = "您有一份新报告需要审批，可进入 报告查询-审批报告 查看。";
     String mesgToSubordinate = "您有一份报告已被审批，可进入 报告查询-我的报告 查看。";
 
@@ -68,8 +55,11 @@ public class BackgroundController {
                                          Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
         ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
-        if (reported.contains(UserId)) {
-            responseMsg.setMsg("今天已经提交过一般报告!");
+        if(!server.reported.containsKey(UserId))
+            server.reported.put(UserId,server.maxReportCount);
+        int remaining=server.reported.get(UserId);
+        if (remaining<=0) {
+            responseMsg.setMsg("超过每天提交次数上限！请明天再提交。");
             responseMsg.setNum("0");
             return responseMsg;
         }
@@ -90,7 +80,7 @@ public class BackgroundController {
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
 
-        reported.add(UserId);
+        server.reported.put(UserId,--remaining);
         try {
             server.sendMessage(leader, mesgToLeader, true, reportAgentID);
         } catch (Exception e) {
@@ -234,14 +224,14 @@ public class BackgroundController {
     @RequestMapping("/RankingList")
     public String RankingList(@RequestParam("state") String STATE,
                               Model model) {
-        logger.info("Request RankingList" ); //log
+        logger.info("Request RankingList"); //log
 
         String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
 
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
-        if(STATE.equals("PC")) return "Rank";
+        if (STATE.equals("PC")) return "Rank";
         return "RankingList";
     }
 
@@ -256,7 +246,7 @@ public class BackgroundController {
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
-            if(STATE.equals("PC")) return "Rank";
+            if (STATE.equals("PC")) return "Rank";
             return "RankingList";
         } else {
             String selectedType;
@@ -276,7 +266,7 @@ public class BackgroundController {
             String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("list", users);
-            if(STATE.equals("PC")) return "Rank";
+            if (STATE.equals("PC")) return "Rank";
             return "RankingList";
         }
     }
@@ -309,7 +299,7 @@ public class BackgroundController {
     @PostMapping("/ReportApproval")
     @ResponseBody
     public ReportApprovalAjax ReportApprovalPost(@RequestBody ReportApprovalAjax ajax,
-                                                                 Model model) {
+                                                 Model model) {
         String check1 = ajax.getCheck1();
         String check2 = ajax.getCheck2();
         String[] reports1 = check1.split(",");
@@ -589,7 +579,7 @@ public class BackgroundController {
     @ResponseBody
     public String Refresh() throws Exception {
         logger.info("Refresh starts!"); //log
-        reported.clear();
+        server.reported.clear();
         logger.info("Refresh succeed!"); //log
         return "Refresh succeed!";
     }
@@ -598,12 +588,19 @@ public class BackgroundController {
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
                          Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
-        logger.info("Request QRCode: " + UserId); //log
-        if (!server.isUser(UserId)) {
+        String userID = server.getUserId(CODE, submitSecret);
+        logger.info("Request QRCode: " + userID); //log
+        if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
+
+        QRCode qrCode = server.getQRCode(userID);
+        if (qrCode == null) {
+            model.addAttribute("errorNum", "03");
+            return "failure";
+        }
+        /*
         long timestamp = System.currentTimeMillis();
         if (!checkins.containsKey(UserId)) {
             checkins.put(UserId, new Checkin(timestamp));
@@ -615,28 +612,59 @@ public class BackgroundController {
             }
             timestamp = checkin.getTimestamp();
         }
-        model.addAttribute("timestamp", timestamp);
-        model.addAttribute("creator", UserId);
-        model.addAttribute("CODE", CODE);
+        */
+        model.addAttribute("qrid", qrCode.QRID);
+        model.addAttribute("creator", userID);
         return "QRCode";
     }
 
     @RequestMapping("/RedirectQR")
-    public String redirectQR(@RequestParam("timestamp") String timestamp,
+    public String RedirectQR(@RequestParam("qrid") String QRID,
                              @RequestParam("creator") String creator,
                              Model model) {
-        logger.info("Request redirectQR: " + creator + "-" + timestamp); //log
+        logger.info("Request redirectQR: " + QRID); //log
 
-        model.addAttribute("state", creator + "-" + timestamp);
+        model.addAttribute("state", QRID + "-" + creator);
         return "RedirectQR";
     }
 
     @RequestMapping("/Checkin")
-    public String checkin(@RequestParam("code") String CODE,
+    public String Checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-        logger.info("Request checkin: " + STATE); //log
+        String userID = server.getUserId(CODE, submitSecret);
+        logger.info("Request checkin: " + userID + " - " + STATE); //log
+        if (!server.isUser(userID)) {
+            model.addAttribute("errorNum", "00");
+            return "failure";
+        }
 
+        int p = STATE.indexOf("-");
+        int QRID = Integer.parseInt(STATE.substring(0, p));
+        String creator = STATE.substring(p + 1);
+        QRCode qrCode = server.QRCodes.get(QRID);
+        String time = server.currentTime();
+
+        if (qrCode == null || qrCode.flag.length() > 0
+                || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0
+                || !qrCode.QREntry.contains(creator)) {
+            model.addAttribute("errorNum", "01");
+            return "failure";
+        }
+
+
+        if (qrCode.checkins.contains(userID)) {
+            model.addAttribute("errorNum", "02");
+            return "failure";// avoid scanning QRcode repeatly
+        }
+        if (server.award(userID, qrCode.value) > 0) qrCode.checkins.add(userID);
+        else {
+            model.addAttribute("errorNum", "-1");
+            return "failure";
+        }
+        //timestamp = Long.parseLong(STATE.substring(p + 1));
+
+       /*
         int p = STATE.indexOf("-");
         String creator = STATE.substring(0, p);
         long timestamp = Long.parseLong(STATE.substring(p + 1));
@@ -650,15 +678,12 @@ public class BackgroundController {
             model.addAttribute("errorNum", "01");
             return "failure";
         }
-        String userID = server.getUserId(CODE, submitSecret);
         Checkin checkin = checkins.get(creator);
         if (checkin.getUsers().contains(userID)) {
             model.addAttribute("errorNum", "02");
             return "failure";// avoid scanning QRcode repeatly
-        }
-        server.award(userID, 2);
-        checkin.add(userID);
-        model.addAttribute("userID", userID);
+        }*/
+
         return "success";
     }
 
@@ -673,11 +698,11 @@ public class BackgroundController {
             return "failure";
         }
 
-        String sql="select avatarURL from user where userID=? limit 1";
-        Map<String,Object> result=server.jdbcTemplate.queryForMap(sql,userID);
-        String avatarURL=(result==null)?"":result.get("avatarURL").toString();
-        model.addAttribute("userID",userID);
-        model.addAttribute("avatarURL",avatarURL);
+        String sql = "select avatarURL from user where userID=? limit 1";
+        Map<String, Object> result = server.jdbcTemplate.queryForMap(sql, userID);
+        String avatarURL = (result == null) ? "" : result.get("avatarURL").toString();
+        model.addAttribute("userID", userID);
+        model.addAttribute("avatarURL", avatarURL);
         return "UploadAvatar";
     }
 
@@ -692,21 +717,21 @@ public class BackgroundController {
                                     @RequestParam("file") MultipartFile file) {
         logger.info("Post UploadAvatar: " + userID); //log
 
-        String filename=file.getOriginalFilename();
-        String suffix="png";
-        String avatarURL=userID+"/"+userID+ "." + suffix;
-        String avatarURLSub=userID+"/"+userID+"sub."+suffix;
-        String srcURLFile = srcURL.substring(srcURL.indexOf(",")+1);
+        String filename = file.getOriginalFilename();
+        String suffix = "png";
+        String avatarURL = userID + "/" + userID + "." + suffix;
+        String avatarURLSub = userID + "/" + userID + "sub." + suffix;
+        String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
 
-        server.base64ToImg(srcURLFile,avatarURL);
+        server.base64ToImg(srcURLFile, avatarURL);
 
 
-            if (server.imgSub(avatarURL,avatarURLSub,suffix, Integer.parseInt(x),Integer.parseInt(y),Integer.parseInt(w),Integer.parseInt(h))) {
-                String sql = "update user set avatarURL=? where userID=?";
-                server.jdbcTemplate.update(sql, avatarURLSub, userID);
-                return new ResponseMsg("1", avatarURLSub);
-            }
-        return new ResponseMsg("0",srcURL);
+        if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(w), Integer.parseInt(h))) {
+            String sql = "update user set avatarURL=? where userID=?";
+            server.jdbcTemplate.update(sql, avatarURLSub, userID);
+            return new ResponseMsg("1", avatarURLSub);
+        }
+        return new ResponseMsg("0", srcURL);
     }
 
 
