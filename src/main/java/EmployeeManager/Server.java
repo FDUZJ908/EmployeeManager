@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
+<<<<<<< HEAD
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,10 +20,19 @@ import sun.misc.BASE64Decoder;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+=======
+>>>>>>> d7894c29685b29175e58cdf1a1e708ef9713a4c0
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
 
 import static EmployeeManager.cls.User.userAttrs;
 import static EmployeeManager.cls.User.userKeys;
@@ -40,17 +50,19 @@ public class Server {
     static final int reportAgentID = 1000005;*/
     static final int reportAgentID = 1000017;
 
-
     static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
         put(reportAgentID, reportSecret);
         //put(approvalAgentID, approvalSecret);
         //put(reportAgentID, reportSecret);
     }};
-
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
+
+    Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
+    Map<String, Integer> reported = new HashMap<String, Integer>();
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
+    int maxReportCount = 0;
 
     @Value("${web.upload-path}")
     private String path;
@@ -524,13 +536,35 @@ public class Server {
         }
     }
 
-    public void award(String userid, int score) {
-        String updatesql = "UPDATE user set s_score=s_score + " + score + " where userID=?";
-        Object args[] = new Object[]{userid};
+    public synchronized QRCode getQRCode(String userID) {
+        String time = currentTime();
+        int QRID = -1;
+        Set<Integer> keys = QRCodes.keySet();
+        for (int key : keys) {
+            QRCode qrCode = QRCodes.get(key);
+            if (time.compareTo(qrCode.e_time) > 0) QRCodes.remove(key);
+            else if (qrCode.QREntry.contains(userID)) QRID = key;
+        }
+        if (QRID != -1) return QRCodes.get(QRID);
+        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '"+userID+"' LIMIT 1";
         try {
-            jdbcTemplate.update(updatesql, args);
+            QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
+            QRCodes.put(qrCode.QRID, qrCode);
+            return qrCode;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public int award(String userid, int score) {
+        String updatesql = "UPDATE user SET s_score=s_score + " + score + " WHERE userID=?";
+        Object args[] = new Object[]{userid};
+        try {
+            return jdbcTemplate.update(updatesql, args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
         }
     }
 
@@ -620,6 +654,7 @@ public class Server {
             ImageReader reader = it.next();
             //获取图片流
             iis = ImageIO.createImageInputStream(is);
+<<<<<<< HEAD
 
             reader.setInput(iis, true);
 
@@ -634,8 +669,14 @@ public class Server {
 
             BufferedImage bi = reader.read(0, param);
 
+=======
+            reader.setInput(iis, true);
+            ImageReadParam param = reader.getDefaultReadParam();
+            Rectangle rect = new Rectangle(x, y, w, h);
+            param.setSourceRegion(rect);
+            BufferedImage bi = reader.read(0, param);
+>>>>>>> d7894c29685b29175e58cdf1a1e708ef9713a4c0
             ImageIO.write(bi, suffix, new File(avatarURLSub));
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
@@ -645,6 +686,43 @@ public class Server {
         }
 
         return true;
+    }
+
+    public List<ReportType> getReportType() {
+        List<ReportType> reportType = new ArrayList<ReportType>();
+        List<Map<String, Object>> reportTypeCursor;
+        String reportTypeSql = "select typeName , typeValue from reportType";
+        try {
+            reportTypeCursor = jdbcTemplate.queryForList(reportTypeSql);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        for (Map<String, Object> map : reportTypeCursor) {
+            ReportType reportType_temp = new ReportType(map.get("typeName").toString(), map.get("typeValue").toString());
+            reportType.add(reportType_temp);
+        }
+        return reportType;
+    }
+
+    public int getTypeValue(String typeName) {
+        List<Map<String, Object>> typeValueCursor;
+        int value = 0;
+        String typeValueSql = "select typeValue from reportType where typeName=? LIMIT 1";
+        Object args[] = new Object[]{typeName};
+        try {
+            typeValueCursor = jdbcTemplate.queryForList(typeValueSql, args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
+        for (Map<String, Object> map : typeValueCursor) {
+            value = Integer.parseInt(map.get("typeValue").toString());
+            break;
+        }
+        return value;
     }
 
 }
