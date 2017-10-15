@@ -702,12 +702,13 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
+        Random ranparam = new Random();
 
         String sql = "select avatarURL from user where userID=? limit 1";
         Map<String, Object> result = server.jdbcTemplate.queryForMap(sql, userID);
         String avatarURL = (result == null) ? "" : result.get("avatarURL").toString();
         model.addAttribute("userID", userID);
-        model.addAttribute("avatarURL", avatarURL);
+        model.addAttribute("avatarURL", avatarURL + "?" + ranparam);
         return "UploadAvatar";
     }
 
@@ -718,23 +719,22 @@ public class BackgroundController {
                                     @RequestParam("y") String y,
                                     @RequestParam("w") String w,
                                     @RequestParam("h") String h,
-                                    @RequestParam("srcURL") String srcURL,
-                                    @RequestParam("file") MultipartFile file) {
+                                    @RequestParam("srcURL") String srcURL
+                                    ) {
         logger.info("Post UploadAvatar: " + userID); //log
 
-        String filename = file.getOriginalFilename();
         String suffix = "png";
         String avatarURL = userID + "/" + userID + "." + suffix;
         String avatarURLSub = userID + "/" + userID + "sub." + suffix;
         String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
+        Random ranparam = new Random();
 
-        server.base64ToImg(srcURLFile, avatarURL);
-
-
-        if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(w), Integer.parseInt(h))) {
-            String sql = "update user set avatarURL=? where userID=?";
-            server.jdbcTemplate.update(sql, avatarURLSub, userID);
-            return new ResponseMsg("1", avatarURLSub);
+        if(server.base64ToImg(srcURLFile, avatarURL)) {
+            if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(w), Integer.parseInt(h))) {
+                 String sql = "update user set avatarURL=? where userID=?";
+                    server.jdbcTemplate.update(sql, avatarURLSub, userID);
+                    return new ResponseMsg("1", avatarURLSub+"?" + ranparam);
+            }
         }
         return new ResponseMsg("0", srcURL);
     }
