@@ -34,7 +34,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
-        List<ReportType> reportType= server.getReportType();
+        List<ReportType> reportType = server.getReportType();
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         String userName = server.getUserName(UserId);
@@ -102,7 +102,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
-        List<ReportType> reportType= server.getReportType();
+        List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
         // Department-Leader-LeaderID
@@ -167,7 +167,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "failure";
         }
-        List<ReportType> reportType= server.getReportType();
+        List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
         int userPrivilege = server.getUserPrivilege(UserId);
         int scoreLimit = server.getLeaderScoreLimit(userPrivilege);
@@ -235,11 +235,7 @@ public class BackgroundController {
 
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
-<<<<<<< HEAD
-        if(STATE.equals("PC")) return "rank/Rank";
-=======
-        if (STATE.equals("PC")) return "Rank";
->>>>>>> d7894c29685b29175e58cdf1a1e708ef9713a4c0
+        if (STATE.equals("PC")) return "rank/Rank";
         return "RankingList";
     }
 

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
-<<<<<<< HEAD
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,8 +19,7 @@ import sun.misc.BASE64Decoder;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-=======
->>>>>>> d7894c29685b29175e58cdf1a1e708ef9713a4c0
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
@@ -654,28 +652,13 @@ public class Server {
             ImageReader reader = it.next();
             //获取图片流
             iis = ImageIO.createImageInputStream(is);
-<<<<<<< HEAD
 
-            reader.setInput(iis, true);
-
-
-            ImageReadParam param = reader.getDefaultReadParam();
-
-
-            Rectangle rect = new Rectangle(x, y, w, h);
-
-
-            param.setSourceRegion(rect);
-
-            BufferedImage bi = reader.read(0, param);
-
-=======
             reader.setInput(iis, true);
             ImageReadParam param = reader.getDefaultReadParam();
             Rectangle rect = new Rectangle(x, y, w, h);
             param.setSourceRegion(rect);
             BufferedImage bi = reader.read(0, param);
->>>>>>> d7894c29685b29175e58cdf1a1e708ef9713a4c0
+
             ImageIO.write(bi, suffix, new File(avatarURLSub));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
