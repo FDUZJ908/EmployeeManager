@@ -1,6 +1,9 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.modle.reportType;
+import EmployeeManager.admin.adminServer;
+import EmployeeManager.admin.model.reportType;
+import EmployeeManager.cls.HistoryReport;
+import EmployeeManager.cls.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,21 +21,16 @@ import java.util.Map;
 @RequestMapping("/reportType")
 public class reportTypeController {
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
+    adminServer adminServer;
 
     @RequestMapping(method = RequestMethod.GET)
     public String reportType(Model model) {
+        Map<String, Object> defValue = new HashMap<String, Object>();
         List<Map<String, Object>> list;
-        try {
-            list = jdbcTemplate.queryForList("select * from reportType");
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        String sql = "select * from reportType";
         List<reportType> rptTypeList = new ArrayList<reportType>();
-        for (Map<String, Object> map : list) {
-            reportType type = new reportType(map.get("typeName"), map.get("typeValue"), map.get("typeRemark"));
-            rptTypeList.add(type);
-        }
+        Object args[] = new Object[]{};
+        rptTypeList = adminServer.jdbcTemplate.query(sql, args, new Mapper<reportType>(reportType.class, defValue));
 
         model.addAttribute("list", rptTypeList);
 
@@ -49,7 +48,7 @@ public class reportTypeController {
                           @RequestParam("remark") String remark) {
         Object args[] = new Object[]{name, Integer.parseInt(value), remark};
         try {
-            jdbcTemplate.update("insert into reportType (typeName, typeValue, typeRemark)" +
+            adminServer.jdbcTemplate.update("insert into reportType (typeName, typeValue, typeRemark)" +
                     " values (?, ?, ?)", args);
         } catch (Exception e) {
             return e.getMessage();
@@ -60,19 +59,12 @@ public class reportTypeController {
     @RequestMapping(method = RequestMethod.GET, value = "/modify")
     public String typeModify(@RequestParam(value = "id", required = false) String id,
                              Model model) {
-
+        Map<String, Object> defValue = new HashMap<String, Object>();
+        String sql = "select * from reporttype where typeName = ?";
         List<Map<String, Object>> list;
         Object args[] = new Object[]{id};
-        try {
-            list = jdbcTemplate.queryForList("select * from reporttype where typeName = ?", args);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        for (Map<String, Object> map : list) {
-            model.addAttribute("typeName", map.get("typeName"));
-            model.addAttribute("typeValue", map.get("typeValue"));
-            model.addAttribute("typeRemark", map.get("typeRemark"));
-        }
+        reportType rpt = adminServer.jdbcTemplate.queryForObject(sql, args, new Mapper<reportType>(reportType.class, defValue));
+        model.addAttribute("rpt", rpt);
 
         return "reportType/modify";
     }
@@ -85,7 +77,7 @@ public class reportTypeController {
 
         Object args[] = new Object[]{name, Integer.parseInt(value), remark, id};
         try {
-            jdbcTemplate.update("update reporttype set typeName = ?, typeValue = ?, typeRemark = ?" +
+            adminServer.jdbcTemplate.update("update reporttype set typeName = ?, typeValue = ?, typeRemark = ?" +
                     " where typeName = ?", args);
         } catch (Exception e) {
             return e.getMessage();
@@ -101,7 +93,7 @@ public class reportTypeController {
 
         Object args[] = new Object[]{id};
         try {
-            jdbcTemplate.update("delete from reporttype where typeName = ?", args);
+            adminServer.jdbcTemplate.update("delete from reporttype where typeName = ?", args);
         } catch (Exception e) {
             return e.getMessage();
         }

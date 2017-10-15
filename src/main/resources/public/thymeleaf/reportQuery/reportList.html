@@ -29,7 +29,7 @@
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" th:action="@{/reportQuery/serchReport}"
+                            <form class="form-horizontal" th:action="@{/reportQuery/searchReport}"
                                   method="post">
                                 <div class="box-body">
 
@@ -38,10 +38,12 @@
                                         <label class="col-sm-2 control-label">得分者</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input list="scorelist" name="score" class="form-control" maxlength="20"/>
+                                            <input type="text" list="scorelist" name="score" id="score"
+                                                   class="form-control" maxlength="20"/>
                                             <datalist id="scorelist">
-                                                <option>item1</option>
-                                                <option>item2</option>
+                                                <div th:each="user:${list}">
+                                                    <option th:value="${user}"><span th:text="${user}"></span></option>
+                                                </div>
                                             </datalist>
                                         </div>
 
@@ -79,8 +81,9 @@
                                         <div class="col-sm-10" style="width: 200px">
                                             <input type="text" list="leaderlist" name="leader" class="form-control" maxlength="20"/>
                                             <datalist id="leaderlist">
-                                                <option value="item1"></option>
-                                                <option value="item2"></option>
+                                                <div th:each="user:${list}">
+                                                    <option th:value="${user}"><span th:text="${user}"></span></option>
+                                                </div>
                                             </datalist>
                                         </div>
 
@@ -89,8 +92,9 @@
                                         <div class="col-sm-10" style="width: 200px">
                                             <input type="text" list="submitterlist" name="submitter" class="form-control" maxlength="20"/>
                                             <datalist id="submitterlist">
-                                                <option>item1</option>
-                                                <option>item2</option>
+                                                <div th:each="user:${list}">
+                                                    <option th:value="${user}"><span th:text="${user}"></span></option>
+                                                </div>
                                             </datalist>
                                         </div>
                                     </div>

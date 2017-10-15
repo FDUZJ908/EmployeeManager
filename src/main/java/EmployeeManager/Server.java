@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import sun.misc.BASE64Decoder;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -161,7 +162,7 @@ public class Server {
         return userPrivilege;
     }
 
-    public int getLeaderScoreLimit (int userPrivilege) {
+    public int getLeaderScoreLimit(int userPrivilege) {
         String scoreLimitSql = "select leaderScoreLimit from privilege where privilege = ?";
         Object args[] = new Object[]{userPrivilege};
         List<Map<String, Object>> scoreLimitCursor;
@@ -362,8 +363,8 @@ public class Server {
             }
             for (Map<String, Object> user : allUsers) {
                 String User = user.get("userName").toString();
-                if(!AllUsers.contains(User) && Integer.parseInt(user.get("privilege").toString()) < userPrivilege)
-                        AllUsers.add(User);
+                if (!AllUsers.contains(User) && Integer.parseInt(user.get("privilege").toString()) < userPrivilege)
+                    AllUsers.add(User);
             }
         }
         return AllUsers;
@@ -405,7 +406,6 @@ public class Server {
     }
 
 
-
     public List<String> getLeaderInCase(String userId) {
         List<String> DLeader = new ArrayList<String>();
         int userPrivilege = getUserPrivilege(userId);
@@ -419,10 +419,10 @@ public class Server {
             return null;
         }
 
-            for (Map<String, Object> leader : department) {
-                String DLeader_temp = leader.get("userName").toString();
-                DLeader.add(DLeader_temp);
-            }
+        for (Map<String, Object> leader : department) {
+            String DLeader_temp = leader.get("userName").toString();
+            DLeader.add(DLeader_temp);
+        }
         return DLeader;
     }
 
@@ -580,7 +580,7 @@ public class Server {
     }
 
 
-    public Boolean base64ToImg (String srcURLFile ,String avatarURL) {
+    public Boolean base64ToImg(String srcURLFile, String avatarURL) {
         BASE64Decoder decoder = new BASE64Decoder();
         try {
             //Base64解码
@@ -591,7 +591,7 @@ public class Server {
                 }
             }
             //生成图片
-                avatarURL = path + "/" + "CaiYu.png";
+            avatarURL = path + "/" + "CaiYu.png";
 
             OutputStream out = new FileOutputStream("CaiYu.png");
             out.write(b);
@@ -608,10 +608,10 @@ public class Server {
         return true;
     }
 
-    public Boolean imgSub (String avatarURL,String avatarURLSub,String suffix, int x , int y , int w , int h) {
+    public Boolean imgSub(String avatarURL, String avatarURLSub, String suffix, int x, int y, int w, int h) {
         try {
-            FileInputStream is = null ;
-            ImageInputStream iis =null ;
+            FileInputStream is = null;
+            ImageInputStream iis = null;
             avatarURL = path + "/" + avatarURL;
             avatarURLSub = path + "/" + avatarURLSub;
             is = new FileInputStream(avatarURL);
@@ -621,18 +621,18 @@ public class Server {
             //获取图片流
             iis = ImageIO.createImageInputStream(is);
 
-            reader.setInput(iis,true) ;
+            reader.setInput(iis, true);
 
 
             ImageReadParam param = reader.getDefaultReadParam();
 
 
-            Rectangle rect = new Rectangle(x,y,w,h);
+            Rectangle rect = new Rectangle(x, y, w, h);
 
 
             param.setSourceRegion(rect);
 
-            BufferedImage bi = reader.read(0,param);
+            BufferedImage bi = reader.read(0, param);
 
             ImageIO.write(bi, suffix, new File(avatarURLSub));
 

@@ -26,7 +26,7 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/reportType/modifyReport/(id=${typeName})}"
+                        <form class="form-horizontal" th:action="@{/reportType/modifyReport/(id=${rpt.getName()})}"
                               method="post">
                             <div class="box-body">
 
@@ -35,7 +35,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" name="name" class="form-control" id="name" placeholder=""
-                                               th:value="${typeName}" required="required" maxlength="20"/>
+                                               th:value="${rpt.getName()}" required="required" maxlength="20"/>
                                     </div>
                                 </div>
 
@@ -44,7 +44,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="number" name="value" class="form-control" id="value" placeholder=""
-                                               th:value="${typeValue}" required="required" maxlength="20"/>
+                                               th:value="${rpt.getValue()}" required="required" maxlength="20"/>
                                     </div>
                                 </div>
 
@@ -53,7 +53,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" name="remark" class="form-control" id="remark" placeholder=""
-                                               th:value="${typeRemark}" maxlength="50"/>
+                                               th:value="${rpt.getRemark()}" maxlength="50"/>
                                     </div>
                                 </div>
 
