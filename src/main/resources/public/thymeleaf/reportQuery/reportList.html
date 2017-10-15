@@ -31,7 +31,7 @@
                             <!-- form start -->
                             <form class="form-horizontal" th:action="@{/reportQuery/searchReport}"
                                   method="post">
-                                <div class="box-body">
+                                <div class="box-body" style="font-size: 10px">
 
                                     <div class="form-group">
 
@@ -65,7 +65,8 @@
                                         <label class="col-sm-2 control-label">开始时间</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="date" name="start" class="form-control" id="start" maxlength="50"/>
+                                            <input type="date" name="start" class="form-control" id="start"
+                                                   maxlength="50"/>
                                         </div>
 
                                         <label class="col-sm-2 control-label">结束时间</label>
@@ -79,7 +80,8 @@
                                         <label class="col-sm-2 control-label">审批领导</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="text" list="leaderlist" name="leader" class="form-control" maxlength="20"/>
+                                            <input type="text" list="leaderlist" name="leader" class="form-control"
+                                                   maxlength="20"/>
                                             <datalist id="leaderlist">
                                                 <div th:each="user:${list}">
                                                     <option th:value="${user}"><span th:text="${user}"></span></option>
@@ -90,7 +92,8 @@
                                         <label class="col-sm-2 control-label">提交者</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="text" list="submitterlist" name="submitter" class="form-control" maxlength="20"/>
+                                            <input type="text" list="submitterlist" name="submitter"
+                                                   class="form-control" maxlength="20"/>
                                             <datalist id="submitterlist">
                                                 <div th:each="user:${list}">
                                                     <option th:value="${user}"><span th:text="${user}"></span></option>
@@ -114,8 +117,9 @@
 
                     </div>
                     <div class="box">
+                        <button onclick="method(dataTable)">生成excel</button>
                         <div class="box-body">
-                            <table id="dataTable" class="table table-bordered table-striped" style="font-size: 12px">
+                            <table id="dataTable" class="table table-bordered table-striped" style="font-size: 10px">
                                 <thead>
                                 <tr>
                                     <th>序号</th>
@@ -133,24 +137,20 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <!--
-                                <tr th:each="item:${list}">
-                                    <td th:text="${item.getName()}"></td>
-                                    <td th:text="${item.getValue()}"></td>
-                                    <td th:text="${item.getRemark()}"></td>
-                                    <td style="text-align: center">
-                                        <a th:href="@{/reportType/modify/(id=${item.id})}">
-                                            <span class="glyphicon glyphicon-edit" title="编辑"></span>
-                                        </a>
-                                    </td>
-                                    <td style="text-align: center">
-
-                                        <a th:href="@{/reportType/delete/(id=${item.id})}">
-                                            <span title="删除" class="glyphicon glyphicon-trash"></span>
-                                        </a>
-                                    </td>
+                                <tr th:each="item:${reports}">
+                                    <td th:text="${item.getReportID()}"></td>
+                                    <td th:text="${item.getReportText()}"></td>
+                                    <td th:text="${category}"></td>
+                                    <td th:text="${item.getCategory()}"></td>
+                                    <td th:text="${item.getSingleScore()}"></td>
+                                    <td th:text="${item.getUserName()}"></td>
+                                    <td th:text="${item.getLeaderName()}"></td>
+                                    <td th:text="${item.getIsPass()}"></td>
+                                    <td th:text="${item.getMembers()}"></td>
+                                    <td th:text="${item.getSubmitTime()}"></td>
+                                    <td th:text="${item.getComment()}"></td>
+                                    <td th:text="${item.getCheckTime()}"></td>
                                 </tr>
-                                -->
                                 </tbody>
                             </table>
                         </div>
@@ -172,6 +172,88 @@
 <div th:replace="script"></div>
 
 <!-- page script -->
+<script>
+    var idTmr;
+
+    function getExplorer() {
+        var explorer = window.navigator.userAgent;
+        //ie
+        if (explorer.indexOf("MSIE") >= 0) {
+            return 'ie';
+        }
+        //firefox
+        else if (explorer.indexOf("Firefox") >= 0) {
+            return 'Firefox';
+        }
+        //Chrome
+        else if (explorer.indexOf("Chrome") >= 0) {
+            return 'Chrome';
+        }
+        //Opera
+        else if (explorer.indexOf("Opera") >= 0) {
+            return 'Opera';
+        }
+        //Safari
+        else if (explorer.indexOf("Safari") >= 0) {
+            return 'Safari';
+        }
+    }
+
+    function method(tableid) {
+        if (getExplorer() == 'ie') {
+            var curTbl = document.getElementById(tableid);
+            var oXL = new ActiveXObject("Excel.Application");
+            var oWB = oXL.Workbooks.Add();
+            var xlsheet = oWB.Worksheets(1);
+            var sel = document.body.createTextRange();
+            sel.moveToElementText(curTbl);
+            sel.select();
+            sel.execCommand("Copy");
+            xlsheet.Paste();
+            oXL.Visible = true;
+
+            try {
+                var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+            } catch (e) {
+                print("Nested catch caught " + e);
+            } finally {
+                oWB.SaveAs(fname);
+                oWB.Close(savechanges = false);
+                oXL.Quit();
+                oXL = null;
+                idTmr = window.setInterval("Cleanup();", 1);
+            }
+
+        }
+        else {
+            tableToExcel(tableid)
+        }
+    }
+
+    function Cleanup() {
+        window.clearInterval(idTmr);
+        CollectGarbage();
+    }
+
+    var tableToExcel = (function () {
+        var uri = 'data:application/vnd.ms-excel;base64,',
+            template = '<html><head><meta charset="UTF-8"></meta></head><body><table>{table}</table></body></html>',
+            base64 = function (s) {
+                return window.btoa(unescape(encodeURIComponent(s)))
+            },
+            format = function (s, c) {
+                return s.replace(/{(\w+)}/g,
+                    function (m, p) {
+                        return c[p];
+                    })
+            }
+        return function (table, name) {
+            if (!table.nodeType) table = document.getElementById(table)
+            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+            window.location.href = uri + base64(format(template, ctx))
+        }
+    })()
+</script>
 <script>
     $(function () {
         $('#dataTable').DataTable({

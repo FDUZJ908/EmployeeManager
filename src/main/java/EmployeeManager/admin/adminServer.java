@@ -63,6 +63,23 @@ public class adminServer {
         return IDs;
     }
 
+    public String getUserName(String userId) {
 
+        String dIDSql = "select userName from user where userID=? limit 1";
+        Object args[] = new Object[]{userId};
+        List<Map<String, Object>> userNameCursor;
+        try {
+            userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+        String userName = "";
+        for (Map<String, Object> map : userNameCursor) {
+            userName = map.get("userName").toString();
+            break;
+        }
+        return userName;
+    }
 
 }

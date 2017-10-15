@@ -33,6 +33,7 @@ public class HistoryReport {
         reportID = argv.get("reportID").toString();
         userID = argv.get("userID").toString();
         userName = argv.get("userName").toString();
+
         type = argv.get("type").toString();
         category = argv.get("category").toString();
 
