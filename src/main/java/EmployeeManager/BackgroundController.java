@@ -32,7 +32,7 @@ public class BackgroundController {
         logger.info("Request GeneralReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
         List<ReportType> reportType = server.getReportType();
         // Department-Leader-LeaderID
@@ -43,7 +43,7 @@ public class BackgroundController {
         model.addAttribute("UserId", UserId);
         model.addAttribute("list", DLeaders);
         model.addAttribute("reportType", reportType);
-        return "GeneralReport";
+        return "templates/GeneralReport";
     }
 
     @PostMapping(value = "/GeneralReport")
@@ -100,7 +100,7 @@ public class BackgroundController {
         logger.info("Request CaseReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
         List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
@@ -113,7 +113,7 @@ public class BackgroundController {
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
         model.addAttribute("reportType", reportType);
-        return "CaseReport";
+        return "templates/CaseReport";
     }
 
     @PostMapping(value = "/CaseReport")
@@ -165,7 +165,7 @@ public class BackgroundController {
         logger.info("Request LeadershipReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
         List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
@@ -179,7 +179,7 @@ public class BackgroundController {
         model.addAttribute("list", DLeaders);
         model.addAttribute("scoreLimit", scoreLimit);
         model.addAttribute("reportType", reportType);
-        return "LeadershipReport";
+        return "templates/LeadershipReport";
     }
 
     @PostMapping(value = "/LeadershipReport")
@@ -236,7 +236,7 @@ public class BackgroundController {
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
         if (STATE.equals("PC")) return "rank/Rank";
-        return "RankingList";
+        return "templates/RankingList";
     }
 
     @PostMapping(value = "/RankingList")
@@ -250,8 +250,8 @@ public class BackgroundController {
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
-            if (STATE.equals("PC")) return "Rank";
-            return "RankingList";
+            if (STATE.equals("PC")) return "rank/Rank";
+            return "templates/RankingList";
         } else {
             String selectedType;
             if (type.equals("领导干部")) {
@@ -270,8 +270,8 @@ public class BackgroundController {
             String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("list", users);
-            if (STATE.equals("PC")) return "Rank";
-            return "RankingList";
+            if (STATE.equals("PC")) return "rank/Rank";
+            return "templates/RankingList";
         }
     }
 
@@ -283,7 +283,7 @@ public class BackgroundController {
         logger.info("Request ReportApproval: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
 
         String sqlGen = "select reportID,userID,category,typeValue,reportText,submitTime,userName,reportPath " +
@@ -297,7 +297,7 @@ public class BackgroundController {
         List<CaseReport> listCase = server.jdbcTemplate.query(sqlCase, new Object[]{UserId}, new Mapper<CaseReport>(CaseReport.class));
         model.addAttribute("list1", listGen);
         model.addAttribute("list2", listCase);
-        return "ReportApproval";
+        return "templates/ReportApproval";
     }
 
     @PostMapping("/ReportApproval")
@@ -385,9 +385,9 @@ public class BackgroundController {
                 }
                 sqlMessage = "'" + caseReport.get("userID").toString() + "'" +
                         ",'" + caseReport.get("leaderName").toString() + "'" +
-                        ",'" + caseReport.get("members").toString() + "'," +
+                        ",'" + caseReport.get("members").toString() + "','" +
                         caseReport.get("category").toString() +
-                        ",'" + caseReport.get("reportText").toString() + "'" +
+                        "','" + caseReport.get("reportText").toString() + "'" +
                         ",'" + caseReport.get("reportPath").toString() + "'" +
                         "," + caseReport.get("scoreType").toString() + "," +
                         caseReport.get("singleScore").toString() +
@@ -446,7 +446,7 @@ public class BackgroundController {
         logger.info("Request HistoryReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
 
         String UserName = server.getUserName(UserId);
@@ -480,7 +480,7 @@ public class BackgroundController {
         model.addAttribute("UserName", UserName);
         model.addAttribute("list", reports);
         model.addAttribute("selected_type", 1); //进入页面时我的提交(已审批)
-        return "HistoryReport";
+        return "templates/HistoryReport";
     }
 
     //添加查询与统计
@@ -553,7 +553,7 @@ public class BackgroundController {
         }
         if (selectType == 0) {
             model.addAttribute("errorNum", "01");
-            return "failure";
+            return "templates/failure";
         }
 
         Collections.sort(reports, new Comparator<HistoryReport>() {
@@ -566,7 +566,7 @@ public class BackgroundController {
         model.addAttribute("UserName", UserName);
         model.addAttribute("list", reports);
         model.addAttribute("selected_type", selectType);
-        return "HistoryReport";
+        return "templates/HistoryReport";
     }
 
     @RequestMapping("/Synchronizer")
@@ -595,13 +595,13 @@ public class BackgroundController {
         logger.info("Request QRCode: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
 
         QRCode qrCode = server.getQRCode(userID);
         if (qrCode == null) {
             model.addAttribute("errorNum", "03");
-            return "failure";
+            return "templates/failure";
         }
         /*
         long timestamp = System.currentTimeMillis();
@@ -618,7 +618,7 @@ public class BackgroundController {
         */
         model.addAttribute("qrid", qrCode.QRID);
         model.addAttribute("creator", userID);
-        return "QRCode";
+        return "templates/QRCode";
     }
 
     @RequestMapping("/RedirectQR")
@@ -628,7 +628,7 @@ public class BackgroundController {
         logger.info("Request redirectQR: " + QRID); //log
 
         model.addAttribute("state", QRID + "-" + creator);
-        return "RedirectQR";
+        return "templates/RedirectQR";
     }
 
     @RequestMapping("/Checkin")
@@ -639,7 +639,7 @@ public class BackgroundController {
         logger.info("Request checkin: " + userID + " / " + STATE); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
 
         int p = STATE.indexOf("-");
@@ -652,12 +652,12 @@ public class BackgroundController {
                 || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0
                 || !qrCode.QREntry.contains(creator)) {
             model.addAttribute("errorNum", "01");
-            return "failure";
+            return "templates/failure";
         }
 
         if (qrCode.checkins.contains(userID)) {
             model.addAttribute("errorNum", "02");
-            return "failure";// avoid scanning QRcode repeatly
+            return "templates/failure";// avoid scanning QRcode repeatly
         }
         if (server.award(userID, qrCode.value) > 0)
             synchronized (this) {
@@ -665,7 +665,7 @@ public class BackgroundController {
             }
         else {
             model.addAttribute("errorNum", "-1");
-            return "failure";
+            return "templates/failure";
         }
         //timestamp = Long.parseLong(STATE.substring(p + 1));
 
@@ -676,20 +676,20 @@ public class BackgroundController {
         if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp)  // invalid QRcode
         {
             model.addAttribute("errorNum", "01");
-            return "failure";
+            return "templates/failure";
         }
         if (System.currentTimeMillis() - timestamp > QRTimeout)  // invalid QRcode
         {
             model.addAttribute("errorNum", "01");
-            return "failure";
+            return "templates/failure";
         }
         Checkin checkin = checkins.get(creator);
         if (checkin.getUsers().contains(userID)) {
             model.addAttribute("errorNum", "02");
-            return "failure";// avoid scanning QRcode repeatly
+            return "templates/failure";// avoid scanning QRcode repeatly
         }*/
 
-        return "success";
+        return "templates/success";
     }
 
     @RequestMapping("/UploadAvatar")
@@ -700,7 +700,7 @@ public class BackgroundController {
         logger.info("Request UploadAvatar: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
-            return "failure";
+            return "templates/failure";
         }
         Random ranparam = new Random();
 
@@ -709,7 +709,7 @@ public class BackgroundController {
         String avatarURL = (result == null) ? "" : result.get("avatarURL").toString();
         model.addAttribute("userID", userID);
         model.addAttribute("avatarURL", avatarURL + "?" + ranparam);
-        return "UploadAvatar";
+        return "templates/UploadAvatar";
     }
 
     @PostMapping("/UploadAvatar")
@@ -747,11 +747,11 @@ public class BackgroundController {
                               Model model) {
         String UserId = server.getUserId(CODE, submitSecret);
         if (server.isUser(UserId) == false)
-            return "failure";
+            return "templates/failure";
         String UserName = server.getUserName(UserId);
         model.addAttribute("UserID", UserId);
         model.addAttribute("UserName", UserName);
-        return "Reservation";
+        return "templates/Reservation";
     }
 
     @PostMapping(value = "/Reservation")
@@ -768,7 +768,7 @@ public class BackgroundController {
         String sql = "'"+userID+"',"+members+","+suits+",'"+time+"',"+type;
         server.jdbcTemplate.update("insert into reservation " +
                 "(userID,members,suits,time,type) values(" + sql + ")");
-        return "success";
+        return "templates/success";
     }
 
 
@@ -778,7 +778,7 @@ public class BackgroundController {
         int lunchsuits;
         int dinnermembers;
         int dinnersuits;
-        return "checkOrder";
+        return "templates/checkOrder";
     }
 
     */

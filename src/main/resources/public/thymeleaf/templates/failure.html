@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>失败</title>
+</head>
+
+<body onload="errorAlert()">
+
+</body>
+<script th:inline ="javascript">
+        /*<![CDATA[*/
+    function errorAlert () {
+    var errorNum =  /*[[${errorNum}]]*/ "";
+    switch (errorNum)
+    {
+    case "00" :
+        alert("用户不存在！");
+        break;
+    case "01":
+        alert("二维码无效!");
+        break;
+    case "02":
+        alert("请勿重复扫码!");
+        break;
+    case "03":
+        alert("目前没有二维码!");
+        break
+    default :
+        alert("失败!");
+    }
+    }
+        /*]]>*/
+</script>
+</html>

@@ -646,35 +646,6 @@ public class Server {
     }
 
     public Boolean imgSub(String avatarURL, String avatarURLSub, String suffix, int x, int y, int w, int h) {
-<<<<<<< HEAD
-        try {
-            FileInputStream is = null;
-            ImageInputStream iis = null;
-            avatarURL = path + "/" + avatarURL;
-            avatarURLSub = path + "/" + avatarURLSub;
-            is = new FileInputStream(avatarURL);
-
-            Iterator<ImageReader> it = ImageIO.getImageReadersByFormatName(suffix);
-            ImageReader reader = it.next();
-            //获取图片流
-            iis = ImageIO.createImageInputStream(is);
-
-            reader.setInput(iis, true);
-            ImageReadParam param = reader.getDefaultReadParam();
-            Rectangle rect = new Rectangle(x, y, w, h);
-            param.setSourceRegion(rect);
-            BufferedImage bi = reader.read(0, param);
-
-            ImageIO.write(bi, suffix, new File(avatarURLSub));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-=======
->>>>>>> 07fc03a013dfc8b913a28839cdf2f44516f4b47b
 
         avatarURL = path + "/" + avatarURL;
         avatarURLSub = path + "/" + avatarURLSub;

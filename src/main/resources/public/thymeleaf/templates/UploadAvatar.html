@@ -6,15 +6,15 @@
 <head>
     <title>上传头像</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
-    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
-    <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
-    <meta HTTP-EQUIV="expires" CONTENT="0">
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache"></meta>
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"></meta>
+    <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT"></meta>
+    <meta HTTP-EQUIV="expires" CONTENT="0"></meta>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
     <script src="/js/jquery-3.2.1.js"></script>
 
-    <link rel="stylesheet" href="../css/jquery.Jcrop.min.css">
-    <link rel="stylesheet" href="../css/jquery.Jcrop.css">
+    <link rel="stylesheet" href="../css/jquery.Jcrop.min.css"/>
+    <link rel="stylesheet" href="../css/jquery.Jcrop.css"/>
     <script src="/js/jquery.Jcrop.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/jquery.Jcrop.min.js"></script>
@@ -25,7 +25,7 @@
 <body>
 
 <div id="avatarDiv" style="height:60%;width:100%;background:#fff;position:relative;">
-    <img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;">
+    <img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;"/>
 </div>
 
 
@@ -41,12 +41,12 @@
             </label>
         </div>
 
-        <input type="hidden" id="x" name="x">
-        <input type="hidden" id="y" name="y">
-        <input type="hidden" id="w" name="w">
-        <input type="hidden" id="h" name="h">
-        <input type="hidden" id="srcURL" name="srcURL">
-        <input type="hidden" name="userID" th:value = "${userID}">
+        <input type="hidden" id="x" name="x"/>
+        <input type="hidden" id="y" name="y"/>
+        <input type="hidden" id="w" name="w"/>
+        <input type="hidden" id="h" name="h"/>
+        <input type="hidden" id="srcURL" name="srcURL"/>
+        <input type="hidden" name="userID" th:value = "${userID}"/>
     </form>
 </div>
 

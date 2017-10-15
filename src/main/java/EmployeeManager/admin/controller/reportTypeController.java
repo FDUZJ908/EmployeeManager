@@ -60,7 +60,7 @@ public class reportTypeController {
     public String typeModify(@RequestParam(value = "id", required = false) String id,
                              Model model) {
         Map<String, Object> defValue = new HashMap<String, Object>();
-        String sql = "select * from reporttype where typeName = ?";
+        String sql = "select * from reportType where typeName = ?";
         List<Map<String, Object>> list;
         Object args[] = new Object[]{id};
         reportType rpt = adminServer.jdbcTemplate.queryForObject(sql, args, new Mapper<reportType>(reportType.class, defValue));
@@ -77,7 +77,7 @@ public class reportTypeController {
 
         Object args[] = new Object[]{name, Integer.parseInt(value), remark, id};
         try {
-            adminServer.jdbcTemplate.update("update reporttype set typeName = ?, typeValue = ?, typeRemark = ?" +
+            adminServer.jdbcTemplate.update("update reportType set typeName = ?, typeValue = ?, typeRemark = ?" +
                     " where typeName = ?", args);
         } catch (Exception e) {
             return e.getMessage();
@@ -93,7 +93,7 @@ public class reportTypeController {
 
         Object args[] = new Object[]{id};
         try {
-            adminServer.jdbcTemplate.update("delete from reporttype where typeName = ?", args);
+            adminServer.jdbcTemplate.update("delete from reportType where typeName = ?", args);
         } catch (Exception e) {
             return e.getMessage();
         }

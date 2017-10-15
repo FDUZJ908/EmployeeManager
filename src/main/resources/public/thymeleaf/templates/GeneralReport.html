@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>一般报告提交</title>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+        $("#generalSubmit").click(function () {
+
+        var result = checkDL();
+
+        if (result == false)
+            return false;
+
+        var generalForm = document.getElementById("generalForm");
+        var formData = new FormData(generalForm);
+
+
+        $.ajax({
+        url : "GeneralReport",
+        type : "POST",
+        data : formData,
+        // 告诉jQuery不要去处理发送的数据
+        processData : false,
+        // 告诉jQuery不要去设置Content-Type请求头
+        contentType : false,
+        beforeSend:function(){
+        $("#innerDiv").fadeIn("fast");
+        },
+        complete : function() {
+                    $("#innerDiv").fadeOut("fast");
+        },
+         success : function(responseMsg) {
+            alert(responseMsg.msg);
+            if(responseMsg.num == "1")
+                reset();
+
+        },
+        error : function(responseMsg) {
+            alert("error");
+        }
+        });
+
+        });
+    });
+</script>
+
+</head>
+<body onload="loadDepartment()">
+<div class="page">
+    <!--
+    <div class="page-title">
+        <h3>一般报告</h3>
+    </div>
+    -->
+    <div class="submit-form">
+        <form method="post" enctype="multipart/form-data" onsubmit="return checkDL()" id="generalForm">
+            <select name="UserId" style="display:none">
+                <option th:value="${UserId}" th:text="${UserId}"></option>
+            </select>
+
+            <div class="report_box">
+                <label>报告内容:</label>
+                <textarea name="content" id="content" required="required"> </textarea>
+                <div class="select-file">
+                    <input type="file" name="file" id="file" onchange="changeFile()"/>
+                    <label for="file" id="att" style="font-size:3em;">上传附件
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="report_box">
+                <label>任务类型:</label>
+                <select name="type" id="type">
+                    <div th:each="reportType:${reportType}">
+                        <option th:value="${reportType.getTypeName()}" th:text="${reportType.getTypeName()}"></option>
+                    </div>
+                </select>
+            </div>
+
+            <div class="report_box">
+                <label>工作部门:</label>
+                <select name="department" id="department" onchange="departmentRedirect()">
+                    <div th:each="department:${list}">
+                        <option th:value="${department.leader}" th:text="${department.department}"></option>
+                    </div>
+                </select>
+            </div>
+
+            <div style="display:none">
+                <select id="department_hide" >
+                    <div th:each="department:${list}">
+                        <option th:value="${department.leader}" th:text="${department.department}"></option>
+                    </div>
+                </select>
+            </div>
+            <div class="report_box">
+                <label>审批领导:</label>
+                <select name="leader" id="leader">
+                </select>
+            </div>
+
+            <div class="submit_box">
+                <input type="button" value="提交报告" id="generalSubmit"/>
+            </div>
+
+        </form>
+    </div>
+</div>
+<div class="uploadProcess" id="innerDiv" >
+    <p>正在提交报告...</p>
+</div>
+</body>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function checkDL () {
+        var content = document.getElementById("content");
+        var department = document.getElementById("department");
+        var leader = document.getElementById("leader");
+
+        if (content.value.toString() == "") {
+            alert("报告内容不能为空！");
+            return false;
+        }
+
+        if (department.options[department.selectedIndex].text == "请选择部门") {
+            alert("请选择部门！");
+            return false;
+        }
+        if (leader.options[leader.selectedIndex].text == "请选择领导") {
+            alert("请选择领导！");
+            return false;
+        }
+
+        var con = confirm("确认提交报告？");
+        if (con == false)
+            return false;
+
+
+    }
+
+    function changeFile () {
+    		$("#att").text("已上传√");
+    }
+    function departmentRedirect() {
+        var department_hide = document.getElementById("department_hide");
+        var department = document.getElementById("department");
+        var leader = document.getElementById("leader");
+        var userName = /*[[${userName}]]*/ "";
+        var selectedD = department.options[department.selectedIndex].text;
+        for (i = leader.length - 1; i >= 0; i--)
+            leader.options.remove(i);
+        for (i = 0; i < department_hide.length; i++) {
+            if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
+                leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
+            }
+        }
+    }
+
+
+    function loadDepartment() {
+        var department = document.getElementById("department");
+        var i,j,n;
+        for (i = department.length-1; i >=0 ; i--) {
+            j = i;
+            for (n = 0; n < j; n++) {
+                if (department.options[n].text == department.options[j].text){
+                    department.options.remove(j);
+                    break;
+                }
+            }
+        }
+        departmentRedirect();
+        loadType();
+    }
+
+    function loadType() {
+    $("#type").val('日常工作');
+    }
+
+
+    function reset() {
+        var content = document.getElementById("content");
+            content.value = "";
+        var file = document.getElementById("file");
+         if (file.outerHTML) {
+             file.outerHTML = file.outerHTML;
+         } else {
+             file.value = "";
+         }
+        $("#att").text("上传附件");
+         $("#department").get(0).selectedIndex = 0;
+
+         departmentRedirect();
+
+         $("#leader").get(0).selectedIndex = 0;
+
+         $("#score").val(null);
+
+         loadType();
+
+    }
+
+
+
+    /*]]>*/
+
+
+
+</script>
+
+</html>
