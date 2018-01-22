@@ -16,7 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `QRcode`
+-- Table structure for table `QRCode`
 --
 
 DROP TABLE IF EXISTS `QRCode`;
@@ -26,11 +26,9 @@ CREATE TABLE `QRCode` (
   `QRID` int(11) NOT NULL AUTO_INCREMENT,
   `s_time` datetime NOT NULL,
   `e_time` datetime NOT NULL,
-  `value` int(11) DEFAULT NULL,
-  `QREntry` char(64) DEFAULT NULL,
-  `flag` datetime DEFAULT NULL,
+  `token` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`QRID`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +57,7 @@ CREATE TABLE `caseReport` (
   KEY `FK_Reference_9` (`category`),
   CONSTRAINT `FK_Reference_2` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
   CONSTRAINT `FK_Reference_9` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +101,7 @@ CREATE TABLE `generalReport` (
   KEY `FK_Reference_11` (`category`),
   CONSTRAINT `FK_Reference_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
   CONSTRAINT `FK_Reference_11` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,9 +127,9 @@ CREATE TABLE `leaderReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_3` (`userID`),
   KEY `FK_Reference_13` (`category`),
-  CONSTRAINT `FK_Reference_3` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
-  CONSTRAINT `FK_Reference_13` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_Reference_13` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`),
+  CONSTRAINT `FK_Reference_3` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,12 +142,12 @@ DROP TABLE IF EXISTS `privilege`;
 CREATE TABLE `privilege` (
   `pID` int(11) NOT NULL AUTO_INCREMENT,
   `privilege` int(11) NOT NULL,
-  `weekday` char(16) DEFAULT NULL,
+  `weekday` tinyint(4) DEFAULT NULL,
   `pushTime` time DEFAULT NULL,
   `leaderPostLimit` int(11) DEFAULT NULL,
   `leaderScoreLimit` int(11) DEFAULT NULL,
   PRIMARY KEY (`pID`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,6 +162,21 @@ CREATE TABLE `reportType` (
   `typeValue` int(11) NOT NULL DEFAULT '0',
   `typeRemark` char(64) DEFAULT NULL,
   PRIMARY KEY (`typeName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sysVar`
+--
+
+DROP TABLE IF EXISTS `sysVar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sysVar` (
+  `varName` char(32) NOT NULL,
+  `value` int(11) DEFAULT NULL,
+  `string` char(32) DEFAULT NULL,
+  PRIMARY KEY (`varName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -191,9 +204,9 @@ CREATE TABLE `undealedCaseReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_6` (`userID`),
   KEY `FK_Reference_15` (`category`),
-  CONSTRAINT `FK_Reference_6` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
-  CONSTRAINT `FK_Reference_15` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_Reference_15` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`),
+  CONSTRAINT `FK_Reference_6` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,9 +230,9 @@ CREATE TABLE `undealedGeneralReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_8` (`userID`),
   KEY `FK_Reference_17` (`category`),
-  CONSTRAINT `FK_Reference_8` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
-  CONSTRAINT `FK_Reference_17` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_Reference_17` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`),
+  CONSTRAINT `FK_Reference_8` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,6 +260,14 @@ CREATE TABLE `user` (
   PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping events for database 'EmployeeManager'
+--
+
+--
+-- Dumping routines for database 'EmployeeManager'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -257,4 +278,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-14 21:44:17
+-- Dump completed on 2018-01-23  0:19:32
