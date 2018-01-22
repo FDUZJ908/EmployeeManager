@@ -1,8 +1,10 @@
 package EmployeeManager;
 
 import EmployeeManager.cls.*;
+import org.slf4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.validation.constraints.Null;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -46,6 +49,7 @@ public class Server {
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
     Map<String, Integer> reported = new HashMap<String, Integer>();
@@ -189,6 +193,43 @@ public class Server {
         }
         return userPrivilege;
     }
+
+    public int getIntSysVar(String varName) {
+        int sysVar = 0;
+        String sysVarSql = "select value from sysVar where varName= ? limit 1";
+        Object args[] = new Object[]{varName};
+        List<Map<String, Object>> sysVarCursor;
+        try {
+            sysVarCursor = jdbcTemplate.queryForList(sysVarSql,args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+        for (Map<String, Object>map:sysVarCursor) {
+
+            sysVar = Integer.parseInt(map.get("value").toString());
+        }
+        return sysVar;
+    }
+
+    public String getStringSysVar(String varName) {
+        String sysVar ="";
+        String sysVarSql = "select string from sysVar where varName= ? limit 1";
+        Object args[] = new Object[]{varName};
+        List<Map<String, Object>> sysVarCursor;
+        try {
+            sysVarCursor = jdbcTemplate.queryForList(sysVarSql,args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "";
+        }
+        for (Map<String, Object>map:sysVarCursor) {
+
+            sysVar = map.get("string").toString();
+        }
+        return sysVar;
+    }
+
 
     public int getLeaderScoreLimit(int userPrivilege) {
         String scoreLimitSql = "select leaderScoreLimit from privilege where privilege = ?";
@@ -436,8 +477,15 @@ public class Server {
     public List<String> getLeaderInCase(String userId) {
         List<String> DLeader = new ArrayList<String>();
         int userPrivilege = getUserPrivilege(userId);
+        int caseReportCheckLimit = getIntSysVar("caseReportCheckLimit");
+        caseReportCheckLimit = caseReportCheckLimit -1;
+        int limitPrivilege = 0;
+        if (userPrivilege> caseReportCheckLimit)
+            limitPrivilege = userPrivilege;
+        else
+            limitPrivilege = caseReportCheckLimit;
         String dIDSql = "select userName from user where privilege > ?   order by  convert(userName using gbk) asc";
-        Object args1[] = new Object[]{userPrivilege};
+        Object args1[] = new Object[]{limitPrivilege};
         List<Map<String, Object>> department;
         try {
             department = jdbcTemplate.queryForList(dIDSql, args1);
@@ -647,13 +695,8 @@ public class Server {
             out.write(b);
             out.flush();
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -686,11 +729,8 @@ public class Server {
             BufferedImage bi = reader.read(0, param);
             ImageIO.write(bi, suffix, new File(avatarURLSub));
             return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+
             return false;
         }
     }
