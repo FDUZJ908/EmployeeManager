@@ -82,4 +82,12 @@ public class adminServer {
         return userName;
     }
 
+    public void updateIdScoreMap(String ids, Integer score, Map<String, Integer> IdScore) {
+        for (String id : ids.split(",")) {
+            if (id.equals("")) continue;
+            Integer curScore = IdScore.get(id);
+            curScore += score;
+            IdScore.put(id, curScore);
+        }
+    }
 }
