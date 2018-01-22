@@ -10,16 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
-import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import sun.misc.BASE64Decoder;
-
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
@@ -121,6 +111,34 @@ public class Server {
         return errcode == 0 && errmsg.equals("ok");
     }
     */
+
+    public String getRepeatQMark(int n, int m) {
+        char[] s = new char[n * 2 * m + 3 * n + n];
+        int p = 0;
+        for (int i = 1; i <= n; i++) {
+            if (i > 1) s[p++] = ',';
+            s[p++] = '(';
+            for (int j = 1; j <= m; j++) {
+                if (j > 1) s[p++] = ',';
+                s[p++] = '?';
+            }
+            s[p++] = ')';
+        }
+        return String.valueOf(s, 0, p);
+    }
+
+    public int insertMap(Map<String, Object> map,String table) {
+        StringBuffer cols = new StringBuffer();
+        Object[] args=new Object[map.size()];
+        int m = 0;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (m++ > 0) cols.append(',');
+            cols.append(entry.getKey());
+            args[m]=entry.getValue();
+        }
+        String sql="INSERT INTO "+table+" ( "+cols+" ) VALUES"+getRepeatQMark(1,m);
+        return jdbcTemplate.update(sql,args);
+    }
 
     public List<Map<String, Object>> getDepartment(String userId) {
         String dIDSql = "select dID,dName from department where userID=?";
@@ -415,7 +433,6 @@ public class Server {
         return DLeader;
     }
 
-
     public List<String> getLeaderInCase(String userId) {
         List<String> DLeader = new ArrayList<String>();
         int userPrivilege = getUserPrivilege(userId);
@@ -436,6 +453,13 @@ public class Server {
         return DLeader;
     }
 
+    public int award(String users, int score) throws Exception {
+        if (users.length() == 0)
+            return 0;
+        String[] userids = users.split(",");
+        String sql = "UPDATE user SET s_score=s_score + " + score + " WHERE userID IN " + getRepeatQMark(1, userids.length);
+        return jdbcTemplate.update(sql, userids);
+    }
 
     public Map<Integer, String> syncDepartment() throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
@@ -544,7 +568,7 @@ public class Server {
             else if (qrCode.QREntry.contains(userID)) QRID = key;
         }
         if (QRID != -1) return QRCodes.get(QRID);
-        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '"+userID+"' LIMIT 1";
+        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '" + userID + "' LIMIT 1";
         try {
             QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
             QRCodes.put(qrCode.QRID, qrCode);
@@ -555,18 +579,7 @@ public class Server {
         }
     }
 
-    public int award(String userid, int score) {
-        String updatesql = "UPDATE user SET s_score=s_score + " + score + " WHERE userID=?";
-        Object args[] = new Object[]{userid};
-        try {
-            return jdbcTemplate.update(updatesql, args);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return 0;
-        }
-    }
-
-    public String name2id(String names) {
+    public String name2id(String names, String delimiter) {
         String IDs = "";
         String[] namelist = names.split(",");
 
@@ -583,7 +596,7 @@ public class Server {
             }
             if (!memberCursor.isEmpty()) {
                 for (Map<String, Object> map : memberCursor) {
-                    IDs = IDs + map.get("userID").toString() + "|";
+                    IDs = IDs + map.get("userID").toString() + delimiter;
                 }
             } else {
                 System.out.println("成员不存在");
@@ -599,7 +612,7 @@ public class Server {
         String token = getAccessToken(corpsecret.get(agentID), false);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
 
-        String userIDs = byName ? name2id(members) : members;
+        String userIDs = byName ? name2id(members,"|") : members;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("touser", userIDs);
         jsonObject.put("msgtype", "text");
@@ -626,7 +639,7 @@ public class Server {
             avatarURL = path + "/" + avatarURL;
             File file = new File(avatarURL);
 
-            if(file.exists()) {
+            if (file.exists()) {
                 file.delete();
             }
 
@@ -650,36 +663,36 @@ public class Server {
         avatarURL = path + "/" + avatarURL;
         avatarURLSub = path + "/" + avatarURLSub;
 
-            try {
-                FileInputStream is = null;
-                ImageInputStream iis = null;
+        try {
+            FileInputStream is = null;
+            ImageInputStream iis = null;
 
-                File file = new File(avatarURLSub);
+            File file = new File(avatarURLSub);
 
-                if(file.exists()) {
-                    file.delete();
-                }
-
-                is = new FileInputStream(avatarURL);
-
-                Iterator<ImageReader> it = ImageIO.getImageReadersByFormatName(suffix);
-                ImageReader reader = it.next();
-                //获取图片流
-                iis = ImageIO.createImageInputStream(is);
-                reader.setInput(iis, true);
-                ImageReadParam param = reader.getDefaultReadParam();
-                Rectangle rect = new Rectangle(x, y, w, h);
-                param.setSourceRegion(rect);
-                BufferedImage bi = reader.read(0, param);
-                ImageIO.write(bi, suffix, new File(avatarURLSub));
-                return true;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return false;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
+            if (file.exists()) {
+                file.delete();
             }
+
+            is = new FileInputStream(avatarURL);
+
+            Iterator<ImageReader> it = ImageIO.getImageReadersByFormatName(suffix);
+            ImageReader reader = it.next();
+            //获取图片流
+            iis = ImageIO.createImageInputStream(is);
+            reader.setInput(iis, true);
+            ImageReadParam param = reader.getDefaultReadParam();
+            Rectangle rect = new Rectangle(x, y, w, h);
+            param.setSourceRegion(rect);
+            BufferedImage bi = reader.read(0, param);
+            ImageIO.write(bi, suffix, new File(avatarURLSub));
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public List<ReportType> getReportType() {
@@ -689,7 +702,6 @@ public class Server {
         try {
             reportTypeCursor = jdbcTemplate.queryForList(reportTypeSql);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return null;
         }
 
@@ -701,22 +713,16 @@ public class Server {
     }
 
     public int getTypeValue(String typeName) {
-        List<Map<String, Object>> typeValueCursor;
-        int value = 0;
-        String typeValueSql = "select typeValue from reportType where typeName=? LIMIT 1";
+        Map<String, Object> res;
+        String sql = "select typeValue from reportType where typeName=? LIMIT 1";
         Object args[] = new Object[]{typeName};
         try {
-            typeValueCursor = jdbcTemplate.queryForList(typeValueSql, args);
+            res = jdbcTemplate.queryForMap(sql, args);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return 0;
         }
-
-        for (Map<String, Object> map : typeValueCursor) {
-            value = Integer.parseInt(map.get("typeValue").toString());
-            break;
-        }
-        return value;
+        return  Integer.parseInt(res.get("typeValue").toString());
     }
 
 }
