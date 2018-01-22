@@ -649,7 +649,7 @@ public class BackgroundController {
     public String UploadAvatar(@RequestParam("code") String CODE,
                                @RequestParam("state") String STATE,
                                Model model) {
-        String userID = server.getUserId(CODE, submitSecret);
+        String userID = "CaiYu";//server.getUserId(CODE, submitSecret);
         logger.info("Request UploadAvatar: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
@@ -682,6 +682,7 @@ public class BackgroundController {
         String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
         Random ranparam = new Random();
 
+        server.mkDir(userID);
         if (server.base64ToImg(srcURLFile, avatarURL)) {
             if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(w), Integer.parseInt(h))) {
                 String sql = "update user set avatarURL=? where userID=?";

@@ -1,8 +1,10 @@
 package EmployeeManager;
 
 import EmployeeManager.cls.*;
+import org.slf4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,6 +48,7 @@ public class Server {
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
     Map<String, Integer> reported = new HashMap<String, Integer>();
@@ -647,13 +650,8 @@ public class Server {
             out.write(b);
             out.flush();
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -686,11 +684,8 @@ public class Server {
             BufferedImage bi = reader.read(0, param);
             ImageIO.write(bi, suffix, new File(avatarURLSub));
             return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+
             return false;
         }
     }
