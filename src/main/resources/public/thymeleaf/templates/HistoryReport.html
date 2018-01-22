@@ -115,7 +115,7 @@
             </div>
 
             <div class="approval_right_att">
-                <button th:if="${!report.reportPath.isEmpty()}" type="button" th:value="${report.reportPath}"></button>
+                <button th:if="${!report.getReportPath().isEmpty()}" type="button" th:value="${report.getReportPath()}"></button>
             </div>
         </div>
         <div style="display: flex; flex-direction:column;">

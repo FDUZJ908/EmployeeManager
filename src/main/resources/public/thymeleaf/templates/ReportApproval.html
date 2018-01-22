@@ -174,7 +174,7 @@
 
                 <div class="approval_right_att">
 
-                    <button th:if="${!list.reportPath.isEmpty()}" type="button" th:value="${list.reportPath}"></button>
+                    <button th:if="${!list.getReportPath().isEmpty()}" type="button" th:value="${list.getReportPath()}"></button>
                 </div>
                 <div class="approval_right_content">
                     <p th:text="'内容:&nbsp;' + ${list.reportText}"></p>
