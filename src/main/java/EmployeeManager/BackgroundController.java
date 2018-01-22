@@ -102,6 +102,12 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
         }
+        int userPrivilege =  server.getUserPrivilege(UserId);
+        int caseReportEntryLimit = server.getIntSysVar("caseReportEntryLimit");
+        if (caseReportEntryLimit > userPrivilege) {
+            model.addAttribute("errorNum", "04");
+            return "templates/failure";
+        }
         List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
