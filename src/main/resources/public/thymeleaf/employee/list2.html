@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="head"></div>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css"/>
+    <title>角色管理</title>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini ">
+<div class="wrapper">
+
+    <div th:replace="header"></div>
+    <div th:replace="sidebar"></div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+
+
+                    <div class="box">
+                        <div class="box box-info">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">查询</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <!-- form start -->
+                            <form class="form-horizontal" th:action="@{/employee}"
+                                  method="post">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">选择部门</label>
+
+                                        <div class="col-sm-10" style="width: 200px">
+                                            <input type="text" list="departmentlist"  name="department"
+                                                   class="form-control"
+                                                   id="department" maxlength="20"/>
+                                            <datalist id="departmentlist">
+                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+
+
+                                    <br/><br/>
+
+                                    <!-- /.box-body -->
+                                    <div class="box-footer" style="text-align: center;">
+                                        <button type="submit" class="btn btn-info">查询</button>
+                                    </div>
+                                    <!-- /.box-footer -->
+
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+
+                    <div class="box">
+                        <p th:text="${department}"></p>
+                        <a th:href="@{/employee/form1(department=${department})}" title="新增部门人员"><span
+                                class="glyphicon glyphicon-plus"></span></a>
+
+                        <div class="box-body">
+                            <table id="dataTable" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>姓名</th>
+                                    <th>部门</th>
+                                    <th>是否为领导</th>
+                                    <th>编辑</th>
+                                    <th>删除</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item:${list}">
+                                    <td th:text="${item.getUserid()}"></td>
+                                    <td th:text="${item.getUsername()}"></td>
+                                    <td th:text="${item.getDname()}"></td>
+                                    <td th:text="${item.getIsleader()}"></td>
+                                    <td style="text-align: center">
+                                        <a th:href="@{/employee/form(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
+                                                class="glyphicon glyphicon-edit"
+                                                title="编辑"></span></a>
+                                    </td>
+
+                                    <td th:if="${department}" style="text-align: center">
+                                        <span name="trash" title="删除"
+                                              th:data="@{/employee/{userid}/delete/{department}(userid=${item.getUserid()},department=${department})}"
+                                              style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+</div>
+
+<div th:replace="script"></div>
+
+<!-- page script -->
+<script>
+    $(function () {
+        $('#dataTable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+
+</script>
+<script th:src="@{/js/list-page.js}"></script>
+</body>
+</html>

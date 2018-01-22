@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"></meta>
-    <title>领导报告提交</title>
+    <title>领导批示提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
     <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 </head>
@@ -20,12 +20,12 @@
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
             <div class="report_box">
-                <label>报告内容:</label>
+                <label>批示内容:</label>
                 <textarea name="content" id="content" required="required"></textarea>
                 <div class="select-file">
                     <input type="file" name="file" id="file" onchange="changeFile()"/>
-                    <label for="file" id="att" style="font-size:3em;">上传附件
-                    </label>
+                   <!-- <label for="file" id="att" style="font-size:3em;">上传附件
+                    </label>-->
                 </div>
             </div>
 
@@ -64,7 +64,7 @@
             <div id="memberList" class="unselected-members">
             </div>
             <div class="submit_box">
-                <input type="button" value="提交报告" id="leaderSubmit"/>
+                <input type="button" value="提交" id="leaderSubmit"/>
             </div>
             <input name="members" id="members" style="display:none" value=""/>
         </form>
@@ -76,7 +76,7 @@
     </div>
 </select>
 <div class="uploadProcess" id="innerDiv" >
-    <p>正在提交报告...</p>
+    <p>正在提交...</p>
 </div>
 
 </body>
@@ -111,7 +111,6 @@
                     $("#innerDiv").fadeOut("fast");
         },
          success : function(responseMsg) {
-            alert(responseMsg.msg);
             if(responseMsg.num == "1")
                 reset();
 

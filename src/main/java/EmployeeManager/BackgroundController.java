@@ -193,34 +193,31 @@ public class BackgroundController {
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
-        ResponseMsg responseMsg = new ResponseMsg("", "");// create ajax response
         String currentTime = server.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            responseMsg.setMsg("文件上传失败！");
-            responseMsg.setNum("0");
-            return responseMsg;
+            return new ResponseMsg("文件上传失败！", "0");
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
-        String sqlMessage = "'" + UserId + "','" + members + "','" + type + "','" + content + "','" + pathCurrent + "'," +
-                score + ",'" + server.currentTime() + "'," + score_type;
-        server.jdbcTemplate.update("insert into leaderReport " +
-                "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
-                "values(" + sqlMessage + ")");
+        try {
+            String sqlMessage = "'" + UserId + "','" + members + "','" + type + "','" + content + "','" + pathCurrent + "'," +
+                    score + ",'" + server.currentTime() + "'," + score_type;
+            server.jdbcTemplate.update("insert into leaderReport " +
+                    "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
+                    "values(" + sqlMessage + ")");
 
-        int singleScore = Integer.parseInt(score);
-        if (score_type.equals("0"))
-            singleScore = -singleScore;
+            int singleScore = Integer.parseInt(score);
+            if (score_type.equals("0"))
+                singleScore = -singleScore;
 
-        String sqlLeaderScore = "UPDATE user set s_score=s_score + " + singleScore + " where userID=?";
-        Object args[] = new Object[]{UserId};
-        server.jdbcTemplate.update(sqlLeaderScore, args);
-        responseMsg.setMsg("领导报告提交成功！");
-        responseMsg.setNum("1");
-        return responseMsg;
+            server.award(UserId+","+server.name2id(members,","), singleScore);
+        } catch (Exception e) {
+            return new ResponseMsg("领导批示提交失败！", "0");
+        }
+        return new ResponseMsg("领导批示提交成功！", "1");
     }
 
 
@@ -304,8 +301,8 @@ public class BackgroundController {
     @ResponseBody
     public ReportApprovalAjax ReportApprovalPost(@RequestBody ReportApprovalAjax ajax,
                                                  Model model) {
-        String check1 = ajax.getCheck1();
-        String check2 = ajax.getCheck2();
+        String check1 = ajax.getCheck1(); //Gen
+        String check2 = ajax.getCheck2(); //Case
         String[] reports1 = check1.split(",");
         String[] reports2 = check2.split(",");
         String reportStatus = ajax.getReportStatus();
@@ -321,34 +318,17 @@ public class BackgroundController {
             for (int i = 0; i < reports1.length; i++) {
                 Map<String, Object> generalReport = server.getUndealedGeneralReport(reports1[i]);
                 if (generalReport == null) continue;
-                String sqlMessage = "";
-                int singleScore;
+                String userID = generalReport.get("userID").toString();
 
-                sqlMessage = "'" + generalReport.get("userID").toString() + "'" +
-                        ",'" + generalReport.get("leaderName").toString() + "','" +
-                        generalReport.get("category").toString() +
-                        "','" + generalReport.get("reportText").toString() + "'" +
-                        ",'" + generalReport.get("reportPath").toString() + "'" +
-                        ",'" + generalReport.get("submitTime").toString() + "'" +
-                        ",'" + checkTime + "'," +
-                        reportStatus +
-                        ",'" + reportComment + "'";
-                singleScore = server.getTypeValue(generalReport.get("category").toString());
-                if (singleScore == 0) {
-                    ajax.setCheckResponse("invalid score!");
-                    ajax.setCheckNum("0");
-                    return ajax;
-                }
+                int singleScore = server.getTypeValue(generalReport.get("category").toString());
+
+                generalReport.put("checkTime", checkTime);
+                generalReport.put("isPass", Integer.valueOf(reportStatus));
+                generalReport.put("comment", reportComment);
                 try {
-                    updateSql = "UPDATE user set s_score=s_score + " + singleScore +
-                            " where userID=?";
-                    Object args[] = new Object[]{generalReport.get("userID").toString()};
-                    server.jdbcTemplate.update(updateSql, args);
+                    server.award(userID, singleScore);
+                    server.insertMap(generalReport, "generalReport");
 
-                    updateSql = "insert into generalReport " +
-                            "(userID,leaderName,category,reportText,reportPath,submitTime,checkTime,isPass,comment) " +
-                            "values(" + sqlMessage + ")";
-                    server.jdbcTemplate.update(updateSql);
                     updateSql = "delete from undealedGeneralReport where reportID=" + reports1[i];
                     server.jdbcTemplate.update(updateSql);
                     ajax.setCheckResponse("审批成功!");
@@ -361,7 +341,7 @@ public class BackgroundController {
                 }
 
                 try {
-                    server.sendMessage(generalReport.get("userID").toString(), mesgToSubordinate, false, reportAgentID);
+                    server.sendMessage(userID, mesgToSubordinate, false, reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -371,52 +351,24 @@ public class BackgroundController {
             for (int i = 0; i < reports2.length; i++) {
                 Map<String, Object> caseReport = server.getUndealedCaseReport(reports2[i]);
                 if (caseReport == null) continue;
-                String sqlMessage = "";
-                int singleScore;
-                int scoreType;
 
+                String userID = caseReport.get("userID").toString();
+
+                int singleScore = 0;
                 if (reportStatus.equals("1")) {
                     if (caseReport.get("scoreType").toString().equals("true")) {
                         singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
                     } else
                         singleScore = -Integer.parseInt(caseReport.get("singleScore").toString());
-                } else {
-                    singleScore = 0;
-                }
-                sqlMessage = "'" + caseReport.get("userID").toString() + "'" +
-                        ",'" + caseReport.get("leaderName").toString() + "'" +
-                        ",'" + caseReport.get("members").toString() + "','" +
-                        caseReport.get("category").toString() +
-                        "','" + caseReport.get("reportText").toString() + "'" +
-                        ",'" + caseReport.get("reportPath").toString() + "'" +
-                        "," + caseReport.get("scoreType").toString() + "," +
-                        caseReport.get("singleScore").toString() +
-                        ",'" + caseReport.get("submitTime").toString() + "'" +
-                        ",'" + checkTime + "'," +
-                        reportStatus +
-                        ",'" + reportComment + "'";
-                if (!caseReport.get("members").toString().isEmpty()) {
-                    String[] member = caseReport.get("members").toString().split(",");
-
-                    for (int j = 0; j < member.length; j++) {
-                        updateSql = "update user set s_score = s_score + " + singleScore +
-                                " where userName=?";
-                        Object args1[] = new Object[]{member[j]};
-                        server.jdbcTemplate.update(updateSql, args1);
-                    }
                 }
 
+                caseReport.put("checkTime", checkTime);
+                caseReport.put("isPass", Integer.valueOf(reportStatus));
+                caseReport.put("comment", reportComment);
                 try {
-                    updateSql = "update user set s_score = s_score + " + singleScore +
-                            " where userID=?";
-                    Object args2[] = new Object[]{caseReport.get("userID").toString()};
-                    server.jdbcTemplate.update(updateSql, args2);
+                    server.award(userID + "," + server.name2id(caseReport.get("members").toString(),","), singleScore);
+                    server.insertMap(caseReport, "caseReport");
 
-                    updateSql = "insert into caseReport " +
-                            "(userID,leaderName,members,category,reportText,reportPath,scoreType," +
-                            "singleScore,submitTime,checkTime,isPass,comment) " +
-                            "values(" + sqlMessage + ")";
-                    server.jdbcTemplate.update(updateSql);
                     updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
                     server.jdbcTemplate.update(updateSql);
                     ajax.setCheckResponse("审批成功!");
@@ -429,7 +381,7 @@ public class BackgroundController {
                 }
 
                 try {
-                    server.sendMessage(caseReport.get("userID").toString(), mesgToSubordinate, false, reportAgentID);
+                    server.sendMessage(userID, mesgToSubordinate, false, reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -659,11 +611,12 @@ public class BackgroundController {
             model.addAttribute("errorNum", "02");
             return "templates/failure";// avoid scanning QRcode repeatly
         }
-        if (server.award(userID, qrCode.value) > 0)
+        try {
+            server.award(userID, qrCode.value);
             synchronized (this) {
                 qrCode.checkins.add(userID); //若提前分配好内存则可以删除synchronized
             }
-        else {
+        } catch (Exception e) {
             model.addAttribute("errorNum", "-1");
             return "templates/failure";
         }
@@ -720,7 +673,7 @@ public class BackgroundController {
                                     @RequestParam("w") String w,
                                     @RequestParam("h") String h,
                                     @RequestParam("srcURL") String srcURL
-                                    ) {
+    ) {
         logger.info("Post UploadAvatar: " + userID); //log
 
         String suffix = "png";
@@ -729,11 +682,11 @@ public class BackgroundController {
         String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
         Random ranparam = new Random();
 
-        if(server.base64ToImg(srcURLFile, avatarURL)) {
+        if (server.base64ToImg(srcURLFile, avatarURL)) {
             if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(w), Integer.parseInt(h))) {
-                 String sql = "update user set avatarURL=? where userID=?";
-                    server.jdbcTemplate.update(sql, avatarURLSub, userID);
-                    return new ResponseMsg("1", avatarURLSub+"?" + ranparam);
+                String sql = "update user set avatarURL=? where userID=?";
+                server.jdbcTemplate.update(sql, avatarURLSub, userID);
+                return new ResponseMsg("1", avatarURLSub + "?" + ranparam);
             }
         }
         return new ResponseMsg("0", srcURL);
