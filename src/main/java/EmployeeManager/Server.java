@@ -30,28 +30,12 @@ import static EmployeeManager.cls.User.userKeys;
 @Component
 public class Server {
 
-    static final String corpid = "wx7635106ee1705d6d";
-    static final String submitSecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
-    static final String contactSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
-    static final String reportSecret = "x0VeHuzpagYuJmrymzJayHmN3vrzgtcISA2Q_8qhLG0";
-    /*static final String approvalSecret = "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E";
-    static final String reportSecret = "xVBKh9GKuDGd_nJp8TBRzWzWBHkIVDFPjxewNKhBEzA";
-    static final int approvalAgentID = 1000004;
-    static final int reportAgentID = 1000005;*/
-    static final int reportAgentID = 1000017;
-
-    static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
-        put(reportAgentID, reportSecret);
-        //put(approvalAgentID, approvalSecret);
-        //put(reportAgentID, reportSecret);
-    }};
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public JdbcTemplate jdbcTemplate;
-    Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
-    Map<String, Integer> reported = new HashMap<String, Integer>();
+
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
-    int maxReportCount = 0;
 
     @Value("${web.upload-path}")
     private String path;
@@ -65,7 +49,7 @@ public class Server {
         HTTPRequest http = new HTTPRequest();
         try {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
-                    "corpid=" + corpid + "&corpsecret=" + corpsecret);
+                    "corpid=" + Variable.corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
@@ -508,7 +492,7 @@ public class Server {
 
     public Map<Integer, String> syncDepartment() throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(contactSecret, true);
+        String token = getAccessToken(Variable.contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/department/list?access_token=" + token;
         JSONObject jsonRes = httpReq.sendGET(url);
         if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
@@ -534,7 +518,7 @@ public class Server {
 
     public void syncUser(Map<Integer, String> departName) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(contactSecret, true);
+        String token = getAccessToken(Variable.contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=" + token + "&department_id=1&fetch_child=1";
         JSONObject jsonRes = httpReq.sendGET(url);
         if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
@@ -606,20 +590,20 @@ public class Server {
     public synchronized QRCode getQRCode(String userID) {
         String time = currentTime();
         int QRID = -1;
-        Set<Integer> keys = QRCodes.keySet();
+        Set<Integer> keys = Variable.QRCodes.keySet();
         for (int key : keys) {
-            QRCode qrCode = QRCodes.get(key);
-            if (time.compareTo(qrCode.e_time) > 0) QRCodes.remove(key);
+            QRCode qrCode = Variable.QRCodes.get(key);
+            if (time.compareTo(qrCode.e_time) > 0) Variable.QRCodes.remove(key);
             else if (qrCode.managers.contains(userID)) {
                 QRID = key;
                 break;
             }
         }
-        if (QRID != -1) return QRCodes.get(QRID);
+        if (QRID != -1) return Variable.QRCodes.get(QRID);
         String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND managers LIKE '%" + userID + "%' LIMIT 1";
         try {
             QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
-            QRCodes.put(qrCode.QRID, qrCode);
+            Variable.QRCodes.put(qrCode.QRID, qrCode);
             return qrCode;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -657,7 +641,7 @@ public class Server {
 
     public void sendMessage(String members, String content, boolean byName, int agentID) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(corpsecret.get(agentID), false);
+        String token = getAccessToken(Variable.corpsecret.get(agentID), false);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
 
         String userIDs = byName ? name2id(members, "|") : members;

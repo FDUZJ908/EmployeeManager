@@ -11,9 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
-import static EmployeeManager.Server.reportAgentID;
-import static EmployeeManager.Server.submitSecret;
-
 @Controller
 public class BackgroundController {
 
@@ -28,7 +25,7 @@ public class BackgroundController {
     public String GeneralReport(@RequestParam("state") String STATE,
                                 @RequestParam("code") String code,
                                 Model model) {
-        String UserId = server.getUserId(code, submitSecret);
+        String UserId = server.getUserId(code, Variable.submitSecret);
         logger.info("Request GeneralReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -56,9 +53,9 @@ public class BackgroundController {
                                          Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
         ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
-        if (!server.reported.containsKey(UserId))
-            server.reported.put(UserId, server.maxReportCount);
-        int remaining = server.reported.get(UserId);
+        if (!Variable.reported.containsKey(UserId))
+            Variable.reported.put(UserId, Variable.maxReportCount);
+        int remaining = Variable.reported.get(UserId);
         if (remaining <= 0) {
             responseMsg.setMsg("超过每天提交次数上限！请明天再提交。");
             responseMsg.setNum("0");
@@ -81,9 +78,9 @@ public class BackgroundController {
         server.jdbcTemplate.update("insert into undealedGeneralReport " +
                 "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
 
-        server.reported.put(UserId, --remaining);
+        Variable.reported.put(UserId, --remaining);
         try {
-            server.sendMessage(leader, mesgToLeader, true, reportAgentID);
+            server.sendMessage(leader, mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -96,7 +93,7 @@ public class BackgroundController {
     public String CaseReport(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
+        String UserId = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request CaseReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -154,7 +151,7 @@ public class BackgroundController {
                 "values(" + sqlMessage + ")");
 
         try {
-            server.sendMessage(leader, mesgToLeader, true, reportAgentID);
+            server.sendMessage(leader, mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -167,7 +164,7 @@ public class BackgroundController {
     public String Leadership(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
+        String UserId = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request LeadershipReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -282,7 +279,7 @@ public class BackgroundController {
     public String ReportApproval(@RequestParam("code") String CODE,
                                  @RequestParam("state") String STATE,
                                  Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
+        String UserId = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request ReportApproval: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -347,7 +344,7 @@ public class BackgroundController {
                 }
 
                 try {
-                    server.sendMessage(userID, mesgToSubordinate, false, reportAgentID);
+                    server.sendMessage(userID, mesgToSubordinate, false, Variable.reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -387,7 +384,7 @@ public class BackgroundController {
                 }
 
                 try {
-                    server.sendMessage(userID, mesgToSubordinate, false, reportAgentID);
+                    server.sendMessage(userID, mesgToSubordinate, false, Variable.reportAgentID);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -400,7 +397,7 @@ public class BackgroundController {
     public String HistoryReport(@RequestParam("code") String CODE,
                                 @RequestParam("state") String STATE,
                                 Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
+        String UserId = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request HistoryReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -540,7 +537,7 @@ public class BackgroundController {
     @ResponseBody
     public String Refresh() throws Exception {
         logger.info("Refresh starts!"); //log
-        server.reported.clear();
+        Variable.reported.clear();
         logger.info("Refresh succeed!"); //log
         return "Refresh succeed!";
     }
@@ -549,7 +546,9 @@ public class BackgroundController {
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
                          Model model) {
-        String userID = server.getUserId(CODE, submitSecret);
+        String userID = server.getUserId(CODE, Variable.submitSecret);
+        logger.info("Request QRCode: " + userID); //log
+
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
@@ -580,7 +579,7 @@ public class BackgroundController {
     public String Checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-        String userID = server.getUserId(CODE, submitSecret);
+        String userID = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request checkin: " + userID + " / " + STATE); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
@@ -590,7 +589,7 @@ public class BackgroundController {
         int p = STATE.indexOf("-");
         int QRID = Integer.parseInt(STATE.substring(0, p));
         int token = Integer.parseInt(STATE.substring(p + 1));
-        QRCode qrCode = server.QRCodes.get(QRID);
+        QRCode qrCode = Variable.QRCodes.get(QRID);
         String time = server.currentTime();
 
         if (qrCode == null || qrCode.token != token || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0) {
@@ -618,7 +617,7 @@ public class BackgroundController {
     public String UploadAvatar(@RequestParam("code") String CODE,
                                @RequestParam("state") String STATE,
                                Model model) {
-        String userID = server.getUserId(CODE, submitSecret);
+        String userID = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request UploadAvatar: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
