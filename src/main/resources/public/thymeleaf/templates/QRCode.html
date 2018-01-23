@@ -23,9 +23,9 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	var qrid = /*[[${qrid}]]*/;
-    var creator = /*[[${creator}]]*/;
+    var token = /*[[${token}]]*/;
 	var qrcode = new QRCode(document.getElementById("qrcode"), {
-		text: 'http://shiftlin.top:4908/RedirectQR?qrid=' + qrid + "&creator=" + creator,
+		text: 'http://shiftlin.top:4908/RedirectQR?qrid=' + qrid + "&token=" + token,
 		width : 256,
 		height : 256
 	});

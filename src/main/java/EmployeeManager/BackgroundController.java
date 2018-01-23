@@ -102,7 +102,7 @@ public class BackgroundController {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
         }
-        int userPrivilege =  server.getUserPrivilege(UserId);
+        int userPrivilege = server.getUserPrivilege(UserId);
         int caseReportEntryLimit = server.getIntSysVar("caseReportEntryLimit");
         if (caseReportEntryLimit > userPrivilege) {
             model.addAttribute("errorNum", "04");
@@ -219,7 +219,7 @@ public class BackgroundController {
             if (score_type.equals("0"))
                 singleScore = -singleScore;
 
-            server.award(UserId+","+server.name2id(members,","), singleScore);
+            server.award(UserId + "," + server.name2id(members, ","), singleScore);
         } catch (Exception e) {
             return new ResponseMsg("领导批示提交失败！", "0");
         }
@@ -372,7 +372,7 @@ public class BackgroundController {
                 caseReport.put("isPass", Integer.valueOf(reportStatus));
                 caseReport.put("comment", reportComment);
                 try {
-                    server.award(userID + "," + server.name2id(caseReport.get("members").toString(),","), singleScore);
+                    server.award(userID + "," + server.name2id(caseReport.get("members").toString(), ","), singleScore);
                     server.insertMap(caseReport, "caseReport");
 
                     updateSql = "delete from undealedCaseReport where reportID=" + reports2[i];
@@ -550,7 +550,6 @@ public class BackgroundController {
                          @RequestParam("state") String REFRESH,
                          Model model) {
         String userID = server.getUserId(CODE, submitSecret);
-        logger.info("Request QRCode: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
@@ -561,31 +560,19 @@ public class BackgroundController {
             model.addAttribute("errorNum", "03");
             return "templates/failure";
         }
-        /*
-        long timestamp = System.currentTimeMillis();
-        if (!checkins.containsKey(UserId)) {
-            checkins.put(UserId, new Checkin(timestamp));
-        } else {
-            Checkin checkin = checkins.get(UserId);
-            if (REFRESH.equals("true") || timestamp - checkin.getTimestamp() > QRTimeout) {
-                checkin.clear();
-                checkin.setTimestamp(timestamp);
-            }
-            timestamp = checkin.getTimestamp();
-        }
-        */
+
         model.addAttribute("qrid", qrCode.QRID);
-        model.addAttribute("creator", userID);
+        model.addAttribute("token", qrCode.token);
         return "templates/QRCode";
     }
 
     @RequestMapping("/RedirectQR")
     public String RedirectQR(@RequestParam("qrid") String QRID,
-                             @RequestParam("creator") String creator,
+                             @RequestParam("token") String token,
                              Model model) {
         logger.info("Request redirectQR: " + QRID); //log
 
-        model.addAttribute("state", QRID + "-" + creator);
+        model.addAttribute("state", QRID + "-" + token);
         return "templates/RedirectQR";
     }
 
@@ -602,13 +589,11 @@ public class BackgroundController {
 
         int p = STATE.indexOf("-");
         int QRID = Integer.parseInt(STATE.substring(0, p));
-        String creator = STATE.substring(p + 1);
+        int token = Integer.parseInt(STATE.substring(p + 1));
         QRCode qrCode = server.QRCodes.get(QRID);
         String time = server.currentTime();
 
-        if (qrCode == null || qrCode.flag.length() > 0
-                || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0
-                || !qrCode.QREntry.contains(creator)) {
+        if (qrCode == null || qrCode.token != token || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0) {
             model.addAttribute("errorNum", "01");
             return "templates/failure";
         }
@@ -617,36 +602,14 @@ public class BackgroundController {
             model.addAttribute("errorNum", "02");
             return "templates/failure";// avoid scanning QRcode repeatly
         }
+
         try {
             server.award(userID, qrCode.value);
-            synchronized (this) {
-                qrCode.checkins.add(userID); //若提前分配好内存则可以删除synchronized
-            }
+            qrCode.Add(userID);
         } catch (Exception e) {
             model.addAttribute("errorNum", "-1");
             return "templates/failure";
         }
-        //timestamp = Long.parseLong(STATE.substring(p + 1));
-
-       /*
-        int p = STATE.indexOf("-");
-        String creator = STATE.substring(0, p);
-        long timestamp = Long.parseLong(STATE.substring(p + 1));
-        if (!checkins.containsKey(creator) || checkins.get(creator).getTimestamp() != timestamp)  // invalid QRcode
-        {
-            model.addAttribute("errorNum", "01");
-            return "templates/failure";
-        }
-        if (System.currentTimeMillis() - timestamp > QRTimeout)  // invalid QRcode
-        {
-            model.addAttribute("errorNum", "01");
-            return "templates/failure";
-        }
-        Checkin checkin = checkins.get(creator);
-        if (checkin.getUsers().contains(userID)) {
-            model.addAttribute("errorNum", "02");
-            return "templates/failure";// avoid scanning QRcode repeatly
-        }*/
 
         return "templates/success";
     }
@@ -655,7 +618,7 @@ public class BackgroundController {
     public String UploadAvatar(@RequestParam("code") String CODE,
                                @RequestParam("state") String STATE,
                                Model model) {
-        String userID = "CaiYu";//server.getUserId(CODE, submitSecret);
+        String userID = server.getUserId(CODE, submitSecret);
         logger.info("Request UploadAvatar: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
