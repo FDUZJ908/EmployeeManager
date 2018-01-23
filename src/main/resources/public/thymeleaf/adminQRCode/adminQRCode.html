@@ -4,7 +4,7 @@
     <div th:replace="head"></div>
     <!-- DataTables -->
     <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css"/>
-    <title>总分查询</title>
+    <title>二维码设置</title>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -25,38 +25,65 @@
                     <div class="box">
                         <div class="box box-info">
                             <div class="box-header with-border">
-                                <h3 class="box-title">查询</h3>
+                                <h3 class="box-title">二维码设置</h3>
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
                             <form class="form-horizontal" onsubmit="return checkDate()"
-                                  th:action="@{/scoreQuery/searchScore}"
+                                  th:action="@{/adminQRCode/setTime}"
                                   method="post">
                                 <div class="box-body" style="font-size: 10px">
 
                                     <div class="form-group">
+                                        <label class="col-sm-2 control-label">开始日期</label>
+
+                                        <div class="col-sm-10" style="width: 200px">
+                                            <input type="date" name="startdate" class="form-control" id="startdate"
+                                                   maxlength="50" placeholder="格式：2018-01-01" required="required"/>
+                                        </div>
                                         <label class="col-sm-2 control-label">开始时间</label>
 
-                                        <div class="col-sm-10" style="width: 200px">
-                                            <input type="date" name="start" class="form-control" id="start"
-                                                   maxlength="50" placeholder="格式：2018-01-01"/>
+                                        <div>
+                                            <input type="time" name="starttime" class="form-control" id="starttime"
+                                                   maxlength="50" placeholder="格式：00:00" required="required"/>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">结束日期</label>
 
+                                        <div class="col-sm-10" style="width: 200px">
+                                            <input type="date" name="enddate" class="form-control" id="enddate"
+                                                   maxlength="50" placeholder="格式：2018-01-01" required="required"/>
+                                        </div>
                                         <label class="col-sm-2 control-label">结束时间</label>
 
-                                        <div class="col-sm-10" style="width: 200px">
-                                            <input type="date" name="end" class="form-control" id="end" maxlength="50"
-                                                   placeholder="格式：2018-01-01"/>
+                                        <div>
+                                            <input type="time" name="endtime" class="form-control" id="endtime"
+                                                   maxlength="50" placeholder="格式：00:00" required="required"/>
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">人员</label>
+
+                                        <div class="col-sm-10" style="width: 200px">
+                                            <input type="text" name="managers" class="form-control" id="managers"
+                                                   maxlength="150" required="required"/>
+                                        </div>
+                                        <label class="col-sm-2 control-label">分值</label>
+
+                                        <div>
+                                            <input type="number" name="value" class="form-control" id="value"
+                                                   maxlength="50" required="required"/>
+                                        </div>
+                                    </div>
                                     <br/><br/>
 
                                     <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: center;">
                                         <button type="reset" class="btn btn-default">重置</button>
                                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <button type="submit" class="btn btn-info" onclick="checkDate()">查询</button>
+                                        <button type="submit" class="btn btn-info" onclick="checkDate()">设置</button>
                                     </div>
                                     <!-- /.box-footer -->
                                 </div>
@@ -66,26 +93,22 @@
                     </div>
                     <div class="box">
                         <button onclick="method(dataTable)">生成excel</button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        起始时间：<label th:text="${start}"></label>
-                        &nbsp;&nbsp;
-                        截止时间：<label th:text="${end}"></label>
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped" style="font-size: 10px">
                                 <thead>
                                 <tr>
-                                    <th>总分</th>
-                                    <td th:text="${total}"></td>
-                                </tr>
-                                <tr>
-                                    <th>姓名</th>
-                                    <th>总分</th>
+                                    <th>起始时间</th>
+                                    <th>终止时间</th>
+                                    <th>人员</th>
+                                    <th>分值</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="item:${scores}">
-                                    <td th:text="${item.getName()}"></td>
-                                    <td th:text="${item.getScore()}"></td>
+                                <tr th:each="item:${QRCodes}">
+                                    <td th:text="${item.s_time}"></td>
+                                    <td th:text="${item.e_time}"></td>
+                                    <td th:text="${item.QREntry}"></td>
+                                    <td th:text="${item.value}"></td>
                                 </tr>
 
                                 </tbody>
@@ -208,20 +231,40 @@
 <script th:src="@{/js/list-page.js}"></script>
 <script>
     function checkDate() {
-        var start = document.getElementById("start").valueOf().value.split("-")
-        var end = document.getElementById("end").valueOf().value.split("-")
-        if (start[0] != end[0]) {
-            alert("年份不相同")
-            return false
+        var startdate = document.getElementById("startdate").valueOf().value.split("-");
+        var enddate = document.getElementById("enddate").valueOf().value.split("-");
+        var starttime = document.getElementById("starttime").valueOf().value.split(":");
+        var endtime = document.getElementById("endtime").valueOf().value.split(":");
+        if (startdate[0] > enddate[0]) {
+            alert("错误的起始（终止）时间");
+            return false;
         }
-        else if (start[1] > end[1]) {
-            alert("错误的起始（结束）时间")
-            return false
-        }
-        else if (start[1] == end[1]) {
-            if (start[2] > end[2]) {
-                alert("错误的起始（结束）时间")
-                return false
+        else if (startdate[0] == enddate[0]) {
+            if (startdate[1] > enddate[1]) {
+                alert("错误的起始（终止）时间");
+                return false;
+            }
+            else if (startdate[1] == enddate[1]) {
+                if (startdate[2] > enddate[2]) {
+                    alert("错误的起始（终止）时间");
+                    return false;
+                }
+                else if (startdate[2] == enddate[2]) {
+                    if (starttime[0] > endtime[0]) {
+                        alert("错误的起始（终止）时间");
+                        return false;
+                    }
+                    else if (starttime[0] == endtime[0]) {
+                        if (starttime[1] > endtime[1]) {
+                            alert("错误的起始（终止）时间");
+                            return false;
+                        }
+                        else if (starttime[1] == endtime[1]) {
+                            alert("错误的起始（终止）时间");
+                            return false;
+                        }
+                    }
+                }
             }
         }
         return true
