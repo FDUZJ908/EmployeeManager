@@ -1,5 +1,7 @@
 package EmployeeManager.cls;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +18,7 @@ public class Mapper<T> implements RowMapper<T> {
 
     private Class<T> cls;
     private Map<String, Object> defValue;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Mapper(Class<T> _cls) {
         cls = _cls;
@@ -47,7 +50,7 @@ public class Mapper<T> implements RowMapper<T> {
             Constructor cons = cls.getDeclaredConstructor(Map.class);
             return (T) (cons.newInstance(argv));
         } catch (Exception e) {
-            System.out.println("Mapper error: " + e.getMessage());
+            logger.error("Mapper error: " + e.getMessage());
             return null;
         }
     }

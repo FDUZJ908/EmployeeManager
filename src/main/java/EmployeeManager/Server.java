@@ -1,9 +1,9 @@
 package EmployeeManager;
 
 import EmployeeManager.cls.*;
-import org.slf4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import javax.validation.constraints.Null;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -31,30 +30,12 @@ import static EmployeeManager.cls.User.userKeys;
 @Component
 public class Server {
 
-    static final String corpid = "wx7635106ee1705d6d";
-    static final String submitSecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
-    static final String contactSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
-    static final String reportSecret = "x0VeHuzpagYuJmrymzJayHmN3vrzgtcISA2Q_8qhLG0";
-    /*static final String approvalSecret = "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E";
-    static final String reportSecret = "xVBKh9GKuDGd_nJp8TBRzWzWBHkIVDFPjxewNKhBEzA";
-    static final int approvalAgentID = 1000004;
-    static final int reportAgentID = 1000005;*/
-    static final int reportAgentID = 1000017;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
-        put(reportAgentID, reportSecret);
-        //put(approvalAgentID, approvalSecret);
-        //put(reportAgentID, reportSecret);
-    }};
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
-    Map<String, Integer> reported = new HashMap<String, Integer>();
     Map<String, AccessToken> tokenList = new HashMap<String, AccessToken>();
-    int maxReportCount = 0;
 
     @Value("${web.upload-path}")
     private String path;
@@ -68,7 +49,7 @@ public class Server {
         HTTPRequest http = new HTTPRequest();
         try {
             JSONObject jsonObject = http.sendGET("https://qyapi.weixin.qq.com/cgi-bin/gettoken?" +
-                    "corpid=" + corpid + "&corpsecret=" + corpsecret);
+                    "corpid=" + Variable.corpid + "&corpsecret=" + corpsecret);
             String value = jsonObject.getString("access_token");
             int expireTime = time + jsonObject.getInt("expires_in") / 4 * 3;
             tokenList.put(corpsecret, new AccessToken(value, expireTime));
@@ -131,17 +112,17 @@ public class Server {
         return String.valueOf(s, 0, p);
     }
 
-    public int insertMap(Map<String, Object> map,String table) {
+    public int insertMap(Map<String, Object> map, String table) {
         StringBuffer cols = new StringBuffer();
-        Object[] args=new Object[map.size()];
+        Object[] args = new Object[map.size()];
         int m = 0;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if (m++ > 0) cols.append(',');
             cols.append(entry.getKey());
-            args[m]=entry.getValue();
+            args[m] = entry.getValue();
         }
-        String sql="INSERT INTO "+table+" ( "+cols+" ) VALUES"+getRepeatQMark(1,m);
-        return jdbcTemplate.update(sql,args);
+        String sql = "INSERT INTO " + table + " ( " + cols + " ) VALUES" + getRepeatQMark(1, m);
+        return jdbcTemplate.update(sql, args);
     }
 
     public List<Map<String, Object>> getDepartment(String userId) {
@@ -200,12 +181,12 @@ public class Server {
         Object args[] = new Object[]{varName};
         List<Map<String, Object>> sysVarCursor;
         try {
-            sysVarCursor = jdbcTemplate.queryForList(sysVarSql,args);
+            sysVarCursor = jdbcTemplate.queryForList(sysVarSql, args);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return 0;
         }
-        for (Map<String, Object>map:sysVarCursor) {
+        for (Map<String, Object> map : sysVarCursor) {
 
             sysVar = Integer.parseInt(map.get("value").toString());
         }
@@ -213,17 +194,17 @@ public class Server {
     }
 
     public String getStringSysVar(String varName) {
-        String sysVar ="";
+        String sysVar = "";
         String sysVarSql = "select string from sysVar where varName= ? limit 1";
         Object args[] = new Object[]{varName};
         List<Map<String, Object>> sysVarCursor;
         try {
-            sysVarCursor = jdbcTemplate.queryForList(sysVarSql,args);
+            sysVarCursor = jdbcTemplate.queryForList(sysVarSql, args);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return "";
         }
-        for (Map<String, Object>map:sysVarCursor) {
+        for (Map<String, Object> map : sysVarCursor) {
 
             sysVar = map.get("string").toString();
         }
@@ -478,9 +459,9 @@ public class Server {
         List<String> DLeader = new ArrayList<String>();
         int userPrivilege = getUserPrivilege(userId);
         int caseReportCheckLimit = getIntSysVar("caseReportCheckLimit");
-        caseReportCheckLimit = caseReportCheckLimit -1;
+        caseReportCheckLimit = caseReportCheckLimit - 1;
         int limitPrivilege = 0;
-        if (userPrivilege> caseReportCheckLimit)
+        if (userPrivilege > caseReportCheckLimit)
             limitPrivilege = userPrivilege;
         else
             limitPrivilege = caseReportCheckLimit;
@@ -511,7 +492,7 @@ public class Server {
 
     public Map<Integer, String> syncDepartment() throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(contactSecret, true);
+        String token = getAccessToken(Variable.contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/department/list?access_token=" + token;
         JSONObject jsonRes = httpReq.sendGET(url);
         if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
@@ -537,7 +518,7 @@ public class Server {
 
     public void syncUser(Map<Integer, String> departName) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(contactSecret, true);
+        String token = getAccessToken(Variable.contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=" + token + "&department_id=1&fetch_child=1";
         JSONObject jsonRes = httpReq.sendGET(url);
         if (!jsonRes.getString("errmsg").equals("ok") || jsonRes.getInt("errcode") != 0) {
@@ -609,20 +590,23 @@ public class Server {
     public synchronized QRCode getQRCode(String userID) {
         String time = currentTime();
         int QRID = -1;
-        Set<Integer> keys = QRCodes.keySet();
+        Set<Integer> keys = Variable.QRCodes.keySet();
         for (int key : keys) {
-            QRCode qrCode = QRCodes.get(key);
-            if (time.compareTo(qrCode.e_time) > 0) QRCodes.remove(key);
-            else if (qrCode.QREntry.contains(userID)) QRID = key;
+            QRCode qrCode = Variable.QRCodes.get(key);
+            if (time.compareTo(qrCode.e_time) > 0) Variable.QRCodes.remove(key);
+            else if (qrCode.managers.contains(userID)) {
+                QRID = key;
+                break;
+            }
         }
-        if (QRID != -1) return QRCodes.get(QRID);
-        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND QREntry LIKE '" + userID + "' LIMIT 1";
+        if (QRID != -1) return Variable.QRCodes.get(QRID);
+        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND managers LIKE '%" + userID + "%' LIMIT 1";
         try {
             QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
-            QRCodes.put(qrCode.QRID, qrCode);
+            Variable.QRCodes.put(qrCode.QRID, qrCode);
             return qrCode;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             return null;
         }
     }
@@ -657,10 +641,10 @@ public class Server {
 
     public void sendMessage(String members, String content, boolean byName, int agentID) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
-        String token = getAccessToken(corpsecret.get(agentID), false);
+        String token = getAccessToken(Variable.corpsecret.get(agentID), false);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
 
-        String userIDs = byName ? name2id(members,"|") : members;
+        String userIDs = byName ? name2id(members, "|") : members;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("touser", userIDs);
         jsonObject.put("msgtype", "text");
@@ -762,7 +746,7 @@ public class Server {
             System.out.println(e.getMessage());
             return 0;
         }
-        return  Integer.parseInt(res.get("typeValue").toString());
+        return Integer.parseInt(res.get("typeValue").toString());
     }
 
 }
