@@ -35,4 +35,13 @@ public class QRCode {
         checkins.add(userID);
     }
 
+    public QRCode(int QRID, String s_time, String e_time, int token, String managers, int value) {
+        this.QRID = QRID;
+        this.s_time = s_time;
+        this.e_time = e_time;
+        this.token = token;
+        this.managers = managers;
+        this.value = value;
+        checkins = new HashSet<String>();
+    }
 }

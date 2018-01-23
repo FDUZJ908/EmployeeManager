@@ -43,7 +43,7 @@
                                         </div>
                                         <label class="col-sm-2 control-label">开始时间</label>
 
-                                        <div>
+                                        <div class="col-sm-10" style="width: 200px">
                                             <input type="time" name="starttime" class="form-control" id="starttime"
                                                    maxlength="50" placeholder="格式：00:00" required="required"/>
                                         </div>
@@ -57,7 +57,7 @@
                                         </div>
                                         <label class="col-sm-2 control-label">结束时间</label>
 
-                                        <div>
+                                        <div class="col-sm-10" style="width: 200px">
                                             <input type="time" name="endtime" class="form-control" id="endtime"
                                                    maxlength="50" placeholder="格式：00:00" required="required"/>
                                         </div>
@@ -72,7 +72,7 @@
                                         </div>
                                         <label class="col-sm-2 control-label">分值</label>
 
-                                        <div>
+                                        <div class="col-sm-10" style="width: 200px">
                                             <input type="number" name="value" class="form-control" id="value"
                                                    maxlength="50" required="required"/>
                                         </div>
@@ -92,7 +92,6 @@
 
                     </div>
                     <div class="box">
-                        <button onclick="method(dataTable)">生成excel</button>
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped" style="font-size: 10px">
                                 <thead>
@@ -107,8 +106,14 @@
                                 <tr th:each="item:${QRCodes}">
                                     <td th:text="${item.s_time}"></td>
                                     <td th:text="${item.e_time}"></td>
-                                    <td th:text="${item.QREntry}"></td>
+                                    <td th:text="${item.managers}"></td>
                                     <td th:text="${item.value}"></td>
+                                    <td style="text-align: center">
+                                        <a th:href="@{/adminQRCode/stop/(id=${item.QRID})}"
+                                           onclick="checktime()">
+                                            立即结束
+                                        </a>
+                                    </td>
                                 </tr>
 
                                 </tbody>
@@ -270,6 +275,17 @@
         return true
     }
 
+</script>
+<script>
+    function checktime() {
+        window.alert(e_time);
+        var msg = "您真的确定要停止吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 </script>
 </body>
 </html>

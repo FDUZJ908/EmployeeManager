@@ -4,6 +4,7 @@ import EmployeeManager.admin.model.report;
 import EmployeeManager.admin.model.reportType;
 import EmployeeManager.cls.CaseReport;
 import EmployeeManager.cls.Mapper;
+import EmployeeManager.cls.QRCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,20 @@ public class adminServer {
             Integer curScore = IdScore.get(id);
             curScore += score;
             IdScore.put(id, curScore);
+        }
+    }
+
+    public void updateQRCodes(List<QRCode> QRCodes) {
+        for (QRCode code : QRCodes) {
+            String[] tmp = code.managers.split("\\|");
+            String name = "";
+            for (String t : tmp) {
+                String tmpname = getUserName(t);
+                // System.out.println(tmpname);
+                name += tmpname + ", ";
+            }
+            name = name.substring(0, name.length() - 2);
+            code.managers = name;
         }
     }
 }
