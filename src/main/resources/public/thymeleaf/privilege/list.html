@@ -22,57 +22,60 @@
             <div class="row">
                 <div class="col-xs-12">
 
-                                        <div class="box">
-                                            <div class="box-header">
-                                                <a th:href="@{/privilege/form}" title="新增"><span class="glyphicon glyphicon-plus"></span></a>
-                                            </div>
+                    <div class="box">
+                        <div class="box-header">
+                            <a th:href="@{/privilege/add}" title="新增"><span
+                                    class="glyphicon glyphicon-plus"></span></a>
+                        </div>
 
-                    <div class="box-body">
-                        <table id="dataTable" class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th>级别</th>
-                                <th>提交天数选择</th>
-                                <th>提交时间选择</th>
-                                <th>审批次数限制</th>
-                                <th>审批分数限制</th>
-                                <th>编辑</th>
-                                <th>删除</th>
+                        <div class="box-body">
+                            <table id="dataTable" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>级别</th>
+                                    <th>提交天数选择</th>
+                                    <th>提交时间选择</th>
+                                    <th>审批次数限制</th>
+                                    <th>审批分数限制</th>
+                                    <th>编辑</th>
+                                    <th>删除</th>
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="item:${list}">
-                                <td th:text="${item.getPrivilege()}"></td>
-                                <td th:text="${item.getWeekday()}"></td>
-                                <td th:text="${item.getPushTime()}"></td>
-                                <td th:text="${item.getLeaderPostLimit()}"></td>
-                                <td th:text="${item.getLeaderScoreLimit()}"></td>
-                                <td style="text-align: center">
-                                    <a th:href="@{/privilege/form(pid=${item.getPid()})}"><span class="glyphicon glyphicon-edit"
-                                                                                                     title="编辑"></span></a>
-                                </td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item:${list}">
+                                    <td th:text="${item.getPrivilege()}"></td>
+                                    <td th:text="${item.getWeekday()}"></td>
+                                    <td th:text="${item.getPushTime()}"></td>
+                                    <td th:text="${item.getLeaderPostLimit()}"></td>
+                                    <td th:text="${item.getLeaderScoreLimit()}"></td>
+                                    <td style="text-align: center">
+                                        <a th:href="@{/privilege/edit(pid=${item.getPid()})}"><span
+                                                class="glyphicon glyphicon-edit"
+                                                title="编辑"></span></a>
+                                    </td>
 
-                                <td style="text-align: center">
-                                        <span name="trash" title="删除" th:data="@{/privilege/{pid}/delete(pid=${item.getPid()})}"
+                                    <td style="text-align: center">
+                                        <span name="trash" title="删除"
+                                              th:data="@{/privilege/delete(pid=${item.getPid()})}"
                                               style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
-                                </td>
+                                    </td>
 
-                            </tr>
-                            </tbody>
-                        </table>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
                     </div>
-                    <!-- /.box-body -->
+                    <!-- /.box -->
                 </div>
-                <!-- /.box -->
+                <!-- /.col -->
             </div>
-            <!-- /.col -->
-    </div>
 
-    </section>
-    <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 
 
 </div>
@@ -91,6 +94,7 @@
             "autoWidth": false
         });
     });
+
 </script>
 <script th:src="@{/js/list-page.js}"></script>
 </body>

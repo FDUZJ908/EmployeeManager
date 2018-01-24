@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>级别管理</title>
+    <div th:replace="head"></div>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini ">
+<div class="wrapper">
+
+    <div th:replace="header"></div>
+    <div th:replace="sidebar"></div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Horizontal Form -->
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">级别管理</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form class="form-horizontal" th:action="@{/privilege/modifyEdit(pid=${pid})}" method="post">
+                            <div class="box-body">
+
+                                <div class="form-group">
+                                    <label for="privilege" class="col-sm-2 control-label">级别</label>
+
+                                    <div class="col-sm-10">
+                                        <input  type="text" name="privilege" th:value="${privilege}? ${privilege.privilege}"
+                                                class="form-control" id="privilege" placeholder=""
+                                                required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="weekday" class="col-sm-2 control-label">提交天数选择</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="text" name="weekday" th:value="${privilege}? ${privilege.weekday}"
+                                               class="form-control" id="weekday" placeholder=""
+                                               required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pushTime" class="col-sm-2 control-label">提交时间选择</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="text" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
+                                               class="form-control" id="pushTime" placeholder=""
+                                               required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="leaderPostLimit" class="col-sm-2 control-label">审批次数限制</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="text" name="leaderPostLimit" th:value="${privilege}? ${privilege.leaderPostLimit}"
+                                               class="form-control" id="leaderPostLimit" placeholder=""
+                                               required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="leaderScoreLimit" class="col-sm-2 control-label">审批分数限制</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="text" name="leaderScoreLimit" th:value="${privilege}? ${privilege.leaderScoreLimit}"
+                                               class="form-control" id="leaderScoreLimit" placeholder=""
+                                               required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+
+                                <br/><br/>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer" style="text-align: center;">
+                                <button type="submit" class="btn btn-info">Submit</button>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                    <!-- /.box -->
+
+                </div>
+            </div>
+            <!-- /.row -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="footer"></div>
+</div>
+<!-- ./wrapper -->
+<div th:replace="script"></div>
+
+</body>
+</html>

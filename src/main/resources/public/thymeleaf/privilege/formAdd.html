@@ -26,52 +26,52 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{${api}}" method="post">
+                        <form class="form-horizontal" th:action="@{/privilege/modifyAdd}" method="post">
                             <div class="box-body">
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">级别</label>
+                                    <label for="privilege" class="col-sm-2 control-label">级别</label>
 
                                     <div class="col-sm-10">
                                         <input  type="text" name="privilege" th:value="${privilege}? ${privilege.privilege}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="privilege" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">提交天数选择</label>
+                                    <label for="weekday" class="col-sm-2 control-label">提交天数选择</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="weekday" th:value="${privilege}? ${privilege.weekday}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="weekday" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">提交时间选择</label>
+                                    <label for="pushTime" class="col-sm-2 control-label">提交时间选择</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="pushTime" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">审批次数限制</label>
+                                    <label for="leaderPostLimit" class="col-sm-2 control-label">审批次数限制</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="leaderPostLimit" th:value="${privilege}? ${privilege.leaderPostLimit}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="leaderPostLimit" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">审批分数限制</label>
+                                    <label for="leaderScoreLimit" class="col-sm-2 control-label">审批分数限制</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="leaderScoreLimit" th:value="${privilege}? ${privilege.leaderScoreLimit}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="leaderScoreLimit" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
