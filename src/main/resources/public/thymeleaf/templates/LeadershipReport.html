@@ -181,7 +181,12 @@
 
     function addDiv(value) {
         var mydiv = document.getElementById("checkMemberDiv");
+        if(mydiv.firstChild){
+        mydiv.insertBefore(value,mydiv.firstChild);
+        }
+        else {
         mydiv.appendChild(value);
+    }
     }
 
     function deleteObjCheckMemberDiv(value) {

@@ -1,52 +1,196 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xml:lang="ko"
+      lang="ko">
 <head>
-	<meta charset="UTF-8"></meta>
-	<title>zimu canvas crop</title>
-	
-	<script src="jquery.min.js"></script>
+    <title>上传头像</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache"></meta>
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"></meta>
+    <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT"></meta>
+    <meta HTTP-EQUIV="expires" CONTENT="0"></meta>
+    <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
+    <script src="/js/jquery-3.2.1.js"></script>
 
-	<style>
-		.canvas-box{ width: 300px; height: 200px; position: relative;-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none }
-		.canvas-box .overlay{ position: absolute; left: 0; top: 0; cursor: move;border:1px solid #69f;}
-		.canvas-box div,.canvas-box canvas{-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none}
-	</style>
+    <link rel="stylesheet" href="../css/jquery.Jcrop.min.css"/>
+    <link rel="stylesheet" href="../css/jquery.Jcrop.css"/>
+    <script src="/js/jquery.Jcrop.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.Jcrop.min.js"></script>
+    <script src="/js/jquery.color.js"></script>
+    <script src="/js/html2canvas.js"></script>
+
 </head>
 <body>
-	<input type="file" id="ipt" value="选择图片"/>
 
-	<div class="canvas-box">
+<div id="avatarDiv" style="height:60%;width:100%;background:#fff;position:relative;">
+    <img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;"/>
+</div>
 
-	</div>
 
-	<input type="button" id="save" value="保存"/>
+<div style="height: 10%;margin-top:20%;">
+    <button id="avatarSubmit"  style="display:none">确定更改</button>
+</div>
 
-	<div id="base64"></div>
+<div style="height: 10%;margin:auto;">
+    <form method="post" enctype="multipart/form-data" id="avatarForm">
+        <div class="select-ava">
+            <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()" />
+            <label for="file" id="att" style="font-size:3em;color:rgb(80,119,170);">选择头像
+            </label>
+        </div>
+
+        <input type="hidden" id="x" name="x"/>
+        <input type="hidden" id="y" name="y"/>
+        <input type="hidden" id="w" name="w"/>
+        <input type="hidden" id="h" name="h"/>
+        <input type="hidden" id="srcURL" name="srcURL"/>
+        <input type="hidden" name="userID" th:value = "${userID}"/>
+    </form>
+</div>
+
+
+<div class="uploadProcess" id="innerDiv" style="display:none;">
+    <p>正在提交头像...请勿关闭窗口</p>
+</div>
+
+<div class="uploadProcess" id="upDiv" style="display:none;">
+    <p>正在加载...</p>
+</div>
+
+
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	function html2image() {
+
+	var source = document.getElementById("avatarDiv");
+	var srcURL = document.getElementById("srcURL");
+
+	html2canvas(source, {
+        onrendered: function(canvas) {
+            var imageData = canvas.toDataURL(1);
+            srcURL.value= imageData;
+        }
+    });
+
+    }
+
+	function checkDL () {
+	var con = confirm("确认提交头像？");
+        if (con == false)
+            return false;
+	}
+
+
+
+
+    function changeFile() {
+    var newSrc = $('#file').get(0).files[0];
+    var reader = new FileReader();
+        reader.onload = function(e){
+                document.getElementById("avatar").src = e.target.result;
+        };
+    reader.readAsDataURL(newSrc);
+    $("#att").text("已上传头像√");
+    document.getElementById('avatar').onload=function () {
+    $("#upDiv").fadeIn("fast");
+    html2image();
+    $('#avatarSubmit').attr("style","width:300px;height:100px;display:block;font-size:3em;margin:auto;color: rgb(255,255,255);background-color: rgb(80,119,170);");
+    $("#upDiv").fadeOut("fast");
+    };
+    }
+
+
+    function setAvatar (URL) {
+    $('#avatar').attr("src",URL.toString());
+    $('#avatarSubmit').attr("style","display:none");
+    var file = document.getElementById("file");
+         if (file.outerHTML) {
+             file.outerHTML = file.outerHTML;
+         } else {
+             file.value = "";
+         }
+    $('#att').text("选择头像");
+    }
+	/*]]>*/
+</script>
+
+
+<script>
+	var jcropApi;
+	$('#avatarDiv').Jcrop({
+	allowSelect: false,
+	aspectRatio: 1,
+    setSelect: [ 150,150,790,790 ],
+	onSelect: updateCoords
+	}, function() {
+	jcropApi = this;
+	})
+;
+	function updateCoords(c){
+	$('#x').val(c.x);
+	$('#y').val(c.y);
+	$('#w').val(c.x+640);
+	$('#h').val(c.y+640);
+	};
+
+	function checkCoords(){
+		if (parseInt($('#w').val())) {
+		return true;
+	};
+	alert('请先选择头像，再提交。');
+	return false;
+	};
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#avatarSubmit").click(function () {
+
+        var result = checkDL();
+
+        if (result == false)
+            return false;
+
+        document.getElementById('avatar').onload=function () {
+        html2image();
+        };
+        var avatarForm = document.getElementById("avatarForm");
+        var formData = new FormData(avatarForm);
+
+        $.ajax({
+        url : "UploadAvatar",
+        type : "POST",
+        data : formData,
+        // 告诉jQuery不要去处理发送的数据
+        processData : false,
+        // 告诉jQuery不要去设置Content-Type请求头
+        contentType : false,
+        beforeSend:function(){
+        $("#innerDiv").fadeIn("fast");
+        },
+        complete : function(){
+                    $("#innerDiv").fadeOut("fast");
+        },
+        success : function(responseMsg) {
+            if(responseMsg.num == "1") {
+                alert("头像上传成功！");
+                setAvatar(responseMsg.msg);
+            }
+            else {
+            alert(responseMsg.msg.toString());
+            }
+        },
+        error : function(responseMsg) {
+            $("#innerDiv").fadeOut("fast");
+            alert("error");
+        }
+        });
+
+        });
+    });
+</script>
 </body>
-	<script src="zm-canvas-crop.js"></script>
-	<script type="text/javascript">
-		function saveCallBack(base64) {
-			$('#base64').html(base64);  
-			//最终把此base64传给后端
-			/**
-			$.ajax({
-				data: {
-					base64: base64
-				} 
-			})
-			**/
-		}
-
-		var c = new ZmCanvasCrop({
-						fileInput: $('#ipt')[0],  
-						saveBtn: $('#save')[0],
-						box_width: 300,  //剪裁容器的最大宽度
-						box_height: 200, //剪裁容器的最大高度
-						min_width: 640,  //要剪裁图片的最小宽度
-						min_height: 640  //要剪裁图片的最小高度
-					}, saveCallBack);
-		
-		
-	</script>
 </html>

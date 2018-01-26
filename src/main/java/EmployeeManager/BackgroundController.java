@@ -652,7 +652,7 @@ public class BackgroundController {
 
         server.mkDir(userID);
         if (server.base64ToImg(srcURLFile, avatarURL)) {
-            if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(w), Integer.parseInt(h))) {
+            if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y),640, 640)) {
                 String sql = "update user set avatarURL=? where userID=?";
                 server.jdbcTemplate.update(sql, avatarURLSub, userID);
                 return new ResponseMsg("1", avatarURLSub + "?" + ranparam);
