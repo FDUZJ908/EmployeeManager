@@ -45,7 +45,9 @@ public class AdminQRCode {
     public String adminQRCode(Model model) {
         List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>((QRCode.class)));
         adminServer.updateQRCodes(QRCodes);
+        List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
+        model.addAttribute("AllUsers", AllUsers);
         return "adminQRCode/adminQRCode";
     }
 
@@ -54,13 +56,14 @@ public class AdminQRCode {
                           @RequestParam("starttime") String starttime,
                           @RequestParam("enddate") String enddate,
                           @RequestParam("endtime") String endtime,
-                          @RequestParam("managers") String managersname,
+                          @RequestParam("members") String managersname,
                           @RequestParam("value") String value,
                           Model model) {
 
         /*
         * 插入数据库
         * */
+        // System.out.println(managersname);
         String managers = adminServer.name2id(managersname);
         if (!managers.equals("")) {
             Integer token = new Random().nextInt();
@@ -83,7 +86,9 @@ public class AdminQRCode {
         * */
         List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>((QRCode.class)));
         adminServer.updateQRCodes(QRCodes);
+        List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
+        model.addAttribute("AllUsers", AllUsers);
         return "adminQRCode/adminQRCode";
     }
 
@@ -120,7 +125,9 @@ public class AdminQRCode {
         * */
         List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>((QRCode.class)));
         adminServer.updateQRCodes(QRCodes);
+        List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
+        model.addAttribute("AllUsers", AllUsers);
         return "adminQRCode/adminQRCode";
     }
 }
