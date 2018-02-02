@@ -20,12 +20,15 @@
     <script src="/js/jquery.Jcrop.min.js"></script>
     <script src="/js/jquery.color.js"></script>
     <script src="/js/html2canvas.js"></script>
+	<script src="/js/exif.js"></script>
+	<script src="/js/dom-to-image.js"></script>
+	<script src="/js/canvas-image-uploader.js"></script>
 
 </head>
 <body>
 
 <div id="avatarDiv" style="height:60%;width:100%;background:#fff;position:relative;">
-    <img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;"/>
+	<img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;"/>
 </div>
 
 
@@ -36,11 +39,14 @@
 <div style="height: 10%;margin:auto;">
     <form method="post" enctype="multipart/form-data" id="avatarForm">
         <div class="select-ava">
+			<label id="uploadFinish" style="display:none">上传头像完成
+			</label>
             <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()" />
             <label for="file" id="att" style="font-size:3em;color:rgb(80,119,170);">选择头像
             </label>
-        </div>
 
+        </div>
+		<input type="hidden" id="choose" name="choose"/>
         <input type="hidden" id="x" name="x"/>
         <input type="hidden" id="y" name="y"/>
         <input type="hidden" id="w" name="w"/>
@@ -62,19 +68,21 @@
 
 <script th:inline="javascript">
 	/*<![CDATA[*/
+
 	function html2image() {
 
 	var source = document.getElementById("avatarDiv");
 	var srcURL = document.getElementById("srcURL");
 
+
 	html2canvas(source, {
-        onrendered: function(canvas) {
-            var imageData = canvas.toDataURL(1);
-            srcURL.value= imageData;
+        onrendered: function(canvasTemp) {
+            drawPhoto(document.getElementById("avatar"),canvasTemp,srcURL);
         }
     });
 
     }
+
 
 	function checkDL () {
 	var con = confirm("确认提交头像？");
@@ -94,24 +102,28 @@
     reader.readAsDataURL(newSrc);
     $("#att").text("已上传头像√");
     document.getElementById('avatar').onload=function () {
+    if($("#uploadFinish").is(":hidden")){
     $("#upDiv").fadeIn("fast");
-    html2image();
     $('#avatarSubmit').attr("style","width:300px;height:100px;display:block;font-size:3em;margin:auto;color: rgb(255,255,255);background-color: rgb(80,119,170);");
     $("#upDiv").fadeOut("fast");
+    }
     };
+    html2image();
     }
 
 
     function setAvatar (URL) {
     $('#avatar').attr("src",URL.toString());
     $('#avatarSubmit').attr("style","display:none");
+    $('#att').attr("style","display:none");
+    $('#uploadFinish').attr("style","font-size:3em;color:rgb(80,119,170)");
     var file = document.getElementById("file");
          if (file.outerHTML) {
              file.outerHTML = file.outerHTML;
          } else {
              file.value = "";
          }
-    $('#att').text("选择头像");
+
     }
 	/*]]>*/
 </script>
@@ -119,15 +131,17 @@
 
 <script>
 	var jcropApi;
+	var div_w = $('#avatarDiv').width();
+	var div_h = $('#avatarDiv').height();
 	$('#avatarDiv').Jcrop({
 	allowSelect: false,
 	aspectRatio: 1,
-    setSelect: [ 150,150,790,790 ],
+    setSelect: [ div_w/2-320,div_h/2-320,div_w/2+320,div_h/2+320 ],
 	onSelect: updateCoords
 	}, function() {
 	jcropApi = this;
-	})
-;
+	});
+
 	function updateCoords(c){
 	$('#x').val(c.x);
 	$('#y').val(c.y);
@@ -143,6 +157,48 @@
 	return false;
 	};
 
+	function getPhotoOrientation(img) {
+   		var orient;
+   		EXIF.getData(img, function () {
+   			orient = Number(EXIF.getTag(this, 'Orientation'));
+   		});
+   		return orient;
+	}
+
+	function drawPhoto(photo,canvas,srcURL) {
+    //获取照片的拍摄方向
+    var orient = getPhotoOrientation(photo);
+
+   	var img_w = photo.naturalWidth;
+   	var img_h = photo.naturalHeight;
+    if (canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+
+        //draw on Canvas
+        var img = new Image();
+        img.onload = function () {
+
+            var canvas_w = Number(ctx.canvas.width);
+            var canvas_h = Number(ctx.canvas.height);
+            //判断图片拍摄方向是否旋转了90度
+            if (orient == 6) {
+            	img_w = canvas_h/img_h*img_w;
+            	img_h = canvas_h;
+            	x = canvas_w/2 - img_w/2;
+				y = canvas_h/2 - img_h/2;
+
+                ctx.translate(canvas_w / 2, canvas_h / 2);//设置画布上的(0,0)位置，也就是旋转的中心点
+                ctx.rotate(90 * Math.PI / 180);//把画布旋转90度
+                // 执行Canvas的drawImage语句
+                ctx.drawImage(img, y - canvas_h / 2, parseInt(x) - canvas_w / 2, img_h, img_w);//把图片绘制在画布translate之前的中心点，
+            }
+            var imageData = canvas.toDataURL(1);
+            srcURL.value = imageData;
+        }
+        img.src = photo.src; // 设置图片源地址
+    }
+}
+
 </script>
 
 <script type="text/javascript">
@@ -154,9 +210,6 @@
         if (result == false)
             return false;
 
-        document.getElementById('avatar').onload=function () {
-        html2image();
-        };
         var avatarForm = document.getElementById("avatarForm");
         var formData = new FormData(avatarForm);
 

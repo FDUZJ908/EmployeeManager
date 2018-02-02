@@ -636,6 +636,7 @@ public class BackgroundController {
     @PostMapping("/UploadAvatar")
     @ResponseBody
     public ResponseMsg UploadAvatar(@RequestParam("userID") String userID,
+                                    @RequestParam("choose") String choose,
                                     @RequestParam("x") String x,
                                     @RequestParam("y") String y,
                                     @RequestParam("w") String w,
@@ -644,21 +645,22 @@ public class BackgroundController {
     ) {
         logger.info("Post UploadAvatar: " + userID); //log
 
-        String suffix = "png";
-        String avatarURL = userID + "/" + userID + "." + suffix;
-        String avatarURLSub = userID + "/" + userID + "sub." + suffix;
-        String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
-        Random ranparam = new Random();
+            String suffix = "png";
+            String avatarURL = userID + "/" + userID + "." + suffix;
+            String avatarURLSub = userID + "/" + userID + "sub." + suffix;
+            String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
+            Random ranparam = new Random();
 
-        server.mkDir(userID);
-        if (server.base64ToImg(srcURLFile, avatarURL)) {
-            if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y),640, 640)) {
-                String sql = "update user set avatarURL=? where userID=?";
-                server.jdbcTemplate.update(sql, avatarURLSub, userID);
-                return new ResponseMsg("1", avatarURLSub + "?" + ranparam);
+
+            server.mkDir(userID);
+            if (server.base64ToImg(srcURLFile, avatarURL)) {
+                if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), 640, 640)) {
+                    String sql = "update user set avatarURL=? where userID=?";
+                    server.jdbcTemplate.update(sql, avatarURLSub, userID);
+                    return new ResponseMsg("1", avatarURLSub + "?" + ranparam);
+                }
             }
-        }
-        return new ResponseMsg("0", srcURL);
+            return new ResponseMsg("0", srcURL);
     }
 
 
