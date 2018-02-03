@@ -26,88 +26,88 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{${api}}" method="post">
+                        <form class="form-horizontal" th:action="@{/employee/modifyEditAll(userid=${userid})}" method="post">
                             <div class="box-body">
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">usersName</label>
+                                    <label for="username" class="col-sm-2 control-label">userName</label>
 
                                     <div class="col-sm-10">
                                         <input readonly="readonly" type="text" name="username" th:value="${employee}? ${employee.username}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="username" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Positon</label>
+                                    <label for="position" class="col-sm-2 control-label">Positon</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="position" th:value="${employee}? ${employee.position}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="position" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Title</label>
+                                    <label for="title" class="col-sm-2 control-label">Title</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="title" th:value="${employee}? ${employee.title}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="title" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Duty</label>
+                                    <label for="duty" class="col-sm-2 control-label">Duty</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="duty" th:value="${employee}? ${employee.duty}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="duty" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Privilege</label>
+                                    <label for="privilege" class="col-sm-2 control-label">Privilege</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="privilege" th:value="${employee}? ${employee.privilege}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="privilege" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Status</label>
+                                    <label for="status" class="col-sm-2 control-label">Status</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="status" th:value="${employee}? ${employee.status}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="status" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Tel</label>
+                                    <label for="tel" class="col-sm-2 control-label">Tel</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="tel" th:value="${employee}? ${employee.tel}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="tel" placeholder=""
                                                 maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Gender</label>
+                                    <label for="gender" class="col-sm-2 control-label">Gender</label>
 
                                     <div class="col-sm-10">
                                         <input readonly="readonly" type="text" name="gender" th:value="${employee}? ${employee.gender}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="gender" placeholder=""
                                                 maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                                    <label for="email" class="col-sm-2 control-label">Email</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" name="email" th:value="${employee}? ${employee.email}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="email" placeholder=""
                                                 maxlength="30"/>
                                     </div>
                                 </div>

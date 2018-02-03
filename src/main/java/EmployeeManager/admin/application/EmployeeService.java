@@ -59,4 +59,8 @@ public class EmployeeService {
         return employeeRepository.get(userid);
     }
 
+    //新建部门
+    public void createDep(String username,String department,String isleader){
+        employeeRepository.createDep(username,department,isleader);
+    }
 }

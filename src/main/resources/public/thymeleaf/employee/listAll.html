@@ -30,8 +30,7 @@
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" th:action="@{/employee}"
-                                  method="post">
+                            <form class="form-horizontal" th:action="@{/employee}" method="post">
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">选择部门</label>
@@ -97,7 +96,7 @@
                                     <td th:text="${item.getGender()}"></td>
                                     <td th:text="${item.getEmail()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/form(userid=${item.getUserID()},department=${department},username=${item.getUsername()})}"><span
+                                        <a th:href="@{/employee/editAll(userid=${item.getUserID()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>

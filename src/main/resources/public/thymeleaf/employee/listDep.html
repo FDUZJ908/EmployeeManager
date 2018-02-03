@@ -65,7 +65,7 @@
 
                     <div class="box">
                         <p th:text="${department}"></p>
-                        <a th:href="@{/employee/form1(department=${department})}" title="新增部门人员"><span
+                        <a th:href="@{/employee/addDep(department=${department})}" title="新增部门人员"><span
                                 class="glyphicon glyphicon-plus"></span></a>
 
                         <div class="box-body">
@@ -88,14 +88,14 @@
                                     <td th:text="${item.getDname()}"></td>
                                     <td th:text="${item.getIsleader()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/form(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
+                                        <a th:href="@{/employee/editDep(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>
 
                                     <td th:if="${department}" style="text-align: center">
                                         <span name="trash" title="删除"
-                                              th:data="@{/employee/{userid}/delete/{department}(userid=${item.getUserid()},department=${department})}"
+                                              th:data="@{/employee/delete(userid=${item.getUserid()},department=${department})}"
                                               style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                                     </td>
 

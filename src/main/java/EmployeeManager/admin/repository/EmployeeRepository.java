@@ -25,4 +25,6 @@ public interface EmployeeRepository {
     void update1(Employee employee);
 
     void update2(String userid,String department,String isleader);
+
+    void createDep(String username,String department,String isleader);
 }

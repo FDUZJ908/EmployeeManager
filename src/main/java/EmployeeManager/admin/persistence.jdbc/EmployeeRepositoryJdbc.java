@@ -67,5 +67,8 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
         jdbcTemplate.update("update department set isleader=? where userid=? and dname=?",isleader,userid,department);
     }
 
-
+    @Override
+    public void createDep(String username,String department,String isleader){
+        g//创建部门
+    }
 }
