@@ -69,6 +69,6 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
     @Override
     public void createDep(String username,String department,String isleader){
-        g//创建部门
+        //创建部门
     }
 }
