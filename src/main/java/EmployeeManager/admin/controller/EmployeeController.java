@@ -51,13 +51,20 @@ public class EmployeeController {
     @RequestMapping(value="/addDep",method = RequestMethod.GET)
     public String addDep(@RequestParam("department") String department,Model model){
         model.addAttribute("department",department);
+        model.addAttribute("usernameList",employeeService.getEmployeeList());
         return "employee/formAddDep";
     }
 
     @RequestMapping(value="/modifyAddDep",method = RequestMethod.POST)
     public String modifyAddDep(@RequestParam("department") String department,
                                @RequestParam("username") String username,
-                               @RequestParam("isleader") String isleader){
+                               @RequestParam("isleader_") String isleader_){
+        String isleader=new String();
+        switch (isleader_){
+            case "是":isleader="1";break;
+            case "否":isleader="0";break;
+            default: break;
+        }
         employeeService.add(username,department,isleader);
         return "redirect:/employee";
     }
@@ -79,7 +86,13 @@ public class EmployeeController {
     @RequestMapping(value="/modifyEditDep",method = RequestMethod.POST)
     public String modifyEditDep(@RequestParam("userid")String userid,
                                 @RequestParam("department") String department,
-                                @RequestParam("isleader") String isleader){
+                                @RequestParam("isleader_") String isleader_){
+        String isleader=new String();
+        switch (isleader_){
+            case "是":isleader="1";break;
+            case "否":isleader="0";break;
+            default: break;
+        }
         employeeService.modify2(userid,department,isleader);
         return "redirect:/employee";
     }
@@ -97,12 +110,46 @@ public class EmployeeController {
     public String editAll(@RequestParam("userid") String userid,Model model){
         model.addAttribute("employee",employeeService.get(userid));
         model.addAttribute("userid",userid);
+        model.addAttribute("privilegeList",employeeService.getPrivilegeList());
         return "employee/formEditAll";
     }
 
     @RequestMapping(value="/modifyEditAll",method = RequestMethod.POST)
-    public String modifyEditAll(@RequestParam("userid") String userid,Employee employee){
+    public String modifyEditAll(@RequestParam("userid") String userid,
+                                Employee employee,
+                                @RequestParam(value = "position_",required = false) String position_,
+                                @RequestParam(value = "title_",required = false) String title_,
+                                @RequestParam(value = "status_") String status_,
+                                @RequestParam(value = "gender_") String gender_){
         employee.setUserid(userid);
+        switch (position_){
+            case "村级干部":employee.setPosition("0");break;
+            case "一般干部":employee.setPosition("1");break;
+            case "中层干部":employee.setPosition("2");break;
+            case "领导干部":employee.setPosition("3");break;
+            default:break;
+        }
+        switch (title_){
+            case "村级":employee.setTitle("0");break;
+            case "科员":employee.setTitle("1");break;
+            case "股级":employee.setTitle("2");break;
+            case "科级":employee.setTitle("3");break;
+            default:break;
+        }
+        switch (status_){
+            case "在职":employee.setStatus("0");break;
+            case "退休":employee.setStatus("1");break;
+            case "退职":employee.setStatus("2");break;
+            case "开除":employee.setStatus("3");break;
+            case "离任":employee.setStatus("4");break;
+            default:break;
+        }
+        switch (gender_){
+            case "男":employee.setGender("1");break;
+            case "女":employee.setGender("2");break;
+            case "保密":employee.setGender("0");break;
+            default:break;
+        }
         employeeService.modify1(employee);
         return "redirect:/employee";
     }

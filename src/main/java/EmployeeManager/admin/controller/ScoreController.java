@@ -4,14 +4,19 @@ import EmployeeManager.admin.application.ScoreService;
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.model.Score;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
 
 /**
  * Created by 11437 on 2017/10/14.
@@ -19,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/score")
 public class ScoreController {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     protected ScoreService scoreService;
 
@@ -41,7 +49,11 @@ public class ScoreController {
     }
 
     @RequestMapping(value = "/{userid}/modify",method = RequestMethod.POST)
-    public String modify(@PathVariable("userid")String userid, Score score){
+    public String modify(@PathVariable("userid")String userid, @Valid Score score,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            logger.info("[********LOG********]"+ bindingResult.getFieldError().getDefaultMessage());
+            return "error";
+        }
         score.setUserid(userid);
         scoreService.modify(score);
         return "redirect:/score";

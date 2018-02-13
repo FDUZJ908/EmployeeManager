@@ -2,6 +2,7 @@ package EmployeeManager.admin.application;
 
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
+import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.repository.EmployeeRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ public class EmployeeService {
     public List<Depart> getDepartmentList(){
         return employeeRepository.getDepartmentList();
     }
+
+    //获取所有成员姓名
+    public List<Employee> getEmployeeList(){return employeeRepository.getEmployeeList();}
+
+    //获取当前所有权限级别
+    public List<Privilege> getPrivilegeList(){ return  employeeRepository.getPrivilegeList();}
 
     //获取部门department下的成员 包括ID、姓名、部门和是否为领导
     public List<Depart> list(String department){

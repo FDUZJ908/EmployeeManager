@@ -2,6 +2,7 @@ package EmployeeManager.admin.repository;
 
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
+import EmployeeManager.admin.model.Privilege;
 
 import java.util.List;
 
@@ -15,6 +16,10 @@ public interface EmployeeRepository {
     List<Employee> list();
 
     List<Depart> getDepartmentList();
+
+    List<Privilege> getPrivilegeList();
+
+    List<Employee> getEmployeeList();
 
     List<Depart> list(String department);
 
