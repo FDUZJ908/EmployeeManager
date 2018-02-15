@@ -3,6 +3,7 @@ package EmployeeManager.admin.persistence.jdbc;
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
 //import EmployeeManager.admin.model.User;
+import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -35,6 +36,16 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
         return  jdbcTemplate.query("select distinct dName from department",BeanPropertyRowMapper.newInstance(Depart.class));
     }
 
+    @Override
+    public List<Privilege> getPrivilegeList(){
+        return jdbcTemplate.query("select distinct privilege from privilege",BeanPropertyRowMapper.newInstance(Privilege.class));
+    }
+
+    @Override
+    public List<Employee> getEmployeeList(){
+        return jdbcTemplate.query("select distinct username from user",BeanPropertyRowMapper.newInstance(Employee.class));
+    }
+
 
     @Override
     public List<Depart> list(String department){
@@ -58,8 +69,8 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
     @Override
     public void update1(Employee employee){
-        jdbcTemplate.update("UPDATE user SET username=?,duty=?,position=?,title=?,privilege=?,status=? WHERE userID=?",
-                employee.getUsername(),employee.getDuty(),employee.getPosition(),employee.getTitle(),employee.getPrivilege(),employee.getStatus(),employee.getUserID());
+        jdbcTemplate.update("UPDATE user SET username=?,duty=?,position=?,title=?,privilege=?,status=?,tel=?,email=? WHERE userID=?",
+                employee.getUsername(),employee.getDuty(),employee.getPosition(),employee.getTitle(),employee.getPrivilege(),employee.getStatus(),employee.getTel(),employee.getEmail(),employee.getUserID());
     }
 
     @Override

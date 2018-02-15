@@ -1,5 +1,9 @@
 package EmployeeManager.admin.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 /**
  * Created by 11437 on 2017/10/14.
  */
@@ -7,6 +11,8 @@ public class Score {
     private String userid;
     private String username;
     private String s_score;
+    @Max(value=1000,message ="超过最大数值")
+    @Min(value=0,message = "设定不正确")
     private String f_score;
 
     public Score(){}
