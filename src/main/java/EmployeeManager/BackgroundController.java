@@ -27,10 +27,10 @@ public class BackgroundController {
                                 Model model) {
         String UserId = server.getUserId(code, Variable.submitSecret);
         logger.info("Request GeneralReport: " + UserId); //log
-        if (!server.isUser(UserId)) {
+        /*if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
-        }
+        }*/
         List<ReportType> reportType = server.getReportType();
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
@@ -706,8 +706,4 @@ public class BackgroundController {
     }
 
     */
-    @RequestMapping("/")
-    public String index() {
-        return "index";
-    }
 }
