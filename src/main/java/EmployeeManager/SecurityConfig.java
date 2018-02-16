@@ -32,8 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //web.ignoring().antMatchers("/**/*.html");
+        web.ignoring().antMatchers("/wechat/**");
         web.ignoring().antMatchers("/bootstrap/**", "/css/**", "/dist/**", "/images/**", "/js/**", "/plugins/**");
-        web.ignoring().antMatchers("/**/*.js", "/**/*.css", "/**/*.jpg", "/**/*.jpeg", "/**/*.png");
+        web.ignoring().antMatchers("/**/*.js", "/**/*.css", "/**/*.jpg", "/**/*.jpeg", "/**/*.png", "/**/*.txt");
     }
 
     @Autowired

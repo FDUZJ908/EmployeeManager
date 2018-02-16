@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
+
 @Controller
+@RequestMapping("/wechat")
 public class BackgroundController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -235,7 +237,7 @@ public class BackgroundController {
 
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 3);
-        if (STATE.equals("PC")) return "rank/Rank";
+        if (STATE.equals("PC")) return "templates/RankingListPC";
         return "templates/RankingList";
     }
 
@@ -250,7 +252,7 @@ public class BackgroundController {
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
-            if (STATE.equals("PC")) return "rank/Rank";
+            if (STATE.equals("PC")) return "templates/RankingListPC";
             return "templates/RankingList";
         } else {
             String selectedType;
@@ -270,7 +272,7 @@ public class BackgroundController {
             String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("list", users);
-            if (STATE.equals("PC")) return "rank/Rank";
+            if (STATE.equals("PC")) return "templates/RankingListPC";
             return "templates/RankingList";
         }
     }
@@ -628,6 +630,9 @@ public class BackgroundController {
         String sql = "select avatarURL from user where userID=? limit 1";
         Map<String, Object> result = server.jdbcTemplate.queryForMap(sql, userID);
         String avatarURL = (result == null) ? "" : result.get("avatarURL").toString();
+        if (avatarURL.length() > 4 && !avatarURL.substring(0, 4).equals("http"))
+            avatarURL = "/" + avatarURL;
+
         model.addAttribute("userID", userID);
         model.addAttribute("avatarURL", avatarURL + "?" + ranparam);
         return "templates/UploadAvatar";
@@ -645,22 +650,22 @@ public class BackgroundController {
     ) {
         logger.info("Post UploadAvatar: " + userID); //log
 
-            String suffix = "png";
-            String avatarURL = userID + "/" + userID + "." + suffix;
-            String avatarURLSub = userID + "/" + userID + "sub." + suffix;
-            String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
-            Random ranparam = new Random();
+        String suffix = "png";
+        String avatarURL = userID + "/" + userID + "." + suffix;
+        String avatarURLSub = userID + "/" + userID + "sub." + suffix;
+        String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
+        Random ranparam = new Random();
 
 
-            server.mkDir(userID);
-            if (server.base64ToImg(srcURLFile, avatarURL)) {
-                if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), 640, 640)) {
-                    String sql = "update user set avatarURL=? where userID=?";
-                    server.jdbcTemplate.update(sql, avatarURLSub, userID);
-                    return new ResponseMsg("1", avatarURLSub + "?" + ranparam);
-                }
+        server.mkDir(userID);
+        if (server.base64ToImg(srcURLFile, avatarURL)) {
+            if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), 640, 640)) {
+                String sql = "update user set avatarURL=? where userID=?";
+                server.jdbcTemplate.update(sql, avatarURLSub, userID);
+                return new ResponseMsg("1", avatarURLSub + "?" + ranparam);
             }
-            return new ResponseMsg("0", srcURL);
+        }
+        return new ResponseMsg("0", srcURL);
     }
 
 

@@ -1,11 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xml:lang="ko"
       lang="ko">
 <head>
     <title>上传头像</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta HTTP-EQUIV="pragma" CONTENT="no-cache"></meta>
     <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"></meta>
     <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT"></meta>
@@ -20,37 +21,38 @@
     <script src="/js/jquery.Jcrop.min.js"></script>
     <script src="/js/jquery.color.js"></script>
     <script src="/js/html2canvas.js"></script>
-	<script src="/js/exif.js"></script>
-	
+    <script src="/js/exif.js"></script>
+
 </head>
 <body>
 
 <div id="avatarDiv" style="height:60%;width:100%;background:#fff;position:relative;">
-	<img id="avatar"  th:src="${avatarURL}" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;"/>
+    <img id="avatar" th:src="${avatarURL}"
+         style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;height:auto;width:auto;max-height:100%;max-width:100%;"/>
 </div>
 
 
 <div style="height: 10%;margin-top:20%;">
-    <button id="avatarSubmit"  style="display:none">确定更改</button>
+    <button id="avatarSubmit" style="display:none">确定更改</button>
 </div>
 
 <div style="height: 10%;margin:auto;">
     <form method="post" enctype="multipart/form-data" id="avatarForm">
         <div class="select-ava">
-			<label id="uploadFinish" style="display:none">上传头像完成
-			</label>
-            <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()" />
+            <label id="uploadFinish" style="display:none">上传头像完成
+            </label>
+            <input type="file" accept="image/*" name="file" id="file" onchange="changeFile()"/>
             <label for="file" id="att" style="font-size:3em;color:rgb(80,119,170);">选择头像
             </label>
 
         </div>
-		<input type="hidden" id="choose" name="choose"/>
+        <input type="hidden" id="choose" name="choose"/>
         <input type="hidden" id="x" name="x"/>
         <input type="hidden" id="y" name="y"/>
         <input type="hidden" id="w" name="w"/>
         <input type="hidden" id="h" name="h"/>
         <input type="hidden" id="srcURL" name="srcURL"/>
-        <input type="hidden" name="userID" th:value = "${userID}"/>
+        <input type="hidden" name="userID" th:value="${userID}"/>
     </form>
 </div>
 
@@ -124,6 +126,7 @@
 
     }
 	/*]]>*/
+
 </script>
 
 
@@ -197,6 +200,7 @@
     }
 }
 
+
 </script>
 
 <script type="text/javascript">
@@ -242,6 +246,7 @@
 
         });
     });
+
 </script>
 </body>
 </html>
