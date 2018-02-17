@@ -5,22 +5,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.List;
-
 /**
  * Created by lsh on 08/02/2018.
  */
 @Controller
-@RequestMapping("/login")
 public class LoginController {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String login(Model model) {
+    @RequestMapping(method = RequestMethod.GET, value="/login")
+    public String loginPage(Model model) {
         return "login";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/fail")
-    public String fail(Model model) {
+    public String failPage(Model model) {
         return "error/403";
     }
 }
