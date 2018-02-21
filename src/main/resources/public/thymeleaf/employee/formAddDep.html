@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <title>部门添加成员</title>
+    <title>编辑部门</title>
     <div th:replace="head"></div>
+    <div th:replace="script"></div>
+    <div th:replace="multiselect"></div>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -11,85 +13,81 @@
     <div th:replace="header"></div>
     <div th:replace="sidebar"></div>
 
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-
-        <!-- Main content -->
         <section class="content">
-
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- Horizontal Form -->
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">部门成员添加</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/employee/modifyAddDep}" method="post">
-                            <div class="box-body">
-
-                                <div class="form-group">
-                                    <label for="department" class="col-sm-2 control-label">部门名称</label>
-
-                                    <div class="col-sm-10" style="width: 200px">
-                                        <input readonly="readonly" type="text" name="department" th:value="${department}"
-                                               class="form-control" id="department" placeholder=""
-                                               required="required" maxlength="30"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="username" class="col-sm-2 control-label">姓名</label>
-
-                                    <div class="col-sm-10" style="width: 200px">
-                                        <input type="text" list="usernameList" name="username"
-                                               class="form-control" id="username" placeholder=""
-                                               required="required" maxlength="30"/>
-                                        <datalist id="usernameList">
-                                            <option th:each="user:${usernameList}" th:text="${user.getUsername()}"></option>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="isleader" class="col-sm-2 control-label">是否为领导</label>
-
-                                    <div class="col-sm-10" style="width: 200px">
-                                        <input type="text" list="isleaderList" name="isleader_"
-                                               class="form-control" id="isleader" placeholder=""
-                                               required="required" maxlength="30"/>
-                                        <datalist id="isleaderList">
-                                            <option value="是"></option>
-                                            <option value="否"></option>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <br/><br/>
-                            </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer" style="text-align: center;">
-                                <button type="submit" class="btn btn-info">提交</button>
-                            </div>
-                            <!-- /.box-footer -->
-                        </form>
-                    </div>
-                    <!-- /.box -->
-
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">创建部门</h3>
                 </div>
-            </div>
-            <!-- /.row -->
 
+                <form class="form-horizontal" th:action="@{/employee/modifyAddDep}" method="post" id="multiform">
+                    <div class="form-group">
+                        <label for="dID" class="col-sm-2 control-label">部门ID</label>
+
+                        <div class="col-sm-10">
+                            <input readonly="readonly" type="text" th:value="${dID}"
+                                   class="form-control" id="dID"
+                                   required="required" maxlength="30"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dName" class="col-sm-2 control-label">部门名称</label>
+
+                        <div class="col-sm-10">
+                            <input type="text"
+                                   class="form-control" id="dName" placeholder="部门名称"
+                                   required="required" maxlength="30"/>
+                        </div>
+                    </div>
+
+                 <!--   <div class="form-group">
+                        <label class="col-sm-2 control-label">部门人员</label>
+                        <div class="col-sm-10">
+                            <select class="multiselect" multiple="multiple" style="height:25em">
+                                <option value="AFG">Afghanistan</option>
+                                <option value="ALB">Albania</option>
+                                <option value="DZA">Algeria</option>
+                                <option value="AND">Andorra</option>
+                                <option value="ARG">Argentina</option>
+                                <option value="ARM">Armenia</option>
+                            </select>
+                        </div>
+                    </div>-->
+
+                    <div class="form-group">
+                        <label for="selected" class="col-sm-2 control-label">selected</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="selected"/>
+                        </div>
+                    </div>
+
+                    <div class="box-footer" style="text-align: center;">
+                        <button type="submit" class="btn btn-info">提交</button>
+                    </div>
+                </form>
+            </div>
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
 
     <div th:replace="footer"></div>
 </div>
-<!-- ./wrapper -->
-<div th:replace="script"></div>
-
 </body>
+
+<script type="text/javascript">
+    var form = $("form#multiform");
+    $(form).on('submit', function(){
+        $("ul.selected li").each(function(){
+            var selected=$("#selected").text()
+            var selected_value = $(this).attr('data-selected-value');
+            if(selected_value){
+                selected+=","+selected_value;
+            }
+            $("#selected").text(selected)
+        });
+
+        window.alert($("#selected").text());
+    });
+</script>
 </html>

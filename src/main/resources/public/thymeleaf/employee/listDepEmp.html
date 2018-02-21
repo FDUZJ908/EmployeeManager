@@ -4,7 +4,7 @@
     <div th:replace="head"></div>
     <!-- DataTables -->
     <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css"/>
-    <title>角色管理</title>
+    <title>人员管理</title>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -30,13 +30,13 @@
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" th:action="@{/employee}" method="post">
+                            <form class="form-horizontal" th:action="@{/employee/depEmp}" method="get">
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">选择部门查询</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="text" list="departmentlist" name="department"
+                                            <input type="text" list="departmentlist"  name="department" th:value="${department}?${department}"
                                                    class="form-control"
                                                    id="department" maxlength="20"/>
                                             <datalist id="departmentlist">
@@ -55,7 +55,6 @@
                                     </div>
                                     <!-- /.box-footer -->
 
-
                                 </div>
                             </form>
                         </div>
@@ -64,6 +63,12 @@
 
 
                     <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title" th:text="${department}"></h3>
+                            <a th:href="@{/employee/addDepEmp(department=${department})}" title="新增部门人员"><span
+                                    class="glyphicon glyphicon-plus"></span></a>
+                        </div>
+                        <!--<p th:text="${department}"></p>-->
 
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped">
@@ -71,34 +76,29 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>姓名</th>
-                                    <th>职级</th>
-                                    <th>职称</th>
-                                    <th>职务</th>
-                                    <th>权限级别</th>
-                                    <th>状态</th>
-                                    <th>电话</th>
-                                    <th>性别</th>
-                                    <th>邮箱</th>
+                                    <th>部门</th>
+                                    <th>是否为领导</th>
                                     <th>编辑</th>
+                                    <th>删除</th>
 
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${list}">
-                                    <td th:text="${item.getUserID()}"></td>
+                                    <td th:text="${item.getUserid()}"></td>
                                     <td th:text="${item.getUsername()}"></td>
-                                    <td th:text="${item.getPosition_()}"></td>
-                                    <td th:text="${item.getTitle_()}"></td>
-                                    <td th:text="${item.getDuty()}"></td>
-                                    <td th:text="${item.getPrivilege()}"></td>
-                                    <td th:text="${item.getStatus_()}"></td>
-                                    <td th:text="${item.getTel()}"></td>
-                                    <td th:text="${item.getGender_()}"></td>
-                                    <td th:text="${item.getEmail()}"></td>
+                                    <td th:text="${item.getDname()}"></td>
+                                    <td th:text="${item.getIsleader_()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/editAll(userid=${item.getUserID()})}"><span
+                                        <a th:href="@{/employee/editDep(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader_()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
+                                    </td>
+
+                                    <td th:if="${department}" style="text-align: center">
+                                        <span name="trash" title="删除"
+                                              th:data="@{/employee/deleteDepEmp(userid=${item.getUserid()},department=${department})}"
+                                              style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                                     </td>
 
                                 </tr>
@@ -134,6 +134,7 @@
             "autoWidth": false
         });
     });
+
 
 </script>
 <script th:src="@{/js/list-page.js}"></script>

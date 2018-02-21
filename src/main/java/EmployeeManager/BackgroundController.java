@@ -667,7 +667,12 @@ public class BackgroundController {
         }
         return new ResponseMsg("0", srcURL);
     }
-    
+
+    @RequestMapping("/")
+    public String home(Model model) {
+        model.addAttribute("currentMenu","");
+        return "index";
+    }
 
     /*
     @RequestMapping("/Reservation")

@@ -59,6 +59,28 @@ public class Server {
         }
     }
 
+    public int updateUser(String userid, String corpsecret) {
+  /*      if (userid.length() == 0) return -1;
+        int time = (int) (System.currentTimeMillis() / 1000);
+        Tuple res = isUser(userid);
+        if (res.Bool && time <= res.Int) return 0;
+        String token = getAccessToken(corpsecret, false);
+        HTTPRequest http = new HTTPRequest();
+        try {
+            String url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=" + token + "&userid=" + userid;
+            JSONObject jsonObject = http.sendGET(url);
+            userid=jsonObject.getString("userid");
+            String userName = jsonObject.getString("name");
+            String gender=jsonObject.getString("gender");
+            String tel=jsonObject.getString("mobile");
+            String email=jsonObject.getString("email");
+        } catch (Exception e) {
+            return -1;
+        }
+        return 0;*/
+        return 0;
+    }
+
     public String getUserId(String code, String corpsecret) {
         String UserId;
         String token = getAccessToken(corpsecret, false);
@@ -71,11 +93,14 @@ public class Server {
             return "failure";
         }
         return UserId;
+       /* int ret = updateUser(UserId, corpsecret);
+        if (ret == 0) return UserId;
+        else return "null";*/
     }
 
     public boolean isUser(String UserId) {
         String sql = "select * from user where userID=? limit 1";
-        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, new Object[]{UserId});
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, UserId);
         return res.size() > 0;
     }
 
