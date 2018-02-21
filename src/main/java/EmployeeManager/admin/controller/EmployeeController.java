@@ -23,7 +23,7 @@ public class EmployeeController {
     @Autowired
     protected EmployeeService employeeService;
 
-    //查询所有部门成员
+    //查询所有人员
     @RequestMapping(method = RequestMethod.GET)
     public String listEmployee(Model model) {
         model.addAttribute("list", employeeService.list()); //获取所有成员
@@ -34,98 +34,11 @@ public class EmployeeController {
         return "employee/listAllEmp";
     }
 
-    //查询选定部门成员
-    @RequestMapping(value = "/depEmp", method = RequestMethod.GET)
-    public String listDepEmployee(@RequestParam("department") String department, Model model) {
-        model.addAttribute("list", employeeService.list(department));//获取部门department下的成员 包括ID、姓名、部门和是否为领导
-        model.addAttribute("department", department);//获取部门
-        List<Depart> departmentList = employeeService.getDepartmentList();
-        model.addAttribute("departmentList", departmentList);//获取部门列表
-        return "employee/listDepEmp";
-    }
+    //增加人员
 
-    @RequestMapping(value = "/dep", method = RequestMethod.GET)
-    public String listDep(Model model) {
-        List<Depart> departmentList = employeeService.getDepartmentList();
-        model.addAttribute("list", departmentList);//获取部门列表
-        return "employee/listAllDep";
-    }
+    //删除人员
 
-    //增加部门成员
-    @RequestMapping(value = "/addDepEmp", method = RequestMethod.GET)
-    public String addDep(@RequestParam("department") String department, Model model) {
-        model.addAttribute("department", department);
-        model.addAttribute("usernameList", employeeService.getEmployeeList());
-        return "employee/formAddDepEmp";
-    }
-
-    @RequestMapping(value = "/modifyAddDepEmp", method = RequestMethod.POST)
-    public String modifyAddDepEmp(@RequestParam("department") String department,
-                                  @RequestParam("username") String username,
-                                  @RequestParam("isleader_") String isleader_) {
-        String isleader = new String();
-        switch (isleader_) {
-            case "是":
-                isleader = "1";
-                break;
-            case "否":
-                isleader = "0";
-                break;
-            default:
-                break;
-        }
-        employeeService.add(username, department, isleader);
-        return "redirect:/employee";
-    }
-
-    //编辑部门成员信息
-    @RequestMapping(value = "/editDepEmp", method = RequestMethod.GET)
-    public String editDep(@RequestParam("userid") String userid,
-                          @RequestParam("username") String username,
-                          @RequestParam("department") String department,
-                          @RequestParam("isleader") String isleader,
-                          Model model) {
-        model.addAttribute("userid", userid);
-        model.addAttribute("username", username);
-        model.addAttribute("department", department);
-        model.addAttribute("isleader", isleader);
-        return "employee/formEditDep";
-    }
-
-    @RequestMapping(value = "/modifyEditDep", method = RequestMethod.POST)
-    public String modifyEditDep(@RequestParam("userid") String userid,
-                                @RequestParam("department") String department,
-                                @RequestParam("isleader_") String isleader_) {
-        String isleader = new String();
-        switch (isleader_) {
-            case "是":
-                isleader = "1";
-                break;
-            case "否":
-                isleader = "0";
-                break;
-            default:
-                break;
-        }
-        employeeService.modify2(userid, department, isleader);
-        return "redirect:/employee";
-    }
-
-    //删除部门成员
-    @RequestMapping(value = "/deleteDepEmp", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void delete(@RequestParam("userid") String userid,
-                       @RequestParam("department") String department) {
-        employeeService.delete(userid, department);//删除部门成员
-    }
-
-    @RequestMapping(value = "/deleteDep", method = RequestMethod.POST)
-    @ResponseBody
-    public void deleteDep(@RequestParam("department") String department) {
-        employeeService.delete(department);//删除部门成员
-    }
-
-    //编辑总体成员信息
+    //编辑人员信息
     @RequestMapping(value = "/editAll", method = RequestMethod.GET)
     public String editAll(@RequestParam("userid") String userid, Model model) {
         model.addAttribute("employee", employeeService.get(userid));
@@ -134,7 +47,7 @@ public class EmployeeController {
         return "employee/formEditAll";
     }
 
-    @RequestMapping(value = "/modifyEditAll", method = RequestMethod.POST)
+    @RequestMapping(value = "/editAll", method = RequestMethod.POST)
     public String modifyEditAll(@RequestParam("userid") String userid,
                                 Employee employee,
                                 @RequestParam(value = "position_", required = false) String position_,
@@ -210,24 +123,65 @@ public class EmployeeController {
         return "redirect:/employee";
     }
 
-    //增加部门
-    @RequestMapping(value = "/addDep", method = RequestMethod.GET)
-    public String addDep(Model model) {
-        model.addAttribute("dID", 123);
-        model.addAttribute("users",employeeService.list());
-        return "employee/formAddDep";
+    //查询选定部门成员
+    @RequestMapping(value = "/depEmp", method = RequestMethod.GET)
+    public String listDepEmployee(@RequestParam("department") String department, Model model) {
+        model.addAttribute("list", employeeService.list(department));//获取部门department下的成员 包括ID、姓名、部门和是否为领导
+        model.addAttribute("department", department);//获取部门
+        List<Depart> departmentList = employeeService.getDepartmentList();
+        model.addAttribute("departmentList", departmentList);//获取部门列表
+        return "employee/listDepEmp";
     }
 
-    @RequestMapping(value = "/modifyAddDep", method = RequestMethod.POST)
-    public String modifyDep(@RequestParam("dID") String dID,
-                          @RequestParam("dName") String dName,
-                          @RequestParam("selected") String selected) {
-        System.out.println("dID: "+dID);
-        System.out.println("dName: "+dName);
-        System.out.println("selected: "+selected);
-        //employeeService.createDep(username, department, isleader);
-        return "redirect:/employee/dep";
+    //增加部门成员
+    @RequestMapping(value = "/addDepEmp", method = RequestMethod.GET)
+    public String addDep(@RequestParam("department") String department, Model model) {
+        model.addAttribute("department", department);
+        model.addAttribute("usernameList", employeeService.getEmployeeList());
+        return "employee/formAddDepEmp";
     }
+
+    @RequestMapping(value = "/addDepEmp", method = RequestMethod.POST)
+    public String modifyAddDepEmp(@RequestParam("department") String department,
+                                  @RequestParam("username") String username,
+                                  @RequestParam("isleader_") String isleader_) {
+        String isleader = isleader_.equals("是")?"1":"0";
+        employeeService.add(username, department, isleader);
+        return "redirect:/employee";
+    }
+
+    //删除部门成员
+    @RequestMapping(value = "/deleteDepEmp", method = RequestMethod.POST)
+    @ResponseBody
+    public void delete(@RequestParam("userid") String userid,
+                       @RequestParam("department") String department) {
+        employeeService.delete(userid, department);//删除部门成员
+    }
+
+    //编辑部门成员信息
+    @RequestMapping(value = "/editDepEmp", method = RequestMethod.GET)
+    public String editDep(@RequestParam("userid") String userid,
+                          @RequestParam("username") String username,
+                          @RequestParam("department") String department,
+                          @RequestParam("isleader") String isleader,
+                          Model model) {
+        model.addAttribute("userid", userid);
+        model.addAttribute("username", username);
+        model.addAttribute("department", department);
+        model.addAttribute("isleader", isleader);
+        return "employee/formEditDep";
+    }
+
+    @RequestMapping(value = "/editDepEmp", method = RequestMethod.POST)
+    public String modifyEditDep(@RequestParam("userid") String userid,
+                                @RequestParam("department") String department,
+                                @RequestParam("isleader_") String isleader_) {
+        String isleader = isleader_.equals("是")?"1":"0";
+        employeeService.modify2(userid, department, isleader);
+        return "redirect:/employee";
+    }
+
+
 
 
     /*
@@ -278,8 +232,8 @@ public class EmployeeController {
     }
 
     //修改表单
-
-    /*增加信息*/
+/*
+    //增加信息
     @RequestMapping(value = "/form1", method = RequestMethod.GET)
     public String toform1(@RequestParam(value = "department", required = false) String department,
                           Model model) {
@@ -289,7 +243,7 @@ public class EmployeeController {
         return "employee/formAdd";
     }
 
-    /*修改信息*/
+    //修改信息
     @RequestMapping(value = "/form", method = RequestMethod.GET)
     public String toform2(@RequestParam(value = "userid") String userid,
                           @RequestParam(value = "department", required = false) String department,
@@ -310,5 +264,5 @@ public class EmployeeController {
             model.addAttribute("isleader", isleader);
             return "employee/formDep";
         }
-    }
+    }*/
 }
