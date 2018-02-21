@@ -2,6 +2,7 @@ package EmployeeManager.admin.repository;
 
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
+import EmployeeManager.admin.model.Privilege;
 
 import java.util.List;
 
@@ -16,13 +17,21 @@ public interface EmployeeRepository {
 
     List<Depart> getDepartmentList();
 
+    List<Privilege> getPrivilegeList();
+
+    List<Employee> getEmployeeList();
+
     List<Depart> list(String department);
 
     void add(String username,String deparmtnet,String isleader);
 
     void remove(String userid,String department);
 
+    void remove(String department);
+
     void update1(Employee employee);
 
     void update2(String userid,String department,String isleader);
+
+    void createDep(String username,String department,String isleader);
 }

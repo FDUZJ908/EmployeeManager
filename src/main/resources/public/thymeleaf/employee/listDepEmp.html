@@ -4,7 +4,7 @@
     <div th:replace="head"></div>
     <!-- DataTables -->
     <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css"/>
-    <title>角色管理</title>
+    <title>人员管理</title>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -30,14 +30,13 @@
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" th:action="@{/employee}"
-                                  method="post">
+                            <form class="form-horizontal" th:action="@{/employee/depEmp}" method="get">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">选择部门</label>
+                                        <label class="col-sm-2 control-label">选择部门查询</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="text" list="departmentlist"  name="department"
+                                            <input type="text" list="departmentlist"  name="department" th:value="${department}?${department}"
                                                    class="form-control"
                                                    id="department" maxlength="20"/>
                                             <datalist id="departmentlist">
@@ -64,9 +63,12 @@
 
 
                     <div class="box">
-                        <p th:text="${department}"></p>
-                        <a th:href="@{/employee/form1(department=${department})}" title="新增部门人员"><span
-                                class="glyphicon glyphicon-plus"></span></a>
+                        <div class="box-header with-border">
+                            <h3 class="box-title" th:text="${department}"></h3>
+                            <a th:href="@{/employee/addDepEmp(department=${department})}" title="新增部门人员"><span
+                                    class="glyphicon glyphicon-plus"></span></a>
+                        </div>
+                        <!--<p th:text="${department}"></p>-->
 
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped">
@@ -86,16 +88,16 @@
                                     <td th:text="${item.getUserid()}"></td>
                                     <td th:text="${item.getUsername()}"></td>
                                     <td th:text="${item.getDname()}"></td>
-                                    <td th:text="${item.getIsleader()}"></td>
+                                    <td th:text="${item.getIsleader_()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/form(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
+                                        <a th:href="@{/employee/editDep(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader_()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>
 
                                     <td th:if="${department}" style="text-align: center">
                                         <span name="trash" title="删除"
-                                              th:data="@{/employee/{userid}/delete/{department}(userid=${item.getUserid()},department=${department})}"
+                                              th:data="@{/employee/deleteDepEmp(userid=${item.getUserid()},department=${department})}"
                                               style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                                     </td>
 

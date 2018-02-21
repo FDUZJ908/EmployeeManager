@@ -20,9 +20,11 @@ public class User {
         userName = argv.get("userName").toString();
         s_score = argv.get("s_score").toString();
         avatarURL = argv.get("avatarURL").toString();
+        if (avatarURL.length()>4 && !avatarURL.substring(0, 4).equals("http"))
+            avatarURL = "/" + avatarURL;
         duty = argv.get("duty").toString();
         title = argv.get("title").toString();
-        if(title.length()>0) {
+        if (title.length() > 0) {
             int titleNum = Integer.parseInt(title);
             switch (titleNum) {
                 case 0:

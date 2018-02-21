@@ -96,4 +96,58 @@ public class Employee {
     public String getEmail(){return email;}
 
     public void setEmail(String email){this.email=email;}
+
+    public String getGender_(){
+        if(this.gender.equals("1"))
+            return "男";
+        else if(this.gender.equals("2"))
+            return "女";
+        else if(this.gender.equals("0"))
+            return "保密";
+        else return "未知";
+    }
+
+    public String getStatus_(){
+        if(this.status==null)
+            return "";
+        else if(this.status.equals("0"))
+            return "在职";
+        else if (this.status.equals("1"))
+            return "退休";
+        else if (this.status.equals("2"))
+            return "退职";
+        else if(this.status.equals("3"))
+            return "开除";
+        else if(this.status.equals("4"))
+            return "离任";
+        else return "";
+    }
+
+    public String getPosition_(){
+        if(this.position==null)
+            return "";
+        if(this.position.equals("0"))
+            return "村级干部";
+        if(this.position.equals("1"))
+            return "一般干部";
+        if(this.position.equals("2"))
+            return "中层干部";
+        if(this.position.equals("3"))
+            return "领导干部";
+        return "";
+    }
+
+    public String getTitle_(){
+        if(this.title==null)
+            return "";
+        if(this.title.equals("0"))
+            return "村级";
+        if(this.title.equals("1"))
+            return "科员";
+        if(this.title.equals("2"))
+            return "股级";
+        if(this.title.equals("3"))
+            return "科级";
+        return "";
+    }
 }

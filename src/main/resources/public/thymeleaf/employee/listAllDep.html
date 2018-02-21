@@ -4,7 +4,7 @@
     <div th:replace="head"></div>
     <!-- DataTables -->
     <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css"/>
-    <title>角色管理</title>
+    <title>部门管理</title>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -30,18 +30,17 @@
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" th:action="@{/employee}"
-                                  method="post">
+                            <form class="form-horizontal" th:action="@{/employee/depEmp}" method="get">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">选择部门</label>
+                                        <label class="col-sm-2 control-label">选择部门查询</label>
 
                                         <div class="col-sm-10" style="width: 200px">
                                             <input type="text" list="departmentlist" name="department"
                                                    class="form-control"
                                                    id="department" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                                <option th:each="depar:${list}" th:text="${depar.getDname()}"></option>
                                             </datalist>
                                         </div>
                                     </div>
@@ -65,42 +64,51 @@
 
 
                     <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">新增部门</h3>
+                            <a th:href="@{/employee/addDep}" title="新增部门"><span
+                                    class="glyphicon glyphicon-plus"></span></a>
+                        </div>
 
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>姓名</th>
-                                    <th>Position</th>
-                                    <th>Title</th>
-                                    <th>Duty</th>
-                                    <th>Privilege</th>
-                                    <th>Status</th>
-                                    <th>Tel</th>
-                                    <th>Gender</th>
-                                    <th>Email</th>
+                                    <th>部门ID</th>
+                                    <th>部门名称</th>
                                     <th>编辑</th>
-
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${list}">
-                                    <td th:text="${item.getUserID()}"></td>
-                                    <td th:text="${item.getUsername()}"></td>
-                                    <td th:text="${item.getPosition()}"></td>
-                                    <td th:text="${item.getTitle()}"></td>
-                                    <td th:text="${item.getDuty()}"></td>
-                                    <td th:text="${item.getPrivilege()}"></td>
-                                    <td th:text="${item.getStatus()}"></td>
-                                    <td th:text="${item.getTel()}"></td>
-                                    <td th:text="${item.getGender()}"></td>
-                                    <td th:text="${item.getEmail()}"></td>
-                                    <td style="text-align: center">
-                                        <a th:href="@{/employee/form(userid=${item.getUserID()},department=${department},username=${item.getUsername()})}"><span
-                                                class="glyphicon glyphicon-edit"
-                                                title="编辑"></span></a>
+                                    <td>
+                                        <a class="alink" th:href="@{/employee/depEmp(department=${item.getDname()})}" th:text="${item.getDid()}">
+                                        </a>
                                     </td>
+
+
+                                    <td>
+                                        <a class="alink" th:href="@{/employee/depEmp(department=${item.getDname()})}" th:text="${item.getDname()}">
+                                        </a>
+                                    </td>
+
+                                    <td style="text-align: center">
+                                        <a th:href="@{/employee/editDep(dID=${item.getDid()})}">
+                                            <span
+                                                class="glyphicon glyphicon-edit"
+                                                title="编辑">
+                                            </span>
+                                        </a>
+                                    </td>
+
+                                    <!--th:data="@{/employee/delete(userid=${item.getUserid()},department=${department})}"-->
+                                    <td style="text-align: center">
+                                        <span name="trash" title="删除"
+                                              style="cursor: pointer" class="glyphicon glyphicon-trash"
+                                              th:onclick="'javascript:del(&quot;'+${item.getDname()}+'&quot;);'">
+                                        </span>
+                                    </td>
+
 
                                 </tr>
                                 </tbody>
@@ -127,7 +135,7 @@
 <script>
     $(function () {
         $('#dataTable').DataTable({
-            "paging": true,
+            "paging": false,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
@@ -135,8 +143,41 @@
             "autoWidth": false
         });
     });
+</script>
 
+<script>
+    function del(dName){
+        var ret=confirm("确认删除部门 \""+dName+"\" 吗?");
+        if (ret==true){
+            $.ajax({
+			    type: 'POST',
+			    url: '/employee/deleteDep',
+			    data: {"department":dName},
+
+			    success: function(data) {
+			    	window.location.href="/employee/dep";
+			    },
+			    error: function(xhr, type) {
+			    	window.alert('删除失败！');
+			    }
+			})
+        }
+    }
 </script>
 <script th:src="@{/js/list-page.js}"></script>
 </body>
 </html>
+
+<style>
+a.alink:link{
+    color:black
+}
+
+a.alink:visited{
+    color:black
+}
+
+a.alink:hover{
+    color:#72ACE3
+}
+</style>

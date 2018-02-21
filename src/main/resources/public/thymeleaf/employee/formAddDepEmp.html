@@ -26,36 +26,43 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{${api}}" method="post">
+                        <form class="form-horizontal" th:action="@{/employee/modifyAddDep}" method="post">
                             <div class="box-body">
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">department</label>
+                                    <label for="department" class="col-sm-2 control-label">部门名称</label>
 
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-10" style="width: 200px">
                                         <input readonly="readonly" type="text" name="department" th:value="${department}"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                               class="form-control" id="department" placeholder=""
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">姓名</label>
+                                    <label for="username" class="col-sm-2 control-label">姓名</label>
 
-                                    <div class="col-sm-10">
-                                        <input type="text" name="username"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                    <div class="col-sm-10" style="width: 200px">
+                                        <input type="text" list="usernameList" name="username"
+                                               class="form-control" id="username" placeholder=""
                                                required="required" maxlength="30"/>
+                                        <datalist id="usernameList">
+                                            <option th:each="user:${usernameList}" th:text="${user.getUsername()}"></option>
+                                        </datalist>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">isleader</label>
+                                    <label for="isleader" class="col-sm-2 control-label">是否为领导</label>
 
-                                    <div class="col-sm-10">
-                                        <input type="text" name="isleader"
-                                               class="form-control" id="inputEmail3" placeholder=""
+                                    <div class="col-sm-10" style="width: 200px">
+                                        <input type="text" list="isleaderList" name="isleader_"
+                                               class="form-control" id="isleader" placeholder=""
                                                required="required" maxlength="30"/>
+                                        <datalist id="isleaderList">
+                                            <option value="是"></option>
+                                            <option value="否"></option>
+                                        </datalist>
                                     </div>
                                 </div>
 
@@ -63,7 +70,7 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer" style="text-align: center;">
-                                <button type="submit" class="btn btn-info">Submit</button>
+                                <button type="submit" class="btn btn-info">提交</button>
                             </div>
                             <!-- /.box-footer -->
                         </form>

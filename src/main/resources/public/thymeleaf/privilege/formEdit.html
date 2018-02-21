@@ -26,14 +26,14 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/privilege/modifyEdit(pid=${pid})}" method="post">
+                        <form class="form-horizontal" th:action="@{/privilege/modifyEdit(pid=${pid})}" onsubmit="return check()" method="post">
                             <div class="box-body">
 
                                 <div class="form-group">
                                     <label for="privilege" class="col-sm-2 control-label">级别</label>
 
-                                    <div class="col-sm-10">
-                                        <input  type="text" name="privilege" th:value="${privilege}? ${privilege.privilege}"
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input  readonly="readonly" type="text" name="privilege" th:value="${privilege}? ${privilege.privilege}"
                                                 class="form-control" id="privilege" placeholder=""
                                                 required="required" maxlength="30"/>
                                     </div>
@@ -43,35 +43,63 @@
                                     <label for="weekday" class="col-sm-2 control-label">提交天数选择</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" name="weekday" th:value="${privilege}? ${privilege.weekday}"
-                                               class="form-control" id="weekday" placeholder=""
-                                               required="required" maxlength="30"/>
+                                        <div th:each="weekday:${WeekDayList}">
+                                            <input type="checkbox" name="weekdays" th:value="${weekday.id}"
+                                                   class="form-control"/>
+                                            <label th:text="${weekday.name}"></label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="pushTime" class="col-sm-2 control-label">提交时间选择</label>
 
-                                    <div class="col-sm-10">
-                                        <input type="text" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
-                                               class="form-control" id="pushTime" placeholder=""
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" list="timeList" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
+                                               class="form-control" id="pushTime" placeholder="请选择正确时间格式，如12:00:00"
                                                required="required" maxlength="30"/>
+                                        <datalist id="timeList">
+                                            <option value="00:00:00"></option>
+                                            <option value="01:00:00"></option>
+                                            <option value="02:00:00"></option>
+                                            <option value="03:00:00"></option>
+                                            <option value="04:00:00"></option>
+                                            <option value="05:00:00"></option>
+                                            <option value="06:00:00"></option>
+                                            <option value="07:00:00"></option>
+                                            <option value="08:00:00"></option>
+                                            <option value="09:00:00"></option>
+                                            <option value="10:00:00"></option>
+                                            <option value="11:00:00"></option>
+                                            <option value="12:00:00"></option>
+                                            <option value="13:00:00"></option>
+                                            <option value="14:00:00"></option>
+                                            <option value="15:00:00"></option>
+                                            <option value="16:00:00"></option>
+                                            <option value="17:00:00"></option>
+                                            <option value="18:00:00"></option>
+                                            <option value="19:00:00"></option>
+                                            <option value="20:00:00"></option>
+                                            <option value="21:00:00"></option>
+                                            <option value="22:00:00"></option>
+                                            <option value="23:00:00"></option>
+                                        </datalist>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="leaderPostLimit" class="col-sm-2 control-label">审批次数限制</label>
+                                    <label for="leaderPostLimit" class="col-sm-2 control-label">审批次数上限</label>
 
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-10" style="width: 300px">
                                         <input type="text" name="leaderPostLimit" th:value="${privilege}? ${privilege.leaderPostLimit}"
-                                               class="form-control" id="leaderPostLimit" placeholder=""
+                                               class="form-control" id="leaderPostLimit" placeholder="请输入数字"
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="leaderScoreLimit" class="col-sm-2 control-label">审批分数限制</label>
+                                    <label for="leaderScoreLimit" class="col-sm-2 control-label">审批分数上限</label>
 
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-10" style="width: 300px">
                                         <input type="text" name="leaderScoreLimit" th:value="${privilege}? ${privilege.leaderScoreLimit}"
-                                               class="form-control" id="leaderScoreLimit" placeholder=""
+                                               class="form-control" id="leaderScoreLimit" placeholder="请输入数字"
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
@@ -80,7 +108,7 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer" style="text-align: center;">
-                                <button type="submit" class="btn btn-info">Submit</button>
+                                <button type="submit" class="btn btn-info">提交</button>
                             </div>
                             <!-- /.box-footer -->
                         </form>
@@ -102,4 +130,34 @@
 <div th:replace="script"></div>
 
 </body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function check(){
+        var leaderPostLimit=document.getElementById("leaderPostLimit").value;
+        var leaderScoreLimit=document.getElementById("leaderScoreLimit").value;
+        var reg=/^[1-9]\d*$|^0$/;
+        if(reg.test(leaderPostLimit)==false){
+            alert("请输入正确的 审批次数限制 ");
+            return false;
+        }
+        if(reg.test(leaderScoreLimit)==false){
+            alert("请输入正确的 审批分数限制 ");
+            return false;
+        }
+        var cbs=document.getElementsByName("weekdays");
+        var flag=false;
+        for(var i=0;i<cbs.length;i++){
+            if(cbs[i].checked){
+                flag=true;
+                break;
+            }
+        }
+        if(!flag){
+            alert("请至少选择一项 提交天数");
+            return false;
+        }
+        return true;
+    }
+    /*]]>*/
+</script>
 </html>

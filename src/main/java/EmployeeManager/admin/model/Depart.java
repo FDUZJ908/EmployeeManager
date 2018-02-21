@@ -30,4 +30,11 @@ public class Depart {
     public void setUsername(String username){this.username=username;}
     public void setDname(String dname){this.dname=dname;}
     public void setIsleader(String isleader){this.isleader=isleader;}
+
+    public String getIsleader_(){
+        if(this.isleader.equals("0"))
+            return "否";
+        else
+            return "是";
+    }
 }
