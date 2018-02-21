@@ -21,45 +21,42 @@
                 </div>
 
                 <form class="form-horizontal" th:action="@{/employee/modifyAddDep}" method="post" id="multiform">
-                    <div class="form-group">
-                        <label for="dID" class="col-sm-2 control-label">部门ID</label>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="dID" class="col-sm-2 control-label">部门ID</label>
 
-                        <div class="col-sm-10">
-                            <input readonly="readonly" type="text" th:value="${dID}"
-                                   class="form-control" id="dID"
-                                   required="required" maxlength="30"/>
+                            <div class="col-sm-10">
+                                <input readonly="readonly" type="text" name="dID" th:value="${dID}"
+                                       class="form-control" id="dID"
+                                       required="required" maxlength="30"/>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="dName" class="col-sm-2 control-label">部门名称</label>
+                        <div class="form-group">
+                            <label for="dName" class="col-sm-2 control-label">部门名称</label>
 
-                        <div class="col-sm-10">
-                            <input type="text"
-                                   class="form-control" id="dName" placeholder="部门名称"
-                                   required="required" maxlength="30"/>
+                            <div class="col-sm-10">
+                                <input type="text" name="dName"
+                                       class="form-control" id="dName" placeholder="部门名称"
+                                       required="required" maxlength="30"/>
+                            </div>
                         </div>
-                    </div>
 
-                 <!--   <div class="form-group">
-                        <label class="col-sm-2 control-label">部门人员</label>
-                        <div class="col-sm-10">
-                            <select class="multiselect" multiple="multiple" style="height:25em">
-                                <option value="AFG">Afghanistan</option>
-                                <option value="ALB">Albania</option>
-                                <option value="DZA">Algeria</option>
-                                <option value="AND">Andorra</option>
-                                <option value="ARG">Argentina</option>
-                                <option value="ARM">Armenia</option>
-                            </select>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">部门人员</label>
+                            <div class="col-sm-10">
+                                <select class="multiselect" multiple="multiple" style="height:25em">
+                                    <option th:each="user:${users}" th:value="${user.getUserID()}" th:text="${user.getUsername()}"></option>
+                                </select>
+                            </div>
                         </div>
-                    </div>-->
 
-                    <div class="form-group">
-                        <label for="selected" class="col-sm-2 control-label">selected</label>
+                        <div class="form-group" style="display:none;">
+                            <label for="selected" class="col-sm-2 control-label">selected</label>
 
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="selected"/>
+                            <div class="col-sm-10">
+                                <input type="hidden" name="selected" class="form-control" id="selected"/>
+                            </div>
                         </div>
                     </div>
 
@@ -76,18 +73,26 @@
 </body>
 
 <script type="text/javascript">
+    $.extend($.ui.multiselect, {
+    locale: {
+        addAll:'添加所有',
+        removeAll:'删除所有',
+        itemsCount:'项已选'
+    }
+    });
+
     var form = $("form#multiform");
     $(form).on('submit', function(){
         $("ul.selected li").each(function(){
-            var selected=$("#selected").text()
+            var selected=$("#selected").val()
             var selected_value = $(this).attr('data-selected-value');
             if(selected_value){
-                selected+=","+selected_value;
+                selected+=selected_value+",";
             }
-            $("#selected").text(selected)
+            $("#selected").val(selected)
         });
-
-        window.alert($("#selected").text());
+        res=$("#selected").val();
+        $("#selected").val(res.substr(0,res.length-1));
     });
 </script>
 </html>

@@ -61,8 +61,8 @@ public class EmployeeController {
 
     @RequestMapping(value = "/modifyAddDepEmp", method = RequestMethod.POST)
     public String modifyAddDepEmp(@RequestParam("department") String department,
-                               @RequestParam("username") String username,
-                               @RequestParam("isleader_") String isleader_) {
+                                  @RequestParam("username") String username,
+                                  @RequestParam("isleader_") String isleader_) {
         String isleader = new String();
         switch (isleader_) {
             case "是":
@@ -213,15 +213,18 @@ public class EmployeeController {
     //增加部门
     @RequestMapping(value = "/addDep", method = RequestMethod.GET)
     public String addDep(Model model) {
-        model.addAttribute("dID",123);
+        model.addAttribute("dID", 123);
+        model.addAttribute("users",employeeService.list());
         return "employee/formAddDep";
     }
 
     @RequestMapping(value = "/modifyAddDep", method = RequestMethod.POST)
-    public String modifyAddDep(@RequestParam("dID") String dID,
-                               @RequestParam("dName") String dName,
-                               @RequestParam("selected") String selected) {
-        System.out.println(selected);
+    public String modifyDep(@RequestParam("dID") String dID,
+                          @RequestParam("dName") String dName,
+                          @RequestParam("selected") String selected) {
+        System.out.println("dID: "+dID);
+        System.out.println("dName: "+dName);
+        System.out.println("selected: "+selected);
         //employeeService.createDep(username, department, isleader);
         return "redirect:/employee/dep";
     }
