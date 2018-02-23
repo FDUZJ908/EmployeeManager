@@ -73,7 +73,19 @@ public class EmployeeService {
     }
 
     //新建部门
-    public void createDep(String username, String department, String isleader) {
-        employeeRepository.createDep(username, department, isleader);
+    public int createDep(String dName) {
+        return employeeRepository.createDep(dName);
+    }
+
+    public int insertDepEmps(String dName, String[] userids) {
+        return employeeRepository.insertDepEmps(dName, userids);
+    }
+
+    public int updateDep(int dID, String dName) {
+        return employeeRepository.updateDep(dID, dName);
+    }
+
+    public int updateDepEmps(int dID, String dName, String[] userids) {
+        return employeeRepository.updateDepEmps(dID, dName, userids);
     }
 }

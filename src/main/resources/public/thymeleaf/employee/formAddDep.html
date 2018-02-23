@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <title>编辑部门</title>
+    <title>新建部门</title>
     <div th:replace="head"></div>
     <div th:replace="script"></div>
     <div th:replace="multiselect"></div>
@@ -17,16 +17,16 @@
         <section class="content">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">创建部门</h3>
+                    <h3 class="box-title">新建部门</h3>
                 </div>
 
-                <form class="form-horizontal" th:action="@{/employee/modifyAddDep}" method="post" id="multiform">
+                <form class="form-horizontal" th:action="@{/department/addDep}" method="post" id="multiform">
                     <div class="box-body">
                         <div class="form-group">
                             <label for="dID" class="col-sm-2 control-label">部门ID</label>
 
                             <div class="col-sm-10">
-                                <input readonly="readonly" type="text" name="dID" th:value="${dID}"
+                                <input readonly="readonly" type="text" name="dID"
                                        class="form-control" id="dID"
                                        required="required" maxlength="30"/>
                             </div>

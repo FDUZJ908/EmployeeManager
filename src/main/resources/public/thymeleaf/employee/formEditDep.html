@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <title>部门用户管理</title>
+    <title>编辑部门</title>
     <div th:replace="head"></div>
+    <div th:replace="script"></div>
+    <div th:replace="multiselect"></div>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -11,83 +13,87 @@
     <div th:replace="header"></div>
     <div th:replace="sidebar"></div>
 
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-
-        <!-- Main content -->
         <section class="content">
-
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- Horizontal Form -->
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">部门用户管理</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/employee/modifyEditDep(userid=${userid})}" method="post">
-                            <div class="box-body">
-
-                                <div class="form-group">
-                                    <label for="department" class="col-sm-2 control-label">部门名称</label>
-
-                                    <div class="col-sm-10" style="width: 200px">
-                                        <input readonly="readonly" type="text" name="department" th:value="${department}"
-                                               class="form-control" id="department" placeholder=""
-                                               required="required" maxlength="30"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="username" class="col-sm-2 control-label">姓名</label>
-
-                                    <div class="col-sm-10" style="width: 200px">
-                                        <input readonly="readonly" type="text" name="username" th:value="${username}"
-                                               class="form-control" id="username" placeholder=""
-                                               required="required" maxlength="30"/>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label for="isleder" class="col-sm-2 control-label">是否为领导</label>
-
-                                    <div class="col-sm-10" style="width: 200px">
-                                        <input type="text"  list="isleaderList" name="isleader_" th:value="${isleader}"
-                                               class="form-control" id="isleder" placeholder=""
-                                               required="required" maxlength="30"/>
-                                        <datalist id="isleaderList">
-                                            <option value="是"></option>
-                                            <option value="否"></option>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <br/><br/>
-                            </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer" style="text-align: center;">
-                                <button type="submit" class="btn btn-info">提交</button>
-                            </div>
-                            <!-- /.box-footer -->
-                        </form>
-                    </div>
-                    <!-- /.box -->
-
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">编辑部门</h3>
                 </div>
-            </div>
-            <!-- /.row -->
 
+                <form class="form-horizontal" th:action="@{/department/editDep}" method="post" id="multiform">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="dID" class="col-sm-2 control-label">部门ID</label>
+
+                            <div class="col-sm-10">
+                                <input readonly="readonly" type="text" name="dID" th:value="${dID}"
+                                       class="form-control" id="dID"
+                                       required="required" maxlength="30"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dName" class="col-sm-2 control-label">部门名称</label>
+
+                            <div class="col-sm-10">
+                                <input type="text" name="dName" th:value="${dName}"
+                                       class="form-control" id="dName" placeholder="部门名称"
+                                       required="required" maxlength="30"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">部门人员</label>
+                            <div class="col-sm-10">
+                                <select class="multiselect" multiple="multiple" style="height:25em">
+                                    <option th:each="user:${users}" th:if="${user.getSelected()==0}" th:value="${user.getUserID()}" th:text="${user.getUsername()}"></option>
+                                    <option th:each="user:${users}" th:if="${user.getSelected()==1}" th:value="${user.getUserID()}" th:text="${user.getUsername()}" th:selected="selected"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display:none;">
+                            <label for="selected" class="col-sm-2 control-label">selected</label>
+
+                            <div class="col-sm-10">
+                                <input type="hidden" name="selected" class="form-control" id="selected"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-footer" style="text-align: center;">
+                        <button type="submit" class="btn btn-info">提交</button>
+                    </div>
+                </form>
+            </div>
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
 
     <div th:replace="footer"></div>
 </div>
-<!-- ./wrapper -->
-<div th:replace="script"></div>
-
 </body>
+
+<script type="text/javascript">
+    $.extend($.ui.multiselect, {
+    locale: {
+        addAll:'添加所有',
+        removeAll:'删除所有',
+        itemsCount:'项已选'
+    }
+    });
+
+    var form = $("form#multiform");
+    $(form).on('submit', function(){
+        $("ul.selected li").each(function(){
+            var selected=$("#selected").val()
+            var selected_value = $(this).attr('data-selected-value');
+            if(selected_value){
+                selected+=selected_value+",";
+            }
+            $("#selected").val(selected)
+        });
+        res=$("#selected").val();
+        $("#selected").val(res.substr(0,res.length-1));
+    });
+</script>
 </html>

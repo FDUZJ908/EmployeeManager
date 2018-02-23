@@ -26,6 +26,7 @@ import java.util.List;
 
 import static EmployeeManager.cls.User.userAttrs;
 import static EmployeeManager.cls.User.userKeys;
+import static EmployeeManager.cls.Util.*;
 
 @Component
 public class Server {
@@ -122,20 +123,6 @@ public class Server {
     }
     */
 
-    public String getRepeatQMark(int n, int m) {
-        char[] s = new char[n * 2 * m + 3 * n + n];
-        int p = 0;
-        for (int i = 1; i <= n; i++) {
-            if (i > 1) s[p++] = ',';
-            s[p++] = '(';
-            for (int j = 1; j <= m; j++) {
-                if (j > 1) s[p++] = ',';
-                s[p++] = '?';
-            }
-            s[p++] = ')';
-        }
-        return String.valueOf(s, 0, p);
-    }
 
     public int insertMap(Map<String, Object> map, String table) {
         StringBuffer cols = new StringBuffer();

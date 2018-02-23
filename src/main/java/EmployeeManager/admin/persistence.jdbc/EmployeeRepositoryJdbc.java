@@ -10,6 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+
+import static EmployeeManager.cls.Util.getRepeatQMark;
 
 //import EmployeeManager.admin.model.User;
 
@@ -33,7 +36,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
     @Override
     public List<Depart> getDepartmentList() {
-        return jdbcTemplate.query("select distinct dID, dName from department order by dID", BeanPropertyRowMapper.newInstance(Depart.class));
+        return jdbcTemplate.query("select dID,dName from ministry order by dID", BeanPropertyRowMapper.newInstance(Depart.class));
     }
 
     @Override
@@ -45,7 +48,6 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     public List<Employee> getEmployeeList() {
         return jdbcTemplate.query("select distinct username from user", BeanPropertyRowMapper.newInstance(Employee.class));
     }
-
 
     @Override
     public List<Depart> list(String department) {
@@ -70,6 +72,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     @Override
     public void remove(String department) {
         jdbcTemplate.update("delete from department where dname=?", department);
+        jdbcTemplate.update("delete from ministry where dname=?", department);
     }
 
     @Override
@@ -84,7 +87,78 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public void createDep(String username, String department, String isleader) {
-        //创建部门
+    public int createDep(String dName) {
+        try {
+            jdbcTemplate.update("INSERT ministry(dName) VALUES(?)", dName);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateDep(int dID, String dName) {
+        try {
+            jdbcTemplate.update("UPDATE ministry SET dName=? WHERE dID=?", dName, dID);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int getDepartID(String dName) {
+        List<Map<String, Object>> res = jdbcTemplate.queryForList("select dID from ministry where dName=?", dName);
+        if (res.size() == 0) return 0;
+        return (int) res.get(0).get("dID");
+    }
+
+    @Override
+    public int insertDepEmps(String dName, String[] userids) {
+        int dID = getDepartID(dName);
+        if (dID == 0) return 1;
+        try {
+            int n = userids.length;
+            if (n == 0) return 0;
+
+            Object[] args = new Object[3 * n];
+            String sql = "INSERT DEPARTMENT(dID,userID,dName) VALUES " + getRepeatQMark(n, 3);
+            for (int i = 0, j = 0; i < n; i++) {
+                args[j++] = dID;
+                args[j++] = userids[i];
+                args[j++] = dName;
+            }
+            jdbcTemplate.update(sql, args);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateDepEmps(int dID, String dName, String[] userids) {
+        if (dID == 0) return 1;
+        try {
+            int n = userids.length;
+            if (n == 0) {
+                jdbcTemplate.update("DELETE FROM DEPARTMENT WHERE dID=?", dID);
+                return 0;
+            }
+
+            Object[] args = new Object[3 * n];
+            String sql = "INSERT DEPARTMENT(dID,userID,dName) VALUES " + getRepeatQMark(n, 3) + " ON DUPLICATE KEY UPDATE dName=VALUES(dName)";
+            for (int i = 0, j = 0; i < n; i++) {
+                args[j++] = dID;
+                args[j++] = userids[i];
+                args[j++] = dName;
+            }
+            jdbcTemplate.update(sql, args);
+
+            sql = "DELETE FROM DEPARTMENT WHERE dID=" + String.valueOf(dID) + " AND userID NOT IN " + getRepeatQMark(1, n);
+            jdbcTemplate.update(sql, userids);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
     }
 }
