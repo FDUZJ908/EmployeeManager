@@ -43,7 +43,7 @@ public class DepartmentController {
                                Model model) {
         int res = employeeService.insertDep(dName);
 
-        if (selected.length() > 0) {
+        if (res!=0 && selected.length() > 0) {
             String[] users = selected.split(",");
             res = employeeService.insertDepEmps(dName, users);
         }

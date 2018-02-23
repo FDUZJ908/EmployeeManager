@@ -48,12 +48,19 @@ public class EmployeeController {
                                @RequestParam(value = "position_", required = false) String position_,
                                @RequestParam(value = "title_", required = false) String title_,
                                @RequestParam(value = "status_") String status_,
+                               @RequestParam("selectedDeps") String selected,
                                Model model) {
+        System.out.println(selected);
         employee.setUserid("random" + String.valueOf(getTimestamp()));
         employee.setPosition_(position_);
         employee.setTitle_(title_);
         employee.setStatus_(status_);
         int res = employeeService.insertEmp(employee);
+
+        if (res!=0 && selected.length() > 0) {
+            String[] departs = selected.split(",");
+            //res = employeeService.insertDepEmps(departs, employee.getUserID());
+        }
         if (res != 0) {
             model.addAttribute("errorNum", "06");
             return "templates/failure";

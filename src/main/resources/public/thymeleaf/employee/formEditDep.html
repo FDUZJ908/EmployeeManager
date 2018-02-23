@@ -72,28 +72,4 @@
     <div th:replace="footer"></div>
 </div>
 </body>
-
-<script type="text/javascript">
-    $.extend($.ui.multiselect, {
-    locale: {
-        addAll:'添加所有',
-        removeAll:'删除所有',
-        itemsCount:'项已选'
-    }
-    });
-
-    var form = $("form#multiform");
-    $(form).on('submit', function(){
-        $("ul.selected li").each(function(){
-            var selected=$("#selected").val()
-            var selected_value = $(this).attr('data-selected-value');
-            if(selected_value){
-                selected+=selected_value+",";
-            }
-            $("#selected").val(selected)
-        });
-        res=$("#selected").val();
-        $("#selected").val(res.substr(0,res.length-1));
-    });
-</script>
 </html>

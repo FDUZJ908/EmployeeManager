@@ -3,6 +3,8 @@
 <head>
     <title>添加人员</title>
     <div th:replace="head"></div>
+    <div th:replace="script"></div>
+    <div th:replace="multiselect"></div>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -26,7 +28,7 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/employee/addEmp}" onsubmit="return check()" method="post" id="addEmpForm">
+                        <form class="form-horizontal" th:action="@{/employee/addEmp}" onsubmit="return check()" method="post" id="multiform">
                             <div class="box-body">
 
                                 <div class="form-group">
@@ -79,7 +81,7 @@
                                     <label for="privilege" class="col-sm-2 control-label">权限级别</label>&nbsp;&nbsp;
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <select id="privilege" form="addEmpForm" name="privilege">
+                                        <select id="privilege" form="multiform" name="privilege">
                                             <option th:each="privilege:${privilegeList}" th:value="${privilege.getPrivilege()}" th:text="${privilege.getPrivilege()}"></option>
                                         </select>
                                     </div>
@@ -90,7 +92,7 @@
                                     <div class="col-sm-10" style="width: 300px">
                                         <input type="text" list="statuslist" name="status_"
                                                class="form-control" id="status" placeholder="请选择员工状态"
-                                               required="required" maxlength="30"/>
+                                               maxlength="30"/>
                                         <datalist id="statuslist">
                                             <option value="在职"></option>
                                             <option value="退休"></option>
@@ -125,30 +127,40 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">所属部门</label>
+                                    <div class="col-sm-10">
+                                        <select class="multiselect" multiple="multiple" style="height:25em">
+                                            <option th:each="depart:${departmentList}" th:value="${depart.getDid()}" th:text="${depart.getDname()}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="display:none;">
+                                    <label for="selected" class="col-sm-2 control-label">selected</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="hidden" name="selectedDeps" class="form-control" id="selected"/>
+                                    </div>
+                                </div>
+
                                 <br/><br/>
                             </div>
-                            <!-- /.box-body -->
                             <div class="box-footer" style="text-align: center;">
                                 <button type="submit" class="btn btn-info">提交</button>
                             </div>
-                            <!-- /.box-footer -->
                         </form>
                     </div>
-                    <!-- /.box -->
 
                 </div>
             </div>
-            <!-- /.row -->
 
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
 
     <div th:replace="footer"></div>
 </div>
 <!-- ./wrapper -->
-<div th:replace="script"></div>
 </body>
 
 <script th:inline="javascript">
