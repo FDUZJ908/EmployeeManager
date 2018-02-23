@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/reportType")
-public class reportTypeController {
+public class ReportTypeController {
     @Autowired
     adminServer adminServer;
 
@@ -31,9 +31,7 @@ public class reportTypeController {
         List<reportType> rptTypeList = new ArrayList<reportType>();
         Object args[] = new Object[]{};
         rptTypeList = adminServer.jdbcTemplate.query(sql, args, new Mapper<reportType>(reportType.class, defValue));
-
         model.addAttribute("list", rptTypeList);
-
         return "reportType/reportType";
     }
 

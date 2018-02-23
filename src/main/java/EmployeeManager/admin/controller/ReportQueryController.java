@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/reportQuery")
-public class reportQueryController {
+public class ReportQueryController {
     @Autowired
     adminServer adminServer;
     String sqluc = "select * " +

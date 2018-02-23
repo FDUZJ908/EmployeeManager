@@ -29,7 +29,7 @@ public interface EmployeeRepository {
 
     void remove(String department);
 
-    void update1(Employee employee);
+    void updateEmp(Employee employee);
 
     void update2(String userid, String department, String isleader);
 

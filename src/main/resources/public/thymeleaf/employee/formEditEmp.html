@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>编辑用户</title>
+    <div th:replace="head"></div>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini ">
+<div class="wrapper">
+
+    <div th:replace="header"></div>
+    <div th:replace="sidebar"></div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Horizontal Form -->
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">编辑用户</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form class="form-horizontal" th:action="@{/employee/editEmp}" onsubmit="return check()" method="post" id="myform">
+                            <div class="box-body">
+
+                                <div class="form-group" style="display:none">
+                                    <label for="userid" class="col-sm-2 control-label">用户id</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" name="userid" th:value="${employee}? ${employee.getUserID()}"
+                                               class="form-control" id="userid" placeholder=""
+                                               required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label">姓名</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" name="username" th:value="${employee}? ${employee.getUsername()}"
+                                               class="form-control" id="username" placeholder=""
+                                               required="required" maxlength="30"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="position" class="col-sm-2 control-label">职级</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" list="positionlist" name="position_" th:value="${employee}? ${employee.getPosition_()}"
+                                               class="form-control" id="position" placeholder="请选择职级" maxlength="30"/>
+                                        <datalist id="positionlist">
+                                            <option value="村级干部"></option>
+                                            <option value="一般干部"></option>
+                                            <option value="中层干部"></option>
+                                            <option value="领导干部"></option>
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-sm-2 control-label">职称</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" list="titlelist" name="title_" th:value="${employee}? ${employee.getTitle_()}"
+                                               class="form-control" id="title" placeholder="请选择职称" maxlength="30"/>
+                                        <datalist id="titlelist">
+                                            <option value="村级"></option>
+                                            <option value="科员"></option>
+                                            <option value="股级"></option>
+                                            <option value="科级"></option>
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="duty" class="col-sm-2 control-label">职务</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" name="duty" th:value="${employee}? ${employee.duty}"
+                                               class="form-control" id="duty" placeholder="请输入职务" maxlength="30"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="privilege" class="col-sm-2 control-label">权限级别</label>&nbsp;&nbsp;
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <select id="privilege" form="myform" name="privilege">
+                                            <option th:each="privilege:${privilegeList}" th:value="${privilege.getPrivilege()}" th:text="${privilege.getPrivilege()}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status" class="col-sm-2 control-label">状态</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" list="statuslist" name="status_" th:value="${employee}? ${employee.getStatus_()}"
+                                               class="form-control" id="status" placeholder="请选择员工状态"
+                                               required="required" maxlength="30"/>
+                                        <datalist id="statuslist">
+                                            <option value="在职"></option>
+                                            <option value="退休"></option>
+                                            <option value="退职"></option>
+                                            <option value="开除"></option>
+                                            <option value="调出"></option>
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tel" class="col-sm-2 control-label">电话</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" name="tel" th:value="${employee}? ${employee.tel}"
+                                               class="form-control" id="tel" placeholder="请输入正确的电话号码"
+                                               maxlength="30"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">性别</label>&nbsp;&nbsp;
+                                    <input type="radio" id="gender1" name="gender" value="1"/>男&nbsp;
+                                    <input type="radio" id="gender2" name="gender" value="2"/>女&nbsp;
+                                    <input type="radio" id="gender0" name="gender" value="0"/>未知
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-sm-2 control-label">邮箱</label>
+
+                                    <div class="col-sm-10" style="width: 300px">
+                                        <input type="text" name="email" th:value="${employee}? ${employee.email}"
+                                               class="form-control" id="email" placeholder="请输入正确的邮箱"
+                                               maxlength="30"/>
+                                    </div>
+                                </div>
+
+                                <br/><br/>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer" style="text-align: center;">
+                                <button type="submit" class="btn btn-info">提交</button>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                    <!-- /.box -->
+
+                </div>
+            </div>
+            <!-- /.row -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="footer"></div>
+</div>
+<!-- ./wrapper -->
+<div th:replace="script"></div>
+
+</body>
+
+<script th:inline="javascript">
+    var id="gender"+/*[[${employee.getGender()}]]*/;
+    $("#"+id).attr("checked","checked");
+    $("#privilege").val([[${employee.getPrivilege()}]])
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function check(){
+        var tel=document.getElementById("tel").value;
+        var reg1=/^[1-9]\d*$|^0$/;
+        if(tel!=="" && reg1.test(tel)==false){
+            alert("请输入正确的电话号码!");
+            return false;
+        }
+        var reg2 = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+        var email =document.getElementById("email").value;
+        if(email!=="" && reg2.test(email)==false){
+            alert("请输入正确的邮箱!");
+            return false;
+        }
+        return true;
+    }
+    /*]]>*/
+</script>
+</html>

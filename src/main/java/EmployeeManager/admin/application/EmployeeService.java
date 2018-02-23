@@ -59,8 +59,8 @@ public class EmployeeService {
     }
 
     //修改成员信息
-    public void modify1(Employee employee) {
-        employeeRepository.update1(employee);
+    public void updateEmp(Employee employee) {
+        employeeRepository.updateEmp(employee);
     }
 
     //修改部门成员是否为领导

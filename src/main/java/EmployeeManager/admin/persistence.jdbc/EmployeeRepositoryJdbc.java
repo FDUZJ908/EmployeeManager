@@ -41,7 +41,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
     @Override
     public List<Privilege> getPrivilegeList() {
-        return jdbcTemplate.query("select distinct privilege from privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
+        return jdbcTemplate.query("select distinct privilege from privilege order by privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
     }
 
     @Override
@@ -76,9 +76,9 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public void update1(Employee employee) {
-        jdbcTemplate.update("UPDATE user SET username=?,duty=?,position=?,title=?,privilege=?,status=?,tel=?,email=? WHERE userID=?",
-                employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getTel(), employee.getEmail(), employee.getUserID());
+    public void updateEmp(Employee employee) {
+        jdbcTemplate.update("UPDATE user SET username=?,duty=?,position=?,title=?,privilege=?,status=?,gender=?,tel=?,email=? WHERE userID=?",
+                employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getGender(),employee.getTel(), employee.getEmail(), employee.getUserID());
     }
 
     @Override

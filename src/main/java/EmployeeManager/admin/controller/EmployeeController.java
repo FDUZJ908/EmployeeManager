@@ -30,15 +30,21 @@ public class EmployeeController {
         model.addAttribute("department", "");
         List<Depart> departmentList = employeeService.getDepartmentList(); //获取所有部门
         model.addAttribute("departmentList", departmentList);
-        model.addAttribute("currentMenu", "menu5");
         return "employee/listAllEmp";
     }
 
     //增加人员
+    @RequestMapping(value = "/addEmp", method = RequestMethod.GET)
+    public String addEmp(Model model) {
+        model.addAttribute("departmentList", employeeService.getDepartmentList()); //获取所有部门
+        model.addAttribute("privilegeList", employeeService.getPrivilegeList());
+        return "employee/formAddEmp";
+    }
+
     @RequestMapping(value = "/addEmp", method = RequestMethod.POST)
-    public String addEmp(@PathVariable("userid") String userid, Employee employee) {
-        employee.setUserid(userid);
-        employeeService.modify1(employee);//修改成员信息
+    public String modifyAddEmp(@PathVariable("userName") String userm, Employee employee) {
+        //employee.setUserid(userid);
+        //employeeService.modify1(employee);//修改成员信息
         return "redirect:/employee";
     }
 
@@ -48,84 +54,20 @@ public class EmployeeController {
     @RequestMapping(value = "/editEmp", method = RequestMethod.GET)
     public String editEmp(@RequestParam("userid") String userid, Model model) {
         model.addAttribute("employee", employeeService.get(userid));
-        model.addAttribute("userid", userid);
+        model.addAttribute("departmentList", employeeService.getDepartmentList()); //获取所有部门
         model.addAttribute("privilegeList", employeeService.getPrivilegeList());
-        return "employee/formEditAll";
+        return "employee/formEditEmp";
     }
 
     @RequestMapping(value = "/editEmp", method = RequestMethod.POST)
-    public String modifyEditEmp(@RequestParam("userid") String userid,
-                                Employee employee,
+    public String modifyEditEmp(Employee employee,
                                 @RequestParam(value = "position_", required = false) String position_,
                                 @RequestParam(value = "title_", required = false) String title_,
-                                @RequestParam(value = "status_") String status_,
-                                @RequestParam(value = "gender_") String gender_) {
-        employee.setUserid(userid);
-        switch (position_) {
-            case "村级干部":
-                employee.setPosition("0");
-                break;
-            case "一般干部":
-                employee.setPosition("1");
-                break;
-            case "中层干部":
-                employee.setPosition("2");
-                break;
-            case "领导干部":
-                employee.setPosition("3");
-                break;
-            default:
-                break;
-        }
-        switch (title_) {
-            case "村级":
-                employee.setTitle("0");
-                break;
-            case "科员":
-                employee.setTitle("1");
-                break;
-            case "股级":
-                employee.setTitle("2");
-                break;
-            case "科级":
-                employee.setTitle("3");
-                break;
-            default:
-                break;
-        }
-        switch (status_) {
-            case "在职":
-                employee.setStatus("0");
-                break;
-            case "退休":
-                employee.setStatus("1");
-                break;
-            case "退职":
-                employee.setStatus("2");
-                break;
-            case "开除":
-                employee.setStatus("3");
-                break;
-            case "离任":
-                employee.setStatus("4");
-                break;
-            default:
-                break;
-        }
-        switch (gender_) {
-            case "男":
-                employee.setGender("1");
-                break;
-            case "女":
-                employee.setGender("2");
-                break;
-            case "保密":
-                employee.setGender("0");
-                break;
-            default:
-                break;
-        }
-        employeeService.modify1(employee);
+                                @RequestParam(value = "status_") String status_) {
+        employee.setPosition_(position_);
+        employee.setTitle_(title_);
+        employee.setStatus_(status_);
+        employeeService.updateEmp(employee);
         return "redirect:/employee";
     }
 

@@ -271,7 +271,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `userID`    CHAR(32) NOT NULL,
   `avatarURL` TEXT,
-  `userName`  CHAR(16) NOT NULL,
+  `userName`  CHAR(16) NOT NULL UNIQUE,
   `duty`      CHAR(64)          DEFAULT NULL,
   `title`     TINYINT(4)        DEFAULT NULL,
   `position`  TINYINT(4)        DEFAULT NULL,
@@ -279,7 +279,7 @@ CREATE TABLE `user` (
   `f_score`   INT(11)           DEFAULT '0',
   `s_score`   INT(11)           DEFAULT '0',
   `tel`       CHAR(11)          DEFAULT NULL,
-  `gender`    CHAR(1)           DEFAULT NULL,
+  `gender`    CHAR(1)           DEFAULT '0',
   `email`     CHAR(32)          DEFAULT NULL,
   `remark`    TEXT,
   `privilege` INT(11)  NOT NULL DEFAULT '0',
@@ -315,8 +315,11 @@ CREATE TABLE ministry (
   CHARSET = utf8mb4;
 
 INSERT INTO ministry
-SELECT dID,min(dName)as dName from department
-GROUP BY dID;
+  SELECT
+    dID,
+    min(dName) AS dName
+  FROM department
+  GROUP BY dID;
 
 ALTER TABLE department
   CHANGE dID dID INT NOT NULL;
@@ -324,5 +327,11 @@ ALTER TABLE department
   ADD CONSTRAINT FOREIGN KEY FK_dID(dID) REFERENCES ministry (dID);
 
 ALTER TABLE ministry
-    CHANGE dName dName CHAR(32) NOT NULL UNIQUE;
+  CHANGE dName dName CHAR(32) NOT NULL UNIQUE;
+
+ALTER TABLE user
+  CHANGE gender gender CHAR(1) DEFAULT '0';
+
+ALTER TABLE user
+  CHANGE userName `userName` CHAR(16) NOT NULL UNIQUE;
 

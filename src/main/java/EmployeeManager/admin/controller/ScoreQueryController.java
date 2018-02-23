@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/scoreQuery")
-public class scoreQueryController {
+public class ScoreQueryController {
 
     String sqlc = "select userID, members, scoreType, singleScore " +
             "from caseReport " +

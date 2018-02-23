@@ -33,7 +33,6 @@
                             <table id="dataTable" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>userid</th>
                                     <th>姓名</th>
                                     <th>总积分</th>
                                     <th>基础积分</th>
@@ -43,7 +42,6 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${list}">
-                                    <td th:text="${item.getUserid()}"></td>
                                     <td th:text="${item.getUsername()}"></td>
                                     <td th:text="${item.getS_score()}"></td>
                                     <td th:text="${item.getF_score()}"></td>

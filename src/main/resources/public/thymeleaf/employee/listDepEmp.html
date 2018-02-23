@@ -74,7 +74,6 @@
                             <table id="dataTable" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>姓名</th>
                                     <th>部门</th>
                                     <th>是否为领导</th>
@@ -85,7 +84,6 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${list}">
-                                    <td th:text="${item.getUserid()}"></td>
                                     <td th:text="${item.getUsername()}"></td>
                                     <td th:text="${item.getDname()}"></td>
                                     <td th:text="${item.getIsleader_()}"></td>
