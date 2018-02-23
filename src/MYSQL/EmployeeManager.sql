@@ -334,4 +334,3 @@ ALTER TABLE user
 
 ALTER TABLE user
   CHANGE userName `userName` CHAR(16) NOT NULL UNIQUE;
-

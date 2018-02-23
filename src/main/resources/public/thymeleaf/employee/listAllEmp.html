@@ -40,11 +40,11 @@
                                                    class="form-control"
                                                    id="department" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                                <option th:each="depar:${departmentList}"
+                                                        th:text="${depar.getDname()}"></option>
                                             </datalist>
                                         </div>
                                     </div>
-
 
 
                                     <br/><br/>
@@ -103,9 +103,8 @@
                                                 title="编辑"></span></a>
                                     </td>
                                     <td style="text-align: center">
-                                        <span name="trash" title="删除"
-                                              style="cursor: pointer" class="glyphicon glyphicon-trash"
-                                              th:onclick="'javascript:del(&quot;'+${item.getUserID()}+'&quot;,&quot;'+${item.getUsername()}+'&quot;);'">
+                                        <span title="删除" style="cursor: pointer" class="glyphicon glyphicon-trash"
+                                           th:onclick="'javascript:del(&quot;'+${item.getUserID()}+'&quot;,&quot;'+${item.getUsername()}+'&quot;);'">
                                         </span>
                                     </td>
                                 </tr>
@@ -141,16 +140,17 @@
             "autoWidth": false
         });
     });
+
 </script>
 
 <script>
-    function del(userid,userame){
-        var ret=confirm("确认删除人员 \""+userame+"\" 吗?");
+    function del(userid,username){
+        var ret=confirm("确认删除人员 \""+username+"\" 吗?");
         if (ret==true){
             $.ajax({
 			    type: 'POST',
 			    url: '/employee/deleteEmp',
-			    data: {"department":dName},
+			    data: {"userid":userid},
 
 			    success: function(data) {
 			    	window.location.href="/employee";
@@ -161,6 +161,7 @@
 			})
         }
     }
+
 </script>
 
 <script th:src="@{/js/list-page.js}"></script>

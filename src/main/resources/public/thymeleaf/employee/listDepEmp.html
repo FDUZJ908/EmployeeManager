@@ -36,15 +36,16 @@
                                         <label class="col-sm-2 control-label">选择部门查询</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="text" list="departmentlist"  name="department" th:value="${department}?${department}"
+                                            <input type="text" list="departmentlist" name="department"
+                                                   th:value="${department}?${department}"
                                                    class="form-control"
                                                    id="department" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                                <option th:each="depar:${departmentList}"
+                                                        th:text="${depar.getDname()}"></option>
                                             </datalist>
                                         </div>
                                     </div>
-
 
 
                                     <br/><br/>
@@ -88,13 +89,13 @@
                                     <td th:text="${item.getDname()}"></td>
                                     <td th:text="${item.getIsleader_()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/editDep(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader_()})}"><span
+                                        <a th:href="@{/employee/editDepEmp(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader_()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>
 
                                     <td th:if="${department}" style="text-align: center">
-                                        <span name="trash" title="删除"
+                                        <span title="删除"
                                               th:data="@{/employee/deleteDepEmp(userid=${item.getUserid()},department=${department})}"
                                               style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                                     </td>
@@ -132,6 +133,7 @@
             "autoWidth": false
         });
     });
+
 
 
 </script>

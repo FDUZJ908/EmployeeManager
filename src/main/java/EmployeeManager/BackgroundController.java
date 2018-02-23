@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
+import static EmployeeManager.cls.Util.currentTime;
 
 @Controller
 @RequestMapping("/wechat")
@@ -64,7 +65,7 @@ public class BackgroundController {
             return responseMsg;
         }
 
-        String currentTime = server.currentTime();
+        String currentTime = currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
@@ -135,7 +136,7 @@ public class BackgroundController {
         logger.info("Post CaseReport: " + UserId); //log
         ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
 
-        String currentTime = server.currentTime();
+        String currentTime = currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
@@ -198,7 +199,7 @@ public class BackgroundController {
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
-        String currentTime = server.currentTime();
+        String currentTime = currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
@@ -209,7 +210,7 @@ public class BackgroundController {
             pathCurrent = "";
         try {
             String sqlMessage = "'" + UserId + "','" + members + "','" + type + "','" + content + "','" + pathCurrent + "'," +
-                    score + ",'" + server.currentTime() + "'," + score_type;
+                    score + ",'" + currentTime() + "'," + score_type;
             server.jdbcTemplate.update("insert into leaderReport " +
                     "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
                     "values(" + sqlMessage + ")");
@@ -314,7 +315,7 @@ public class BackgroundController {
         String reportComment = ajax.getReportComment();
 
         String updateSql = "";
-        String checkTime = server.currentTime();
+        String checkTime = currentTime();
 
         logger.info("'" + check1 + "'");
         logger.info("'" + check2 + "'");
@@ -592,7 +593,7 @@ public class BackgroundController {
         int QRID = Integer.parseInt(STATE.substring(0, p));
         int token = Integer.parseInt(STATE.substring(p + 1));
         QRCode qrCode = Variable.QRCodes.get(QRID);
-        String time = server.currentTime();
+        String time = currentTime();
 
         if (qrCode == null || qrCode.token != token || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0) {
             model.addAttribute("errorNum", "01");
@@ -670,7 +671,7 @@ public class BackgroundController {
 
     @RequestMapping("/")
     public String home(Model model) {
-        model.addAttribute("currentMenu","");
+        model.addAttribute("currentMenu", "");
         return "index";
     }
 

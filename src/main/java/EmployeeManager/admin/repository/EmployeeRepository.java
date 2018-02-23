@@ -25,19 +25,23 @@ public interface EmployeeRepository {
 
     void add(String username, String deparmtnet, String isleader);
 
+    void removeEmp(String userid);
+
     void remove(String userid, String department);
 
     void remove(String department);
 
-    void updateEmp(Employee employee);
-
     void update2(String userid, String department, String isleader);
 
-    int createDep(String dName);
+    int insertEmp(Employee employee);
+
+    int updateEmp(Employee employee);
 
     int getDepartID(String dName);
 
     int insertDepEmps(String dName, String[] userids);
+
+    int insertDep(String dName);
 
     int updateDep(int dID, String dName);
 

@@ -48,6 +48,11 @@ public class EmployeeService {
         employeeRepository.add(username, department, isleader);
     }
 
+    //删除用户
+    public void deleteEmp(String userid) {
+        employeeRepository.removeEmp(userid);
+    }
+
     //删除部门成员
     public void delete(String userid, String department) {
         employeeRepository.remove(userid, department);
@@ -58,9 +63,13 @@ public class EmployeeService {
         employeeRepository.remove(department);
     }
 
+    public int insertEmp(Employee employee) {
+        return employeeRepository.insertEmp(employee);
+    }
+
     //修改成员信息
-    public void updateEmp(Employee employee) {
-        employeeRepository.updateEmp(employee);
+    public int updateEmp(Employee employee) {
+        return employeeRepository.updateEmp(employee);
     }
 
     //修改部门成员是否为领导
@@ -73,8 +82,8 @@ public class EmployeeService {
     }
 
     //新建部门
-    public int createDep(String dName) {
-        return employeeRepository.createDep(dName);
+    public int insertDep(String dName) {
+        return employeeRepository.insertDep(dName);
     }
 
     public int insertDepEmps(String dName, String[] userids) {

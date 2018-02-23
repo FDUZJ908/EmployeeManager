@@ -41,7 +41,7 @@ public class DepartmentController {
     public String modifyAddDep(@RequestParam("dName") String dName,
                                @RequestParam("selected") String selected,
                                Model model) {
-        int res = employeeService.createDep(dName);
+        int res = employeeService.insertDep(dName);
 
         if (selected.length() > 0) {
             String[] users = selected.split(",");

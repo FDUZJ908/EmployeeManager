@@ -65,6 +65,15 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
+    public void removeEmp(String userid) {
+        try {
+            jdbcTemplate.update("DELETE FROM user WHERE userID=?", userid);
+        }catch (Exception e) {
+            jdbcTemplate.update("UPDATE user SET status=4 WHERE userID=?", userid);
+        }
+    }
+
+    @Override
     public void remove(String userid, String department) {
         jdbcTemplate.update("delete from department where userid=? and dname=?", userid, department);
     }
@@ -76,9 +85,26 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public void updateEmp(Employee employee) {
-        jdbcTemplate.update("UPDATE user SET username=?,duty=?,position=?,title=?,privilege=?,status=?,gender=?,tel=?,email=? WHERE userID=?",
-                employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getGender(),employee.getTel(), employee.getEmail(), employee.getUserID());
+    public int insertEmp(Employee employee) {
+        try {
+            String sql = "INSERT INTO user(userID,userName,duty,position,title,privilege,status,gender,tel,email) VALUES " + getRepeatQMark(1, 10);
+            jdbcTemplate.update(sql,
+                    employee.getUserID(), employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getGender(), employee.getTel(), employee.getEmail());
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateEmp(Employee employee) {
+        try {
+            jdbcTemplate.update("UPDATE user SET userName=?,duty=?,position=?,title=?,privilege=?,status=?,gender=?,tel=?,email=? WHERE userID=?",
+                    employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getGender(), employee.getTel(), employee.getEmail(), employee.getUserID());
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -87,9 +113,9 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public int createDep(String dName) {
+    public int insertDep(String dName) {
         try {
-            jdbcTemplate.update("INSERT ministry(dName) VALUES(?)", dName);
+            jdbcTemplate.update("INSERT INTO ministry(dName) VALUES(?)", dName);
         } catch (Exception e) {
             return 1;
         }

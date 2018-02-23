@@ -1,5 +1,9 @@
 package EmployeeManager.cls;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by lsh on 21/02/2018.
  */
@@ -19,4 +23,15 @@ public class Util {
         }
         return String.valueOf(s, 0, p);
     }
+
+    public static int getTimestamp() {
+        return (int) (System.currentTimeMillis() / 1000);
+    }
+    public static String currentTime() {
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = format.format(date);
+        return time;
+    }
+
 }

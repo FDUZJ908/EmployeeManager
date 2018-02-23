@@ -26,11 +26,11 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/employee/editEmp}" onsubmit="return check()" method="post" id="myform">
+                        <form class="form-horizontal" th:action="@{/employee/editEmp}" onsubmit="return check()" method="post" id="editEmpForm">
                             <div class="box-body">
 
                                 <div class="form-group" style="display:none">
-                                    <label for="userid" class="col-sm-2 control-label">用户id</label>
+                                    <label for="userid" class="col-sm-2 control-label">用户ID</label>
 
                                     <div class="col-sm-10" style="width: 300px">
                                         <input type="text" name="userid" th:value="${employee}? ${employee.getUserID()}"
@@ -89,7 +89,7 @@
                                     <label for="privilege" class="col-sm-2 control-label">权限级别</label>&nbsp;&nbsp;
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <select id="privilege" form="myform" name="privilege">
+                                        <select id="privilege" form="editEmpForm" name="privilege">
                                             <option th:each="privilege:${privilegeList}" th:value="${privilege.getPrivilege()}" th:text="${privilege.getPrivilege()}"></option>
                                         </select>
                                     </div>

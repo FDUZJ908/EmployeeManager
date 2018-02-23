@@ -19,8 +19,6 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -42,7 +40,7 @@ public class Server {
     private String path;
 
     public String getAccessToken(String corpsecret, boolean newToken) {
-        int time = (int) (System.currentTimeMillis() / 1000);
+        int time = getTimestamp();
 
         if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
             return tokenList.get(corpsecret).value;
@@ -260,13 +258,6 @@ public class Server {
             }
         }
         return users;
-    }
-
-    public String currentTime() {
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = format.format(date);
-        return time;
     }
 
     public boolean saveFile(MultipartFile file, String pathCurrent) {
