@@ -23,6 +23,15 @@ public class EmployeeService {
         return employeeRepository.list();
     }
 
+    //获取部门下的成员 包括ID、姓名、部门和是否为领导
+    public List<Depart> list(int dID) {
+        return employeeRepository.list(dID);
+    }
+
+    public int getDepartID(String dName) {
+        return employeeRepository.getDepartID(dName);
+    }
+
     //获取所有部门
     public List<Depart> getDepartmentList() {
         return employeeRepository.getDepartmentList();
@@ -32,7 +41,6 @@ public class EmployeeService {
         return employeeRepository.getDepartmentList(userID);
     }
 
-
     //获取所有成员姓名
     public List<Employee> getEmployeeList() {
         return employeeRepository.getEmployeeList();
@@ -41,11 +49,6 @@ public class EmployeeService {
     //获取当前所有权限级别
     public List<Privilege> getPrivilegeList() {
         return employeeRepository.getPrivilegeList();
-    }
-
-    //获取部门department下的成员 包括ID、姓名、部门和是否为领导
-    public List<Depart> list(String department) {
-        return employeeRepository.list(department);
     }
 
     //部门中添加成员
@@ -59,13 +62,13 @@ public class EmployeeService {
     }
 
     //删除部门成员
-    public void delete(String userid, String department) {
-        employeeRepository.remove(userid, department);
+    public void deleteEmpDep(String userid, int dID) {
+        employeeRepository.removeEmpDep(userid, dID);
     }
 
     //删除部门
-    public void delete(String department) {
-        employeeRepository.remove(department);
+    public void deleteDep(String department) {
+        employeeRepository.removeDep(department);
     }
 
     public int insertEmp(Employee employee) {
@@ -78,8 +81,12 @@ public class EmployeeService {
     }
 
     //修改部门成员是否为领导
-    public void modify2(String userid, String department, String isleader) {
-        employeeRepository.update2(userid, department, isleader);
+    public void updateLeader(String userid, int dID, int isleader) {
+        employeeRepository.updateLeader(userid, dID, isleader);
+    }
+
+    public void updateLeaders(int dID, String[] leaders) {
+        employeeRepository.updateLeaders(dID, leaders);
     }
 
     public Employee get(String userid) {

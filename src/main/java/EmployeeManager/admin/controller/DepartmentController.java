@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -58,24 +59,28 @@ public class DepartmentController {
     @RequestMapping(value = "/deleteDep", method = RequestMethod.POST)
     @ResponseBody
     public void deleteDep(@RequestParam("department") String department) {
-        employeeService.delete(department);//删除部门
+        employeeService.deleteDep(department);//删除部门
     }
 
     //编辑部门
     @RequestMapping(value = "/editDep", method = RequestMethod.GET)
-    public String editDep(@RequestParam("dID") String dID,
+    public String editDep(@RequestParam("dID") int dID,
                           @RequestParam("dName") String dName,
+                          @RequestParam("redirect") int redirect,
                           Model model) {
         model.addAttribute("dID", dID);
         model.addAttribute("dName", dName);
+
         List<Employee> users = employeeService.list();
-        List<Depart> depEmps = employeeService.list(dName);
+        List<Depart> depEmps = employeeService.list(dID);
         for (Employee user : users) {
             for (Depart emp : depEmps)
                 if (emp.getUserid().equals(user.getUserID()))
                     user.setSelected(1);
         }
         model.addAttribute("users", users);
+
+        model.addAttribute("redirect", redirect);
         return "employee/formEditDep";
     }
 
@@ -83,7 +88,9 @@ public class DepartmentController {
     public String modifyEditDep(@RequestParam("dID") int dID,
                                 @RequestParam("dName") String dName,
                                 @RequestParam("selected") String selected,
-                                Model model) {
+                                @RequestParam("redirect") int redirect,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         int res = employeeService.updateDep(dID, dName);
         if (res != 0) {
             model.addAttribute("errorNum", "05");
@@ -96,7 +103,12 @@ public class DepartmentController {
             model.addAttribute("errorNum", "05");
             return "templates/failure";
         }
-        return "redirect:/department";
+
+        if (redirect == 1) {
+            redirectAttributes.addAttribute("dID", dID);
+            redirectAttributes.addAttribute("department", dName);
+            return "redirect:/employee/depEmp";
+        } else return "redirect:/department";
     }
 
 }

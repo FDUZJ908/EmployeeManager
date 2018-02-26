@@ -8,13 +8,13 @@ public class Depart {
     private String userid;
     private String username;
     private String dname;
-    private String isleader;
+    private int isleader;
     private int selected = 0;
 
     public Depart() {
     }
 
-    public Depart(String did, String userid, String username, String dname, String isleader) {
+    public Depart(String did, String userid, String username, String dname, int isleader) {
         this.did = did;
         this.userid = userid;
         this.username = username;
@@ -54,19 +54,16 @@ public class Depart {
         this.dname = dname;
     }
 
-    public String getIsleader() {
+    public int getIsleader() {
         return isleader;
     }
 
-    public void setIsleader(String isleader) {
+    public void setIsleader(int isleader) {
         this.isleader = isleader;
     }
 
     public String getIsleader_() {
-        if (this.isleader.equals("0"))
-            return "否";
-        else
-            return "是";
+        return (this.isleader == 0) ? "否" : "是";
     }
 
     public int getSelected() {

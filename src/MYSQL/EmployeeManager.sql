@@ -341,3 +341,5 @@ ALTER TABLE department
 
 ALTER TABLE department
   ADD CONSTRAINT `FK_Reference_7` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+CREATE INDEX idx_dID ON department(dID);

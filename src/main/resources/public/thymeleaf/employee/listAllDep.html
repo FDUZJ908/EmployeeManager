@@ -83,18 +83,18 @@
                                 <tbody>
                                 <tr th:each="item:${list}">
                                     <td>
-                                        <a class="alink" th:href="@{/employee/depEmp(department=${item.getDname()})}" th:text="${item.getDid()}">
+                                        <a class="alink" th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}" th:text="${item.getDid()}">
                                         </a>
                                     </td>
 
 
                                     <td>
-                                        <a class="alink" th:href="@{/employee/depEmp(department=${item.getDname()})}" th:text="${item.getDname()}">
+                                        <a class="alink" th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}" th:text="${item.getDname()}">
                                         </a>
                                     </td>
 
                                     <td style="text-align: center">
-                                        <a th:href="@{/department/editDep(dID=${item.getDid()},dName=${item.getDname()})}">
+                                        <a th:href="@{/department/editDep(dID=${item.getDid()},dName=${item.getDname()},redirect=0)}">
                                             <span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑">

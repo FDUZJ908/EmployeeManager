@@ -35,6 +35,12 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
+    public List<Depart> list(int dID) {
+        return jdbcTemplate.query("select department.userid,user.username,department.did,department.dname,department.isleader from department,user where user.userid=department.userid and dID=?",
+                BeanPropertyRowMapper.newInstance(Depart.class), dID);
+    }
+
+    @Override
     public List<Depart> getDepartmentList() {
         return jdbcTemplate.query("select dID,dName from ministry order by dID", BeanPropertyRowMapper.newInstance(Depart.class));
     }
@@ -52,12 +58,6 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     @Override
     public List<Employee> getEmployeeList() {
         return jdbcTemplate.query("select distinct username from user", BeanPropertyRowMapper.newInstance(Employee.class));
-    }
-
-    @Override
-    public List<Depart> list(String department) {
-        return jdbcTemplate.query("select distinct department.userid,user.username,department.dname,department.isleader from department,user where user.userid=department.userid and dName=?",
-                BeanPropertyRowMapper.newInstance(Depart.class), department);
     }
 
     @Override
@@ -79,12 +79,12 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public void remove(String userid, String department) {
-        jdbcTemplate.update("delete from department where userid=? and dname=?", userid, department);
+    public void removeEmpDep(String userid, int dID) {
+        jdbcTemplate.update("delete from department where userID=? and dID=?", userid, dID);
     }
 
     @Override
-    public void remove(String department) {
+    public void removeDep(String department) {
         jdbcTemplate.update("delete from department where dname=?", department);
         jdbcTemplate.update("delete from ministry where dname=?", department);
     }
@@ -113,8 +113,16 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public void update2(String userid, String department, String isleader) {
-        jdbcTemplate.update("update department set isleader=? where userid=? and dname=?", isleader, userid, department);
+    public void updateLeader(String userid, int dID, int isleader) {
+        jdbcTemplate.update("update department set isleader=? where userid=? and dID=?", isleader, userid, dID);
+    }
+
+    @Override
+    public void updateLeaders(int dID, String[] leaders) {
+        jdbcTemplate.update("update department set isleader=0 where dID=?", dID);
+        if (leaders == null || leaders.length==0) return;
+        String sql = "update department set isleader=1 where dID=" + String.valueOf(dID) + " and userID in " + getRepeatQMark(1, leaders.length);
+        jdbcTemplate.update(sql, leaders);
     }
 
     @Override

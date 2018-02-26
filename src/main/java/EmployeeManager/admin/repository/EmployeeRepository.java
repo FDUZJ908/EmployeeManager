@@ -23,17 +23,19 @@ public interface EmployeeRepository {
 
     List<Employee> getEmployeeList();
 
-    List<Depart> list(String department);
+    List<Depart> list(int dID);
 
     void add(String username, String deparmtnet, String isleader);
 
     void removeEmp(String userid);
 
-    void remove(String userid, String department);
+    void removeEmpDep(String userid, int dID);
 
-    void remove(String department);
+    void removeDep(String department);
 
-    void update2(String userid, String department, String isleader);
+    void updateLeader(String userid, int dID, int isleader);
+
+    void updateLeaders(int dID, String[] leaders);
 
     int insertEmp(Employee employee);
 
