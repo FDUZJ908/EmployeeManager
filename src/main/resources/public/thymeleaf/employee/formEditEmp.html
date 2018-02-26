@@ -148,8 +148,11 @@
                                     <label class="col-sm-2 control-label">所属部门</label>
                                     <div class="col-sm-10">
                                         <select class="multiselect" multiple="multiple" style="height:25em">
-                                            <option th:each="depart:${departmentList}" th:value="${depart.getDid()}"
-                                                    th:text="${depart.getDname()}"></option>
+                                            <option th:each="depart:${departmentList}" th:if="${depart.getSelected()==0}"
+                                                    th:value="${depart.getDid()}+':'+${depart.getDname()}" th:text="${depart.getDname()}"></option>
+                                            <option th:each="depart:${departmentList}" th:if="${depart.getSelected()==1}"
+                                                    th:value="${depart.getDid()}+':'+${depart.getDname()}" th:text="${depart.getDname()}"
+                                                    th:selected="selected"></option>
                                         </select>
                                     </div>
                                 </div>

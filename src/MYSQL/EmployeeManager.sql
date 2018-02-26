@@ -81,6 +81,7 @@ CREATE TABLE `department` (
   PRIMARY KEY (`dID`, `userID`),
   KEY `FK_Reference_7` (`userID`),
   CONSTRAINT `FK_Reference_7` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
+    ON UPDATE CASCADE
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -334,3 +335,9 @@ ALTER TABLE user
 
 ALTER TABLE user
   CHANGE userName `userName` CHAR(16) NOT NULL UNIQUE;
+
+ALTER TABLE department
+  DROP FOREIGN KEY FK_Reference_7;
+
+ALTER TABLE department
+  ADD CONSTRAINT `FK_Reference_7` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON UPDATE CASCADE ON DELETE CASCADE;

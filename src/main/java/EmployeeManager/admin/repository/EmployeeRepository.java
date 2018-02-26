@@ -17,6 +17,8 @@ public interface EmployeeRepository {
 
     List<Depart> getDepartmentList();
 
+    List<Depart> getDepartmentList(String userID);
+
     List<Privilege> getPrivilegeList();
 
     List<Employee> getEmployeeList();
@@ -41,10 +43,14 @@ public interface EmployeeRepository {
 
     int insertDepEmps(String dName, String[] userids);
 
+    int insertEmpDeps(String userid, String[] departs);
+
     int insertDep(String dName);
 
     int updateDep(int dID, String dName);
 
     int updateDepEmps(int dID, String dName, String[] userids);
+
+    int updateEmpDeps(String userid, String[] departs);
 
 }

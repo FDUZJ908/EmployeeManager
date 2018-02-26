@@ -50,16 +50,16 @@ public class EmployeeController {
                                @RequestParam(value = "status_") String status_,
                                @RequestParam("selectedDeps") String selected,
                                Model model) {
-        System.out.println(selected);
-        employee.setUserid("random" + String.valueOf(getTimestamp()));
+        employee.setUserid("random" + String.valueOf(getTimestamp())); //need to be updated later
         employee.setPosition_(position_);
         employee.setTitle_(title_);
         employee.setStatus_(status_);
         int res = employeeService.insertEmp(employee);
 
-        if (res!=0 && selected.length() > 0) {
+        System.out.println(selected);
+        if (res == 0 && selected.length() > 0) {
             String[] departs = selected.split(",");
-            //res = employeeService.insertDepEmps(departs, employee.getUserID());
+            res = employeeService.insertEmpDeps(employee.getUserID(), departs);
         }
         if (res != 0) {
             model.addAttribute("errorNum", "06");
@@ -78,8 +78,16 @@ public class EmployeeController {
     //编辑人员信息
     @RequestMapping(value = "/editEmp", method = RequestMethod.GET)
     public String editEmp(@RequestParam("userid") String userid, Model model) {
+        List<Depart> departs = employeeService.getDepartmentList();
+        List<Depart> empDeps = employeeService.getDepartmentList(userid);
+        for (Depart d1 : departs) {
+            for (Depart d2 : empDeps)
+                if (d1.getDid().equals(d2.getDid()))
+                    d1.setSelected(1);
+        }
+
         model.addAttribute("employee", employeeService.get(userid));
-        model.addAttribute("departmentList", employeeService.getDepartmentList()); //获取所有部门
+        model.addAttribute("departmentList", departs); //获取所有部门
         model.addAttribute("privilegeList", employeeService.getPrivilegeList());
         return "employee/formEditEmp";
     }
@@ -89,15 +97,25 @@ public class EmployeeController {
                                 @RequestParam(value = "position_", required = false) String position_,
                                 @RequestParam(value = "title_", required = false) String title_,
                                 @RequestParam(value = "status_") String status_,
+                                @RequestParam("selectedDeps") String selected,
                                 Model model) {
         employee.setPosition_(position_);
         employee.setTitle_(title_);
         employee.setStatus_(status_);
+
         int res = employeeService.updateEmp(employee);
         if (res != 0) {
             model.addAttribute("errorNum", "06");
             return "templates/failure";
         }
+
+        String[] departs = (selected.length() > 0) ? selected.split(",") : new String[0];
+        res = employeeService.updateEmpDeps(employee.getUserID(), departs);
+        if (res != 0) {
+            model.addAttribute("errorNum", "06");
+            return "templates/failure";
+        }
+
         return "redirect:/employee";
     }
 

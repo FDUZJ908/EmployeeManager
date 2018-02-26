@@ -28,6 +28,11 @@ public class EmployeeService {
         return employeeRepository.getDepartmentList();
     }
 
+    public List<Depart> getDepartmentList(String userID) {
+        return employeeRepository.getDepartmentList(userID);
+    }
+
+
     //获取所有成员姓名
     public List<Employee> getEmployeeList() {
         return employeeRepository.getEmployeeList();
@@ -90,11 +95,19 @@ public class EmployeeService {
         return employeeRepository.insertDepEmps(dName, userids);
     }
 
+    public int insertEmpDeps(String userid, String[] departs) {
+        return employeeRepository.insertEmpDeps(userid, departs);
+    }
+
     public int updateDep(int dID, String dName) {
         return employeeRepository.updateDep(dID, dName);
     }
 
     public int updateDepEmps(int dID, String dName, String[] userids) {
         return employeeRepository.updateDepEmps(dID, dName, userids);
+    }
+
+    public int updateEmpDeps(String userid, String[] departs) {
+        return employeeRepository.updateEmpDeps(userid, departs);
     }
 }

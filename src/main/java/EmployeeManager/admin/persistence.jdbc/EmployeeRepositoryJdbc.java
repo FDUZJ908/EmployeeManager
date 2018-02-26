@@ -40,6 +40,11 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
+    public List<Depart> getDepartmentList(String userID) {
+        return jdbcTemplate.query("select distinct dID,dName from department where userID=? order by dID", BeanPropertyRowMapper.newInstance(Depart.class), userID);
+    }
+
+    @Override
     public List<Privilege> getPrivilegeList() {
         return jdbcTemplate.query("select distinct privilege from privilege order by privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
     }
@@ -68,7 +73,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     public void removeEmp(String userid) {
         try {
             jdbcTemplate.update("DELETE FROM user WHERE userID=?", userid);
-        }catch (Exception e) {
+        } catch (Exception e) {
             jdbcTemplate.update("UPDATE user SET status=4 WHERE userID=?", userid);
         }
     }
@@ -133,6 +138,33 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
+    public int insertEmpDeps(String userid, String[] departs) {
+        try {
+            int n = departs.length;
+            if (n == 0) return 0;
+
+            Object[] args = new Object[3 * n];
+            String sql = "INSERT DEPARTMENT(dID,userID,dName) VALUES " + getRepeatQMark(n, 3);
+            for (int i = 0, j = 0; i < n; i++) {
+                int p = departs[i].indexOf(':');
+                args[j++] = departs[i].substring(0, p);
+                args[j++] = userid;
+                args[j++] = departs[i].substring(p + 1);
+            }
+            jdbcTemplate.update(sql, args);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateEmpDeps(String userid, String[] departs) {
+        jdbcTemplate.update("DELETE FROM department WHERE userID=?", userid);
+        return insertEmpDeps(userid, departs);
+    }
+
+    @Override
     public int getDepartID(String dName) {
         List<Map<String, Object>> res = jdbcTemplate.queryForList("select dID from ministry where dName=?", dName);
         if (res.size() == 0) return 0;
@@ -167,7 +199,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
         try {
             int n = userids.length;
             if (n == 0) {
-                jdbcTemplate.update("DELETE FROM DEPARTMENT WHERE dID=?", dID);
+                jdbcTemplate.update("DELETE FROM department WHERE dID=?", dID);
                 return 0;
             }
 
