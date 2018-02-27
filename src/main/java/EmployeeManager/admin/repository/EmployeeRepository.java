@@ -15,17 +15,13 @@ public interface EmployeeRepository {
 
     List<Employee> list();
 
+    List<Depart> list(int dID);
+
     List<Depart> getDepartmentList();
 
     List<Depart> getDepartmentList(String userID);
 
     List<Privilege> getPrivilegeList();
-
-    List<Employee> getEmployeeList();
-
-    List<Depart> list(int dID);
-
-    void add(String username, String deparmtnet, String isleader);
 
     void removeEmp(String userid);
 

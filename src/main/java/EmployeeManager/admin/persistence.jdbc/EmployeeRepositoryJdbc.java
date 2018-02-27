@@ -56,20 +56,6 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> getEmployeeList() {
-        return jdbcTemplate.query("select distinct username from user", BeanPropertyRowMapper.newInstance(Employee.class));
-    }
-
-    @Override
-    public void add(String username, String department, String isleader) {
-        List<Depart> temp1 = jdbcTemplate.query("select distinct did from department where dname=?", BeanPropertyRowMapper.newInstance(Depart.class), department);
-        String did = temp1.get(0).getDid();
-        List<Employee> temp2 = jdbcTemplate.query("select distinct userid from user where username=?", BeanPropertyRowMapper.newInstance(Employee.class), username);
-        String userid = temp2.get(0).getUserID();
-        jdbcTemplate.update("insert department (`did`,`userid`,`dname`,`isleader`) values (?,?,?,?)", did, userid, department, isleader);
-    }
-
-    @Override
     public void removeEmp(String userid) {
         try {
             jdbcTemplate.update("DELETE FROM user WHERE userID=?", userid);

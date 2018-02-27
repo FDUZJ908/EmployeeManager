@@ -18,6 +18,10 @@ public class EmployeeService {
     @Autowired
     protected EmployeeRepository employeeRepository;
 
+    public Employee get(String userid) {
+        return employeeRepository.get(userid);
+    }
+
     //获取所有成员
     public List<Employee> list() {
         return employeeRepository.list();
@@ -41,19 +45,9 @@ public class EmployeeService {
         return employeeRepository.getDepartmentList(userID);
     }
 
-    //获取所有成员姓名
-    public List<Employee> getEmployeeList() {
-        return employeeRepository.getEmployeeList();
-    }
-
     //获取当前所有权限级别
     public List<Privilege> getPrivilegeList() {
         return employeeRepository.getPrivilegeList();
-    }
-
-    //部门中添加成员
-    public void add(String username, String department, String isleader) {
-        employeeRepository.add(username, department, isleader);
     }
 
     //删除用户
@@ -87,10 +81,6 @@ public class EmployeeService {
 
     public void updateLeaders(int dID, String[] leaders) {
         employeeRepository.updateLeaders(dID, leaders);
-    }
-
-    public Employee get(String userid) {
-        return employeeRepository.get(userid);
     }
 
     //新建部门
