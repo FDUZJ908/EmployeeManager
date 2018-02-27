@@ -23,10 +23,13 @@ DROP TABLE IF EXISTS `QRCode`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `QRCode` (
-  `QRID`   INT(11)  NOT NULL AUTO_INCREMENT,
-  `s_time` DATETIME NOT NULL,
-  `e_time` DATETIME NOT NULL,
-  `token`  INT(11)  NOT NULL DEFAULT '0',
+  `QRID`     INT(11)  NOT NULL AUTO_INCREMENT,
+  `s_time`   DATETIME NOT NULL,
+  `e_time`   DATETIME NOT NULL,
+  `token`    INT(11)  NOT NULL DEFAULT '0',
+  `managers` TEXT,
+  `value`    INT(11)  NOT NULL DEFAULT '1',
+  `checkins` TEXT,
   PRIMARY KEY (`QRID`)
 )
   ENGINE = InnoDB
@@ -340,6 +343,29 @@ ALTER TABLE department
   DROP FOREIGN KEY FK_Reference_7;
 
 ALTER TABLE department
-  ADD CONSTRAINT `FK_Reference_7` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON UPDATE CASCADE ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_Reference_7` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
+  ON UPDATE CASCADE
+  ON DELETE CASCADE;
 
-CREATE INDEX idx_dID ON department(dID);
+CREATE INDEX idx_dID
+  ON department (dID);
+
+DROP TABLE QRCODe;
+CREATE INDEX idx_stime_etime
+  ON QRCode (s_time, e_time);
+CREATE INDEX idx_etime
+  ON QRCode (e_time);
+
+INSERT INTO QRCode (s_time, e_time, token, managers) VALUES ('2018-02-27 10:00:00', '2018-02-27 23:00:00', 1234, '');
+INSERT INTO QRCode (s_time, e_time, token) VALUES ('2018-02-27 10:00:00', '2018-02-27 23:00:00', 1234);
+
+
+UPDATE QRCode
+SET managers = (
+  CASE
+  WHEN managers = '' OR managers IS NULL
+    THEN '123'
+  ELSE concat(managers, ',123')
+  END
+)
+WHERE QRID = 2;

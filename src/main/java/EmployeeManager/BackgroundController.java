@@ -11,13 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
-import static EmployeeManager.cls.Util.currentTime;
-
 @Controller
 @RequestMapping("/wechat")
 public class BackgroundController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     Server server;
 
@@ -30,10 +29,10 @@ public class BackgroundController {
                                 Model model) {
         String UserId = server.getUserId(code, Variable.submitSecret);
         logger.info("Request GeneralReport: " + UserId); //log
-        /*if (!server.isUser(UserId)) {
+        if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
-        }*/
+        }
         List<ReportType> reportType = server.getReportType();
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
@@ -65,7 +64,7 @@ public class BackgroundController {
             return responseMsg;
         }
 
-        String currentTime = currentTime();
+        String currentTime = Util.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
@@ -85,7 +84,7 @@ public class BackgroundController {
         try {
             server.sendMessage(leader, mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
         }
         responseMsg.setMsg("一般报告提交成功！");
         responseMsg.setNum("1");
@@ -136,7 +135,7 @@ public class BackgroundController {
         logger.info("Post CaseReport: " + UserId); //log
         ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
 
-        String currentTime = currentTime();
+        String currentTime = Util.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
@@ -156,7 +155,7 @@ public class BackgroundController {
         try {
             server.sendMessage(leader, mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
         }
         responseMsg.setMsg("个案报告提交成功！");
         responseMsg.setNum("1");
@@ -199,7 +198,7 @@ public class BackgroundController {
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
-        String currentTime = currentTime();
+        String currentTime = Util.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
@@ -210,7 +209,7 @@ public class BackgroundController {
             pathCurrent = "";
         try {
             String sqlMessage = "'" + UserId + "','" + members + "','" + type + "','" + content + "','" + pathCurrent + "'," +
-                    score + ",'" + currentTime() + "'," + score_type;
+                    score + ",'" + Util.currentTime() + "'," + score_type;
             server.jdbcTemplate.update("insert into leaderReport " +
                     "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
                     "values(" + sqlMessage + ")");
@@ -315,7 +314,7 @@ public class BackgroundController {
         String reportComment = ajax.getReportComment();
 
         String updateSql = "";
-        String checkTime = currentTime();
+        String checkTime = Util.currentTime();
 
         logger.info("'" + check1 + "'");
         logger.info("'" + check2 + "'");
@@ -340,7 +339,7 @@ public class BackgroundController {
                     ajax.setCheckResponse("审批成功!");
                     ajax.setCheckNum("1");
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
                     ajax.setCheckResponse("审批失败!");
                     ajax.setCheckNum("0");
                     return ajax;
@@ -349,7 +348,7 @@ public class BackgroundController {
                 try {
                     server.sendMessage(userID, mesgToSubordinate, false, Variable.reportAgentID);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
                 }
             }
         }
@@ -380,7 +379,7 @@ public class BackgroundController {
                     ajax.setCheckResponse("审批成功!");
                     ajax.setCheckNum("1");
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
                     ajax.setCheckResponse("审批失败!");
                     ajax.setCheckNum("0");
                     return ajax;
@@ -389,7 +388,7 @@ public class BackgroundController {
                 try {
                     server.sendMessage(userID, mesgToSubordinate, false, Variable.reportAgentID);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
                 }
             }
         }
@@ -592,22 +591,24 @@ public class BackgroundController {
         int p = STATE.indexOf("-");
         int QRID = Integer.parseInt(STATE.substring(0, p));
         int token = Integer.parseInt(STATE.substring(p + 1));
-        QRCode qrCode = Variable.QRCodes.get(QRID);
-        String time = currentTime();
+        QRCode qrCode = server.getQRCode(QRID);
+        String time = Util.currentTime();
 
         if (qrCode == null || qrCode.token != token || qrCode.s_time.compareTo(time) > 0 || time.compareTo(qrCode.e_time) > 0) {
             model.addAttribute("errorNum", "01");
             return "templates/failure";
         }
 
-        if (qrCode.checkins.contains(userID)) {
-            model.addAttribute("errorNum", "02");
-            return "templates/failure";// avoid scanning QRcode repeatly
-        }
+        String[] checkins = qrCode.checkins.split(",");
+        for (String user : checkins)
+            if (user.equals(userID)) {
+                model.addAttribute("errorNum", "02");
+                return "templates/failure";// avoid repeatedly scanning QR code
+            }
 
         try {
             server.award(userID, qrCode.value);
-            qrCode.Add(userID);
+            server.updateQRCodeCheckins(QRID, userID);
         } catch (Exception e) {
             model.addAttribute("errorNum", "-1");
             return "templates/failure";
@@ -668,53 +669,4 @@ public class BackgroundController {
         }
         return new ResponseMsg("0", srcURL);
     }
-
-    @RequestMapping("/")
-    public String home(Model model) {
-        model.addAttribute("currentMenu", "");
-        return "index";
-    }
-
-    /*
-    @RequestMapping("/Reservation")
-    public String Reservation(@RequestParam("code") String CODE,
-                              @RequestParam("state") String STATE,
-                              Model model) {
-        String UserId = server.getUserId(CODE, submitSecret);
-        if (server.isUser(UserId) == false)
-            return "templates/failure";
-        String UserName = server.getUserName(UserId);
-        model.addAttribute("UserID", UserId);
-        model.addAttribute("UserName", UserName);
-        return "templates/Reservation";
-    }
-
-    @PostMapping(value = "/Reservation")
-    public String Reservation(@RequestParam("type") String type,
-                              @RequestParam("members") String members,
-                              @RequestParam("suits") String suits,
-                              @RequestParam("UserID") String userID) {
-
-        //type = 0 午餐
-        //type = 1 晚餐
-
-
-        String time = server.currentTime();
-        String sql = "'"+userID+"',"+members+","+suits+",'"+time+"',"+type;
-        server.jdbcTemplate.update("insert into reservation " +
-                "(userID,members,suits,time,type) values(" + sql + ")");
-        return "templates/success";
-    }
-
-
-    @RequestMapping("/checkOrder")
-    public String checkOder(Model model) {
-        int lunchmembers;
-        int lunchsuits;
-        int dinnermembers;
-        int dinnersuits;
-        return "templates/checkOrder";
-    }
-
-    */
 }

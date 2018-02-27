@@ -1,12 +1,9 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.adminServer;
-import EmployeeManager.admin.model.report;
-import EmployeeManager.cls.CaseReport;
+import EmployeeManager.Server;
 import EmployeeManager.cls.HistoryReport;
 import EmployeeManager.cls.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +19,8 @@ import java.util.Map;
 @RequestMapping("/reportQuery")
 public class ReportQueryController {
     @Autowired
-    adminServer adminServer;
+    Server server;
+
     String sqluc = "select * " +
             "from undealedCaseReport , reportType , user " +
             "where undealedCaseReport.category = reportType.typeName " +
@@ -64,7 +62,7 @@ public class ReportQueryController {
     public String reportQuery(Model model) {
 
 
-        model.addAttribute("list", adminServer.getAllUser());
+        model.addAttribute("list", server.getAllUsers());
         return "reportQuery/reportList";
     }
 
@@ -81,27 +79,27 @@ public class ReportQueryController {
         if (start.equals("")) start = "0001-01-01";
         if (end.equals("")) end = "9999-12-31";
 
-        System.out.println(adminServer.name2id(score));
+        System.out.println(server.name2id(score));
 
         Map<String, Object> defValue = new HashMap<String, Object>();
         int selectType = 0;
         List<HistoryReport> reports = new ArrayList<HistoryReport>();
         if (category.equals("个案报告")) {
-            Object args[] = new Object[]{adminServer.name2id(score), score, start, end, leader, adminServer.name2id(submitter)};
+            Object args[] = new Object[]{server.name2id(score), score, start, end, leader, server.name2id(submitter)};
             defValue.put("type", HistoryReport.CASE);
-            reports = adminServer.jdbcTemplate.query(sqluc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports = server.jdbcTemplate.query(sqluc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
             defValue.put("type", HistoryReport.CASE);
-            reports.addAll(adminServer.jdbcTemplate.query(sqlc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+            reports.addAll(server.jdbcTemplate.query(sqlc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
         }
         if (category.equals("一般报告")) {
-            Object args[] = new Object[]{adminServer.name2id(score), start, end, leader, adminServer.name2id(submitter)};
+            Object args[] = new Object[]{server.name2id(score), start, end, leader, server.name2id(submitter)};
             defValue.put("type", HistoryReport.GENERAL);
-            reports = adminServer.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports = server.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
-            reports.addAll(adminServer.jdbcTemplate.query(sqlg, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+            reports.addAll(server.jdbcTemplate.query(sqlg, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
         }
         if (category.equals("领导报告")) {
-            Object args[] = new Object[]{score, start, end, adminServer.name2id(submitter)};
+            Object args[] = new Object[]{score, start, end, server.name2id(submitter)};
             String sqll = "select * " +
                     "from leaderReport , reportType , user " +
                     "where leaderReport.category = reportType.typeName " +
@@ -111,12 +109,11 @@ public class ReportQueryController {
                     "and leaderReport.userID like concat('%',?,'%') " +
                     "order by submitTime desc";
             defValue.put("type", HistoryReport.LEADER);
-            reports = adminServer.jdbcTemplate.query(sqll, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports = server.jdbcTemplate.query(sqll, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
         }
-        ;
 
 
-        model.addAttribute("list", adminServer.getAllUser());
+        model.addAttribute("list", server.getAllUsers());
         model.addAttribute("category", category);
         model.addAttribute("reports", reports);
         return "reportQuery/reportList";

@@ -34,4 +34,9 @@ public class Util {
         return time;
     }
 
+    public static String truncSecond(String datetime) {
+        int p=datetime.lastIndexOf(":");
+        return datetime.substring(0,p);
+    }
+
 }
