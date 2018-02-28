@@ -282,7 +282,7 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `userID` char(32) NOT NULL,
-  `avatarURL` text,
+  `avatarURL` char(255),
   `userName` char(32) NOT NULL,
   `duty` char(64) DEFAULT NULL,
   `title` tinyint(4) DEFAULT NULL,

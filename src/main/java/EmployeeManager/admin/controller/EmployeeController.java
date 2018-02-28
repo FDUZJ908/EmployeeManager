@@ -57,7 +57,6 @@ public class EmployeeController {
         employee.setStatus_(status_);
         int res = employeeService.insertEmp(employee);
 
-        System.out.println(selected);
         if (res == 0 && selected.length() > 0) {
             String[] departs = selected.split(",");
             res = employeeService.insertEmpDeps(employee.getUserID(), departs);

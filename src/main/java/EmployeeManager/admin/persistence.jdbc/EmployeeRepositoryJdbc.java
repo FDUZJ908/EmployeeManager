@@ -4,6 +4,8 @@ import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,13 +16,14 @@ import java.util.Map;
 
 import static EmployeeManager.cls.Util.getRepeatQMark;
 
-//import EmployeeManager.admin.model.User;
-
 /**
  * Created by 11437 on 2017/10/13.
  */
 @Repository
 public class EmployeeRepositoryJdbc implements EmployeeRepository {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
@@ -82,6 +85,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             jdbcTemplate.update(sql,
                     employee.getUserID(), employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getGender(), employee.getTel(), employee.getEmail());
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;
@@ -93,6 +97,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             jdbcTemplate.update("UPDATE user SET userName=?,duty=?,position=?,title=?,privilege=?,status=?,gender=?,tel=?,email=? WHERE userID=?",
                     employee.getUsername(), employee.getDuty(), employee.getPosition(), employee.getTitle(), employee.getPrivilege(), employee.getStatus(), employee.getGender(), employee.getTel(), employee.getEmail(), employee.getUserID());
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;
@@ -116,6 +121,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
         try {
             jdbcTemplate.update("INSERT INTO ministry(dName) VALUES(?)", dName);
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;
@@ -126,6 +132,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
         try {
             jdbcTemplate.update("UPDATE ministry SET dName=? WHERE dID=?", dName, dID);
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;
@@ -138,7 +145,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             if (n == 0) return 0;
 
             Object[] args = new Object[3 * n];
-            String sql = "INSERT DEPARTMENT(dID,userID,dName) VALUES " + getRepeatQMark(n, 3);
+            String sql = "INSERT department(dID,userID,dName) VALUES " + getRepeatQMark(n, 3);
             for (int i = 0, j = 0; i < n; i++) {
                 int p = departs[i].indexOf(':');
                 args[j++] = departs[i].substring(0, p);
@@ -147,6 +154,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             }
             jdbcTemplate.update(sql, args);
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;
@@ -174,7 +182,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             if (n == 0) return 0;
 
             Object[] args = new Object[3 * n];
-            String sql = "INSERT DEPARTMENT(dID,userID,dName) VALUES " + getRepeatQMark(n, 3);
+            String sql = "INSERT department(dID,userID,dName) VALUES " + getRepeatQMark(n, 3);
             for (int i = 0, j = 0; i < n; i++) {
                 args[j++] = dID;
                 args[j++] = userids[i];
@@ -182,6 +190,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             }
             jdbcTemplate.update(sql, args);
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;
@@ -198,7 +207,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             }
 
             Object[] args = new Object[3 * n];
-            String sql = "INSERT DEPARTMENT(dID,userID,dName) VALUES " + getRepeatQMark(n, 3) + " ON DUPLICATE KEY UPDATE dName=VALUES(dName)";
+            String sql = "INSERT department(dID,userID,dName) VALUES " + getRepeatQMark(n, 3) + " ON DUPLICATE KEY UPDATE dName=VALUES(dName)";
             for (int i = 0, j = 0; i < n; i++) {
                 args[j++] = dID;
                 args[j++] = userids[i];
@@ -206,9 +215,10 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
             }
             jdbcTemplate.update(sql, args);
 
-            sql = "DELETE FROM DEPARTMENT WHERE dID=" + String.valueOf(dID) + " AND userID NOT IN " + getRepeatQMark(1, n);
+            sql = "DELETE FROM department WHERE dID=" + String.valueOf(dID) + " AND userID NOT IN " + getRepeatQMark(1, n);
             jdbcTemplate.update(sql, userids);
         } catch (Exception e) {
+            logger.info(e.getMessage());
             return 1;
         }
         return 0;

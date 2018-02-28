@@ -40,6 +40,19 @@ public class Server {
     @Value("${web.upload-path}")
     private String path;
 
+    public int insertMap(Map<String, Object> map, String table) {
+        StringBuffer cols = new StringBuffer();
+        Object[] args = new Object[map.size()];
+        int m = 0;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (m++ > 0) cols.append(',');
+            cols.append(entry.getKey());
+            args[m] = entry.getValue();
+        }
+        String sql = "INSERT INTO " + table + " ( " + cols + " ) VALUES" + getRepeatQMark(1, m);
+        return jdbcTemplate.update(sql, args);
+    }
+
     public String getAccessToken(String corpsecret, boolean newToken) {
         int time = getTimestamp();
 
@@ -59,26 +72,23 @@ public class Server {
         }
     }
 
-    public int updateUser(String userid, String corpsecret) {
-  /*      if (userid.length() == 0) return -1;
-        int time = (int) (System.currentTimeMillis() / 1000);
-        Tuple res = isUser(userid);
-        if (res.Bool && time <= res.Int) return 0;
+    public boolean updateUser(String userID, String corpsecret) {
         String token = getAccessToken(corpsecret, false);
         HTTPRequest http = new HTTPRequest();
         try {
-            String url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=" + token + "&userid=" + userid;
+            String url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=" + token + "&userid=" + userID;
             JSONObject jsonObject = http.sendGET(url);
-            userid=jsonObject.getString("userid");
+            userID = jsonObject.getString("userid");
             String userName = jsonObject.getString("name");
-            String gender=jsonObject.getString("gender");
-            String tel=jsonObject.getString("mobile");
-            String email=jsonObject.getString("email");
+            String gender = jsonObject.getString("gender");
+            String tel = jsonObject.getString("mobile");
+            String email = jsonObject.getString("email");
+            String sql = "UPDATE user SET userID=?,gender=?,tel=?,email=? WHERE userName=?";
+            int ret = jdbcTemplate.update(sql, userID, gender, tel, email, userName);
+            return ret > 0;
         } catch (Exception e) {
-            return -1;
+            return false;
         }
-        return 0;*/
-        return 0;
     }
 
     public String getUserId(String code, String corpsecret) {
@@ -93,34 +103,15 @@ public class Server {
             return "failure";
         }
         return UserId;
-       /* int ret = updateUser(UserId, corpsecret);
-        if (ret == 0) return UserId;
-        else return "null";*/
     }
 
-    public boolean isUser(String UserId) {
+    public boolean isUser(String userID) {
+        if (userID == "failure") return false;
         String sql = "select * from user where userID=? limit 1";
-        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, UserId);
-        return res.size() > 0;
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, userID);
+        if (res.size() == 0) return updateUser(userID, Variable.submitSecret);
+        return true;
     }
-
-    /*
-    public boolean isUser(String UserId) {
-        String token = getAccessToken(submitSecret, false);
-        HTTPRequest http = new HTTPRequest();
-        int errcode;
-        String errmsg;
-        try {
-            String url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=" + token + "&userid=" + UserId;
-            JSONObject jsonObject = http.sendGET(url);
-            errcode = jsonObject.getInt("errcode");
-            errmsg = jsonObject.getString("errmsg");
-        } catch (Exception e) {
-            return false;
-        }
-        return errcode == 0 && errmsg.equals("ok");
-    }
-    */
 
     public String id2name(String ids, String delimiter) {
         if (ids.length() == 0) return "";
@@ -181,19 +172,6 @@ public class Server {
             break;
         }
         return userName;
-    }
-
-    public int insertMap(Map<String, Object> map, String table) {
-        StringBuffer cols = new StringBuffer();
-        Object[] args = new Object[map.size()];
-        int m = 0;
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (m++ > 0) cols.append(',');
-            cols.append(entry.getKey());
-            args[m] = entry.getValue();
-        }
-        String sql = "INSERT INTO " + table + " ( " + cols + " ) VALUES" + getRepeatQMark(1, m);
-        return jdbcTemplate.update(sql, args);
     }
 
     public List<Map<String, Object>> getDepartment(String userId) {
@@ -400,7 +378,8 @@ public class Server {
         return latestGeneralReport;
     }
 
-    /*public void getReports(List<HistoryReport> reports,
+    /*
+    public void getReports(List<HistoryReport> reports,
                            List<Map<String, Object>> listCaseReport,
                            String UserID,
                            String UserName) {
@@ -413,7 +392,8 @@ public class Server {
                 report_temp.setScore(String.valueOf(-Integer.parseInt(String.valueOf(map.get("singleScore")))));
             reports.add(report_temp);
         }
-    }*/
+    }
+    */
 
     public List<String> getAllUsers() {
         List<Map<String, Object>> list;
@@ -663,7 +643,7 @@ public class Server {
         jdbcTemplate.update(sql, userID, "," + userID, QRID);
     }
     */
-    
+
     public int updateQRCodeCheckins(int QRID, String userID) {
         try {
             String sql = "INSERT INTO QRCheckin(QRID,userID,checkTime) VALUES(?,?,NOW())";

@@ -550,7 +550,6 @@ public class WechatController {
                          Model model) {
         String userID = server.getUserId(CODE, Variable.submitSecret);
         logger.info("Request QRCode: " + userID); //log
-
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
