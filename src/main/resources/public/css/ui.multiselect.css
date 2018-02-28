@@ -19,15 +19,15 @@
 .ui-multiselect .ui-state-hover { border: none; }
 .ui-multiselect .ui-widget-header {border: none; font-size: 11px; margin-bottom: 1px; background: #307AAE;}
  
-.ui-multiselect .add-all { float: right; padding: 7px;}
-.ui-multiselect .remove-all { float: right; padding: 7px;}
+.ui-multiselect .add-all { float: right; padding: 7px; color:white;}
+.ui-multiselect .remove-all { float: right; padding: 7px; color:white;}
 .ui-multiselect .search { float: left; padding: 4px;}
-.ui-multiselect .count { float: left; padding: 7px;}
+.ui-multiselect .count { float: left; padding: 7px; color:white;}
 
 .ui-multiselect li span.ui-icon-arrowthick-2-n-s { position: absolute; left: 2px; }
 .ui-multiselect li a.action { position: absolute; right: 2px; top: 2px; }
  
-.ui-multiselect input.search { height: 14px; padding: 1px; opacity: 0.5; margin: 4px; width: 100px; }
+.ui-multiselect input.search { height: 15px; padding: 1px; opacity: 0.5; margin: 4px; width: 100px; }
 
 .multiselect {
         width: 50%;

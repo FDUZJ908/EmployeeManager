@@ -12,27 +12,33 @@
 <script th:inline ="javascript">
         /*<![CDATA[*/
     function errorAlert () {
-    var errorNum =  /*[[${errorNum}]]*/ "";
-    switch (errorNum)
-    {
-    case "00" :
-        alert("用户不存在！");
-        break;
-    case "01":
-        alert("二维码无效!");
-        break;
-    case "02":
-        alert("请勿重复扫码!");
-        break;
-    case "03":
-        alert("目前没有二维码!");
-        break
-    case "04":
-        alert("没有进入权限!")
-        break
-    default :
-        alert("失败!");
-    }
+        var errorNum =  /*[[${errorNum}]]*/;
+        switch (errorNum)
+        {
+            case "00" :
+                alert("用户不存在！");
+                break;
+            case "01":
+                alert("二维码无效!");
+                break;
+            case "02":
+                alert("请勿重复扫码!");
+                break;
+            case "03":
+                alert("目前没有二维码!");
+                break
+            case "04":
+                alert("没有进入权限!");
+                break
+            case "05":
+                alert("操作失败！部门名称重复！");
+                break
+            case "06":
+                alert("操作失败！用户姓名重复！");
+                break
+            default :
+                alert("失败!");
+        }
     }
         /*]]>*/
 </script>

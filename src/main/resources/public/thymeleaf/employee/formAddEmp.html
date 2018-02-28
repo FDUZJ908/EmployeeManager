@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>用户管理</title>
+    <title>新增人员</title>
     <div th:replace="head"></div>
+    <div th:replace="script"></div>
+    <div th:replace="multiselect"></div>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini ">
@@ -22,19 +24,19 @@
                     <!-- Horizontal Form -->
                     <div class="box box-info">
                         <div class="box-header with-border">
-                            <h3 class="box-title">用户管理</h3>
+                            <h3 class="box-title">新增人员</h3>
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/employee/modifyEditAll(userid=${userid})}" onsubmit="return check()" method="post">
+                        <form class="form-horizontal" th:action="@{/employee/addEmp}" onsubmit="return check()" method="post" id="multiform">
                             <div class="box-body">
 
                                 <div class="form-group">
                                     <label for="username" class="col-sm-2 control-label">姓名</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input readonly="readonly" type="text" name="username" th:value="${employee}? ${employee.username}"
-                                               class="form-control" id="username" placeholder=""
+                                        <input type="text" name="username"
+                                               class="form-control" id="username" placeholder="请输入姓名"
                                                required="required" maxlength="30"/>
                                     </div>
                                 </div>
@@ -43,9 +45,8 @@
                                     <label for="position" class="col-sm-2 control-label">职级</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" list="positionlist" name="position_" th:value="${employee}? ${employee.getPosition_()}"
-                                               class="form-control" id="position" placeholder=""
-                                               required="required" maxlength="30"/>
+                                        <input type="text" list="positionlist" name="position_"
+                                               class="form-control" id="position" placeholder="请选择职级" maxlength="30"/>
                                         <datalist id="positionlist">
                                             <option value="村级干部"></option>
                                             <option value="一般干部"></option>
@@ -58,9 +59,8 @@
                                     <label for="title" class="col-sm-2 control-label">职称</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" list="titlelist" name="title_" th:value="${employee}? ${employee.getTitle_()}"
-                                               class="form-control" id="title" placeholder=""
-                                               required="required" maxlength="30"/>
+                                        <input type="text" list="titlelist" name="title_"
+                                               class="form-control" id="title" placeholder="请选择职称" maxlength="30"/>
                                         <datalist id="titlelist">
                                             <option value="村级"></option>
                                             <option value="科员"></option>
@@ -73,30 +73,26 @@
                                     <label for="duty" class="col-sm-2 control-label">职务</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" name="duty" th:value="${employee}? ${employee.duty}"
-                                               class="form-control" id="duty" placeholder=""
-                                               required="required" maxlength="30"/>
+                                        <input type="text" name="duty"
+                                               class="form-control" id="duty" placeholder="请输入职务" maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="privilege" class="col-sm-2 control-label">权限级别</label>
+                                    <label for="privilege" class="col-sm-2 control-label">权限级别</label>&nbsp;&nbsp;
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" list="privilegelist" name="privilege" th:value="${employee}? ${employee.privilege}"
-                                               class="form-control" id="privilege" placeholder="请选择正确的权限级别"
-                                               required="required" maxlength="30"/>
-                                        <datalist id="privilegelist">
-                                            <option th:each="privilege:${privilegeList}" th:text="${privilege.getPrivilege()}"></option>
-                                        </datalist>
+                                        <select id="privilege" form="multiform" name="privilege">
+                                            <option th:each="privilege:${privilegeList}" th:value="${privilege.getPrivilege()}" th:text="${privilege.getPrivilege()}"></option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="status" class="col-sm-2 control-label">状态</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" list="statuslist" name="status_" th:value="${employee}? ${employee.getStatus_()}"
-                                               class="form-control" id="status" placeholder="请输入员工状态，如 在职"
-                                               required="required" maxlength="30"/>
+                                        <input type="text" list="statuslist" name="status_"
+                                               class="form-control" id="status" placeholder="请选择员工状态"
+                                               maxlength="30"/>
                                         <datalist id="statuslist">
                                             <option value="在职"></option>
                                             <option value="退休"></option>
@@ -110,55 +106,62 @@
                                     <label for="tel" class="col-sm-2 control-label">电话</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" name="tel" th:value="${employee}? ${employee.tel}"
+                                        <input type="text" name="tel"
                                                class="form-control" id="tel" placeholder="请输入正确的电话号码"
-                                                maxlength="30"/>
+                                               maxlength="30"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="gender" class="col-sm-2 control-label">性别</label>
-
-                                    <div class="col-sm-10" style="width: 300px">
-                                        <input readonly="readonly" type="text" name="gender_" th:value="${employee}? ${employee.getGender_()}"
-                                               class="form-control" id="gender" placeholder=""
-                                                maxlength="30"/>
-                                    </div>
+                                    <label class="col-sm-2 control-label">性别</label>&nbsp;&nbsp;
+                                    <input type="radio" id="gender1" name="gender" value="1"/>男&nbsp;
+                                    <input type="radio" id="gender2" name="gender" value="2"/>女&nbsp;
+                                    <input type="radio" id="gender0" name="gender" value="0" checked="checked"/>未知
                                 </div>
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label">邮箱</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" name="email" th:value="${employee}? ${employee.email}"
+                                        <input type="text" name="email"
                                                class="form-control" id="email" placeholder="请输入正确的邮箱"
-                                                maxlength="30"/>
+                                               maxlength="30"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">所属部门</label>
+                                    <div class="col-sm-10">
+                                        <select class="multiselect" multiple="multiple" style="height:25em">
+                                            <option th:each="depart:${departmentList}" th:value="${depart.getDid()}+':'+${depart.getDname()}"
+                                                    th:text="${depart.getDname()}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="display:none;">
+                                    <label for="selected" class="col-sm-2 control-label">selected</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="hidden" name="selectedDeps" class="form-control" id="selected"/>
                                     </div>
                                 </div>
 
                                 <br/><br/>
                             </div>
-                            <!-- /.box-body -->
                             <div class="box-footer" style="text-align: center;">
                                 <button type="submit" class="btn btn-info">提交</button>
                             </div>
-                            <!-- /.box-footer -->
                         </form>
                     </div>
-                    <!-- /.box -->
 
                 </div>
             </div>
-            <!-- /.row -->
 
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
 
     <div th:replace="footer"></div>
 </div>
 <!-- ./wrapper -->
-<div th:replace="script"></div>
-
 </body>
 
 <script th:inline="javascript">
@@ -167,13 +170,13 @@
         var tel=document.getElementById("tel").value;
         var reg1=/^[1-9]\d*$|^0$/;
         if(tel!=="" && reg1.test(tel)==false){
-            alert("请输入正确的 电话号码 ");
+            alert("请输入正确的电话号码!");
             return false;
         }
         var reg2 = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
         var email =document.getElementById("email").value;
         if(email!=="" && reg2.test(email)==false){
-            alert("请输入正确的 邮箱");
+            alert("请输入正确的邮箱!");
             return false;
         }
         return true;

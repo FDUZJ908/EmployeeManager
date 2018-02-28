@@ -36,15 +36,16 @@
                                         <label class="col-sm-2 control-label">选择部门查询</label>
 
                                         <div class="col-sm-10" style="width: 200px">
-                                            <input type="text" list="departmentlist"  name="department" th:value="${department}?${department}"
+                                            <input type="text" list="departmentlist" name="department"
+                                                   th:value="${department}?${department}"
                                                    class="form-control"
                                                    id="department" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                                <option th:each="depart:${departmentList}"
+                                                        th:text="${depart.getDname()}"></option>
                                             </datalist>
                                         </div>
                                     </div>
-
 
 
                                     <br/><br/>
@@ -65,16 +66,16 @@
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title" th:text="${department}"></h3>
-                            <a th:href="@{/employee/addDepEmp(department=${department})}" title="新增部门人员"><span
-                                    class="glyphicon glyphicon-plus"></span></a>
+                            <a th:href="@{/department/editDep(dID=${dID},dName=${department},redirect=1)}" title="增减部门人员">
+                                <span class="glyphicon glyphicon-plus"></span></a>&nbsp;
+                            <a th:href="@{/employee/editDepLeader(dID=${dID},dName=${department})}" title="编辑部门领导">
+                                <span class="glyphicon glyphicon-edit"></span></a>
                         </div>
-                        <!--<p th:text="${department}"></p>-->
 
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>姓名</th>
                                     <th>部门</th>
                                     <th>是否为领导</th>
@@ -85,20 +86,19 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${list}">
-                                    <td th:text="${item.getUserid()}"></td>
                                     <td th:text="${item.getUsername()}"></td>
                                     <td th:text="${item.getDname()}"></td>
                                     <td th:text="${item.getIsleader_()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/editDep(userid=${item.getUserid()},department=${department},username=${item.getUsername()},isleader=${item.getIsleader_()})}"><span
+                                        <a th:href="@{/employee/editDepEmp(dID=${dID},dName=${department},userid=${item.getUserid()},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>
 
                                     <td th:if="${department}" style="text-align: center">
-                                        <span name="trash" title="删除"
-                                              th:data="@{/employee/deleteDepEmp(userid=${item.getUserid()},department=${department})}"
-                                              style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
+                                        <span title="删除" style="cursor: pointer" class="glyphicon glyphicon-trash"
+                                              th:onclick="'javascript:del(&quot;'+${item.getUserid()}+'&quot;,&quot;'+${item.getUsername()}+'&quot;);'">
+                                        </span>
                                     </td>
 
                                 </tr>
@@ -126,7 +126,7 @@
 <script>
     $(function () {
         $('#dataTable').DataTable({
-            "paging": true,
+            "paging": false,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
@@ -134,9 +134,31 @@
             "autoWidth": false
         });
     });
+</script>
 
+<script th:inline="javascript">
+    function del(userid,username){
+        dName=/*[[${department}]]*/;
+        var ret=confirm("确认把 \""+username+"\" 从 \""+dName+"\" 中删除吗?");
+        if (ret==true){
+            $.ajax({
+			    type: 'POST',
+			    url: '/employee/deleteDepEmp',
+			    data: {"userid": userid,
+			           "dID": /*[[${dID}]]*/
+			          },
+			    success: function(data) {
+			    	location.reload();
+			    },
+			    error: function(xhr, type) {
+			    	window.alert('删除失败！');
+			    }
+			})
+        }
+    }
 
 </script>
+
 <script th:src="@{/js/list-page.js}"></script>
 </body>
 </html>

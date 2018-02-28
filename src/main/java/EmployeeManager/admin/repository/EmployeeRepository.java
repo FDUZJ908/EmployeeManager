@@ -15,23 +15,40 @@ public interface EmployeeRepository {
 
     List<Employee> list();
 
+    List<Depart> list(int dID);
+
     List<Depart> getDepartmentList();
+
+    List<Depart> getDepartmentList(String userID);
 
     List<Privilege> getPrivilegeList();
 
-    List<Employee> getEmployeeList();
+    void removeEmp(String userid);
 
-    List<Depart> list(String department);
+    void removeEmpDep(String userid, int dID);
 
-    void add(String username,String deparmtnet,String isleader);
+    void removeDep(String department);
 
-    void remove(String userid,String department);
+    void updateLeader(String userid, int dID, int isleader);
 
-    void remove(String department);
+    void updateLeaders(int dID, String[] leaders);
 
-    void update1(Employee employee);
+    int insertEmp(Employee employee);
 
-    void update2(String userid,String department,String isleader);
+    int updateEmp(Employee employee);
 
-    void createDep(String username,String department,String isleader);
+    int getDepartID(String dName);
+
+    int insertDepEmps(String dName, String[] userids);
+
+    int insertEmpDeps(String userid, String[] departs);
+
+    int insertDep(String dName);
+
+    int updateDep(int dID, String dName);
+
+    int updateDepEmps(int dID, String dName, String[] userids);
+
+    int updateEmpDeps(String userid, String[] departs);
+
 }

@@ -19,13 +19,13 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
 import static EmployeeManager.cls.User.userAttrs;
 import static EmployeeManager.cls.User.userKeys;
+import static EmployeeManager.cls.Util.getRepeatQMark;
+import static EmployeeManager.cls.Util.getTimestamp;
 
 @Component
 public class Server {
@@ -41,7 +41,7 @@ public class Server {
     private String path;
 
     public String getAccessToken(String corpsecret, boolean newToken) {
-        int time = (int) (System.currentTimeMillis() / 1000);
+        int time = getTimestamp();
 
         if (!newToken && tokenList.containsKey(corpsecret) && time < tokenList.get(corpsecret).expireTime) {
             return tokenList.get(corpsecret).value;
@@ -122,19 +122,65 @@ public class Server {
     }
     */
 
-    public String getRepeatQMark(int n, int m) {
-        char[] s = new char[n * 2 * m + 3 * n + n];
-        int p = 0;
-        for (int i = 1; i <= n; i++) {
-            if (i > 1) s[p++] = ',';
-            s[p++] = '(';
-            for (int j = 1; j <= m; j++) {
-                if (j > 1) s[p++] = ',';
-                s[p++] = '?';
-            }
-            s[p++] = ')';
+    public String id2name(String ids, String delimiter) {
+        if (ids.length() == 0) return "";
+        String[] argvs = ids.split(delimiter);
+        String sql = "SELECT userName FROM user WHERE userID IN " + getRepeatQMark(1, argvs.length);
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, argvs);
+        if (res == null) return "";
+
+        StringBuffer names = new StringBuffer();
+        int i = 0;
+        for (Map<String, Object> map : res) {
+            if (i > 0) names.append("," + map.get("userName").toString());
+            else names.append(map.get("userName").toString());
+            i++;
         }
-        return String.valueOf(s, 0, p);
+        return names.toString();
+    }
+
+    public String name2id(String names, String delimiter) {
+        if (names.length() == 0) return "";
+        String[] argvs = names.split(",");
+        String sql = "SELECT userID FROM user WHERE userName IN " + getRepeatQMark(1, argvs.length);
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, argvs);
+        if (res == null) return "";
+
+        StringBuffer ids = new StringBuffer();
+        int i = 0;
+        for (Map<String, Object> map : res) {
+            if (i > 0) ids.append(delimiter + map.get("userID").toString());
+            else ids.append(map.get("userID").toString());
+            i++;
+        }
+        return ids.toString();
+    }
+
+    public String id2name(String ids) {
+        return id2name(ids, ",");
+
+    }
+
+    public String name2id(String names) {
+        return name2id(names, ",");
+    }
+
+    public String getUserName(String userId) {
+        String dIDSql = "select userName from user where userID=? limit 1";
+        Object args[] = new Object[]{userId};
+        List<Map<String, Object>> userNameCursor;
+        try {
+            userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return null;
+        }
+        String userName = "";
+        for (Map<String, Object> map : userNameCursor) {
+            userName = map.get("userName").toString();
+            break;
+        }
+        return userName;
     }
 
     public int insertMap(Map<String, Object> map, String table) {
@@ -157,29 +203,10 @@ public class Server {
         try {
             department = jdbcTemplate.queryForList(dIDSql, args);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
         return department;
-    }
-
-    public String getUserName(String userId) {
-
-        String dIDSql = "select userName from user where userID=? limit 1";
-        Object args[] = new Object[]{userId};
-        List<Map<String, Object>> userNameCursor;
-        try {
-            userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-        String userName = "";
-        for (Map<String, Object> map : userNameCursor) {
-            userName = map.get("userName").toString();
-            break;
-        }
-        return userName;
     }
 
     public int getUserPrivilege(String userId) {
@@ -190,7 +217,7 @@ public class Server {
         try {
             userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return 0;
         }
         int userPrivilege = 0;
@@ -208,7 +235,7 @@ public class Server {
         try {
             sysVarCursor = jdbcTemplate.queryForList(sysVarSql, args);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return 0;
         }
         for (Map<String, Object> map : sysVarCursor) {
@@ -226,7 +253,7 @@ public class Server {
         try {
             sysVarCursor = jdbcTemplate.queryForList(sysVarSql, args);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return "";
         }
         for (Map<String, Object> map : sysVarCursor) {
@@ -244,7 +271,7 @@ public class Server {
         try {
             scoreLimitCursor = jdbcTemplate.queryForList(scoreLimitSql, args);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return 0;
         }
         int scoreLimit = 0;
@@ -275,13 +302,6 @@ public class Server {
         return users;
     }
 
-    public String currentTime() {
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = format.format(date);
-        return time;
-    }
-
     public boolean saveFile(MultipartFile file, String pathCurrent) {
         if (!file.isEmpty()) {
             pathCurrent = path + "/" + pathCurrent;
@@ -291,10 +311,10 @@ public class Server {
                     f.createNewFile();
                 file.transferTo(f);
             } catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
+                logger.info(e.getMessage());
                 return false;
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                logger.info(e.getMessage());
                 return false;
             }
         }
@@ -335,7 +355,7 @@ public class Server {
             try {
                 dir.mkdir();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                logger.info(e.getMessage());
             }
     }
 
@@ -346,7 +366,7 @@ public class Server {
             generalReport = jdbcTemplate.queryForList(sql);
             return generalReport.get(0);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
     }
@@ -358,7 +378,7 @@ public class Server {
             caseReport = jdbcTemplate.queryForList(sql);
             return caseReport.get(0);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
     }
@@ -370,7 +390,7 @@ public class Server {
         try {
             generalReport = jdbcTemplate.queryForList(sql);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
         for (Map<String, Object> map : generalReport) {
@@ -396,20 +416,18 @@ public class Server {
     }*/
 
     public List<String> getAllUsers() {
-        String sql = "select userName from user";
-        List<Map<String, Object>> allUsersCursor;
+        List<Map<String, Object>> list;
         try {
-            allUsersCursor = jdbcTemplate.queryForList(sql);
+            list = jdbcTemplate.queryForList("select userName from user");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
-        List<String> allUsers = new ArrayList<String>();
-        for (Map<String, Object> map : allUsersCursor) {
-            String user_temp = map.get("userName").toString();
-            allUsers.add(user_temp);
+        List<String> nameList = new ArrayList<String>();
+        for (Map<String, Object> map : list) {
+            nameList.add(map.get("userName").toString());
         }
-        return allUsers;
+        return nameList;
     }
 
     public List<String> getAllDepartmentUsers(String userId, int userPrivilege) {
@@ -420,7 +438,7 @@ public class Server {
         try {
             department = jdbcTemplate.queryForList(dIDSql, args1);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
 
@@ -453,7 +471,7 @@ public class Server {
         try {
             department = jdbcTemplate.queryForList(dIDSql, args1);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
 
@@ -496,7 +514,7 @@ public class Server {
         try {
             department = jdbcTemplate.queryForList(dIDSql, args1);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return null;
         }
 
@@ -524,7 +542,7 @@ public class Server {
             return null;
         }
 
-        Map<Integer, String> departName = new HashMap<Integer, String>();
+        Map<Integer, String> departName = new HashMap<>();
         JSONArray departList = jsonRes.getJSONArray("department");
         int departNum = departList.length();
         for (int i = 0; i < departNum; i++) {
@@ -612,6 +630,51 @@ public class Server {
         }
     }
 
+    public QRCode getQRCode(String userID) {
+        String sql = "SELECT * FROM QRCode WHERE s_time<=NOW() AND NOW()<e_time AND managers LIKE '%" + userID + "%' LIMIT 1";
+        try {
+            QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
+            return qrCode;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public QRCode getQRCode(int QRID) {
+        String sql = "SELECT * FROM QRCode WHERE QRID=" + String.valueOf(QRID);
+        try {
+            QRCode qrCode = jdbcTemplate.queryForObject(sql, new Mapper<QRCode>(QRCode.class));
+            return qrCode;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return null;
+        }
+    }
+
+    /*
+    public void updateQRCodeCheckins(int QRID, String userID) {
+        String sql = "UPDATE QRCode SET checkins = ( " +
+                " CASE " +
+                " WHEN checkins = '' OR checkins IS NULL THEN ? " +
+                " ELSE concat(checkins, ?) " +
+                " END " +
+                " ) WHERE QRID=?";
+        jdbcTemplate.update(sql, userID, "," + userID, QRID);
+    }
+    */
+    
+    public int updateQRCodeCheckins(int QRID, String userID) {
+        try {
+            String sql = "INSERT INTO QRCheckin(QRID,userID,checkTime) VALUES(?,?,NOW())";
+            jdbcTemplate.update(sql, QRID, userID);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+/*
     public synchronized QRCode getQRCode(String userID) {
         String time = currentTime();
         int QRID = -1;
@@ -635,34 +698,7 @@ public class Server {
             return null;
         }
     }
-
-    public String name2id(String names, String delimiter) {
-        String IDs = "";
-        String[] namelist = names.split(",");
-
-        List<Map<String, Object>> memberCursor = new ArrayList<Map<String, Object>>();
-        String memberSql = "";
-
-        for (int i = 0; i < namelist.length; i++) {
-            memberSql = "select userID from user where userName=?";
-            Object args[] = new Object[]{namelist[i]};
-            try {
-                memberCursor = jdbcTemplate.queryForList(memberSql, args);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            if (!memberCursor.isEmpty()) {
-                for (Map<String, Object> map : memberCursor) {
-                    IDs = IDs + map.get("userID").toString() + delimiter;
-                }
-            } else {
-                System.out.println("成员不存在");
-            }
-        }
-        if (IDs.length() > 0)
-            IDs = IDs.substring(0, IDs.length() - 1); //****
-        return IDs;
-    }
+*/
 
     public void sendMessage(String members, String content, boolean byName, int agentID) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
@@ -768,10 +804,18 @@ public class Server {
         try {
             res = jdbcTemplate.queryForMap(sql, args);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             return 0;
         }
         return Integer.parseInt(res.get("typeValue").toString());
     }
 
+    public void updateIdScoreMap(String ids, Integer score, Map<String, Integer> IdScore) {
+        for (String id : ids.split(",")) {
+            if (id.equals("")) continue;
+            Integer curScore = IdScore.get(id);
+            curScore += score;
+            IdScore.put(id, curScore);
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <title>编辑部门</title>
+    <title>编辑部门领导</title>
     <div th:replace="head"></div>
     <div th:replace="script"></div>
     <div th:replace="multiselect"></div>
@@ -17,10 +17,10 @@
         <section class="content">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">编辑部门</h3>
+                    <h3 class="box-title">编辑部门领导</h3>
                 </div>
 
-                <form class="form-horizontal" th:action="@{/department/editDep(redirect=${redirect})}" method="post" id="multiform">
+                <form class="form-horizontal" th:action="@{/employee/editDepLeader}" method="post" id="multiform">
                     <div class="box-body">
                         <div class="form-group">
                             <label for="dID" class="col-sm-2 control-label">部门ID</label>
@@ -36,18 +36,18 @@
                             <label for="dName" class="col-sm-2 control-label">部门名称</label>
 
                             <div class="col-sm-10">
-                                <input type="text" name="dName" th:value="${dName}"
+                                <input readonly="readonly" type="text" name="department" th:value="${dName}"
                                        class="form-control" id="dName" placeholder="请输入部门名称"
                                        required="required" maxlength="30"/>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">部门人员</label>
+                            <label class="col-sm-2 control-label">选择领导</label>
                             <div class="col-sm-10">
                                 <select class="multiselect" multiple="multiple" style="height:25em">
-                                    <option th:each="user:${users}" th:if="${user.getSelected()==0}" th:value="${user.getUserID()}" th:text="${user.getUsername()}"></option>
-                                    <option th:each="user:${users}" th:if="${user.getSelected()==1}" th:value="${user.getUserID()}" th:text="${user.getUsername()}" th:selected="selected"></option>
+                                    <option th:each="user:${list}" th:if="${user.getIsleader()==0}" th:value="${user.getUserid()}" th:text="${user.getUsername()}"></option>
+                                    <option th:each="user:${list}" th:if="${user.getIsleader()==1}" th:value="${user.getUserid()}" th:text="${user.getUsername()}" th:selected="selected"></option>
                                 </select>
                             </div>
                         </div>

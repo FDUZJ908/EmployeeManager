@@ -1,11 +1,9 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.adminServer;
+import EmployeeManager.Server;
 import EmployeeManager.admin.model.reportType;
-import EmployeeManager.cls.HistoryReport;
 import EmployeeManager.cls.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +17,9 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/reportType")
-public class reportTypeController {
+public class ReportTypeController {
     @Autowired
-    adminServer adminServer;
+    Server server;
 
     @RequestMapping(method = RequestMethod.GET)
     public String reportType(Model model) {
@@ -30,10 +28,8 @@ public class reportTypeController {
         String sql = "select * from reportType";
         List<reportType> rptTypeList = new ArrayList<reportType>();
         Object args[] = new Object[]{};
-        rptTypeList = adminServer.jdbcTemplate.query(sql, args, new Mapper<reportType>(reportType.class, defValue));
-
+        rptTypeList = server.jdbcTemplate.query(sql, args, new Mapper<reportType>(reportType.class, defValue));
         model.addAttribute("list", rptTypeList);
-
         return "reportType/reportType";
     }
 
@@ -48,7 +44,7 @@ public class reportTypeController {
                           @RequestParam("remark") String remark) {
         Object args[] = new Object[]{name, Integer.parseInt(value), remark};
         try {
-            adminServer.jdbcTemplate.update("insert into reportType (typeName, typeValue, typeRemark)" +
+            server.jdbcTemplate.update("insert into reportType (typeName, typeValue, typeRemark)" +
                     " values (?, ?, ?)", args);
         } catch (Exception e) {
             return e.getMessage();
@@ -63,7 +59,7 @@ public class reportTypeController {
         String sql = "select * from reportType where typeName = ?";
         List<Map<String, Object>> list;
         Object args[] = new Object[]{id};
-        reportType rpt = adminServer.jdbcTemplate.queryForObject(sql, args, new Mapper<reportType>(reportType.class, defValue));
+        reportType rpt = server.jdbcTemplate.queryForObject(sql, args, new Mapper<reportType>(reportType.class, defValue));
         model.addAttribute("rpt", rpt);
 
         return "reportType/modify";
@@ -77,7 +73,7 @@ public class reportTypeController {
 
         Object args[] = new Object[]{name, Integer.parseInt(value), remark, id};
         try {
-            adminServer.jdbcTemplate.update("update reportType set typeName = ?, typeValue = ?, typeRemark = ?" +
+            server.jdbcTemplate.update("update reportType set typeName = ?, typeValue = ?, typeRemark = ?" +
                     " where typeName = ?", args);
         } catch (Exception e) {
             return e.getMessage();
@@ -93,7 +89,7 @@ public class reportTypeController {
 
         Object args[] = new Object[]{id};
         try {
-            adminServer.jdbcTemplate.update("delete from reportType where typeName = ?", args);
+            server.jdbcTemplate.update("delete from reportType where typeName = ?", args);
         } catch (Exception e) {
             return e.getMessage();
         }

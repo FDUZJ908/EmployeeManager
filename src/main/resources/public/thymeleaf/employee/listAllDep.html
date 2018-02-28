@@ -26,7 +26,7 @@
                     <div class="box">
                         <div class="box box-info">
                             <div class="box-header with-border">
-                                <h3 class="box-title">查询</h3>
+                                <h3 class="box-title">部门查询</h3>
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
@@ -66,7 +66,7 @@
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">新增部门</h3>
-                            <a th:href="@{/employee/addDep}" title="新增部门"><span
+                            <a th:href="@{/department/addDep}" title="新增部门"><span
                                     class="glyphicon glyphicon-plus"></span></a>
                         </div>
 
@@ -77,23 +77,24 @@
                                     <th>部门ID</th>
                                     <th>部门名称</th>
                                     <th>编辑</th>
+                                    <th>删除</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${list}">
                                     <td>
-                                        <a class="alink" th:href="@{/employee/depEmp(department=${item.getDname()})}" th:text="${item.getDid()}">
+                                        <a class="alink" th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}" th:text="${item.getDid()}">
                                         </a>
                                     </td>
 
 
                                     <td>
-                                        <a class="alink" th:href="@{/employee/depEmp(department=${item.getDname()})}" th:text="${item.getDname()}">
+                                        <a class="alink" th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}" th:text="${item.getDname()}">
                                         </a>
                                     </td>
 
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/editDep(dID=${item.getDid()})}">
+                                        <a th:href="@{/department/editDep(dID=${item.getDid()},dName=${item.getDname()},redirect=0)}">
                                             <span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑">
@@ -101,10 +102,8 @@
                                         </a>
                                     </td>
 
-                                    <!--th:data="@{/employee/delete(userid=${item.getUserid()},department=${department})}"-->
                                     <td style="text-align: center">
-                                        <span name="trash" title="删除"
-                                              style="cursor: pointer" class="glyphicon glyphicon-trash"
+                                        <span title="删除" style="cursor: pointer" class="glyphicon glyphicon-trash"
                                               th:onclick="'javascript:del(&quot;'+${item.getDname()}+'&quot;);'">
                                         </span>
                                     </td>
@@ -114,11 +113,9 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.box-body -->
+
                     </div>
-                    <!-- /.box -->
                 </div>
-                <!-- /.col -->
             </div>
 
         </section>
@@ -151,11 +148,11 @@
         if (ret==true){
             $.ajax({
 			    type: 'POST',
-			    url: '/employee/deleteDep',
+			    url: '/department/deleteDep',
 			    data: {"department":dName},
 
 			    success: function(data) {
-			    	window.location.href="/employee/dep";
+			    	window.location.href="/department";
 			    },
 			    error: function(xhr, type) {
 			    	window.alert('删除失败！');

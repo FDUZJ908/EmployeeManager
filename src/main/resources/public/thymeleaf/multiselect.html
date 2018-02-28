@@ -1,10 +1,33 @@
 <!--https://github.com/michael/multiselect/-->
 <link type="text/css" href="/css/ui.multiselect.css" rel="stylesheet" />
-<link type="text/css" rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/ui-lightness/jquery-ui.css" />
+<link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet"/>
 <script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="/js/ui.multiselect.js"></script>
+
 <script type="text/javascript">
-		$(function(){
-			$(".multiselect").multiselect({dividerLocation: 0.5});
-		});
+    $.extend($.ui.multiselect, {
+    locale: {
+        addAll:'添加所有',
+        removeAll:'删除所有',
+        itemsCount:'项已选'
+    }
+    });
+
+    $(document).ready(function(){
+        $(".multiselect").multiselect({dividerLocation: 0.5});
+
+        var form = $("form#multiform");
+        $(form).on('submit', function(){
+            $("ul.selected li").each(function(){
+                var selected=$("#selected").val()
+                var selected_value = $(this).attr('data-selected-value');
+                if(selected_value){
+                    selected+=selected_value+",";
+                }
+                $("#selected").val(selected)
+            });
+            res=$("#selected").val();
+            $("#selected").val(res.substr(0,res.length-1));
+        });
+    });
 </script>

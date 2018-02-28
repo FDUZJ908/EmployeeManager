@@ -1,7 +1,5 @@
 package EmployeeManager;
 
-import EmployeeManager.cls.QRCode;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +23,6 @@ public class Variable {
     }};
 
     public static int maxReportCount = 0;
-    public static Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
+    //public static Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
     public static Map<String, Integer> reported = new HashMap<String, Integer>();
 }

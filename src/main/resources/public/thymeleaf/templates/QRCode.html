@@ -8,8 +8,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -17,15 +17,14 @@
 <div class="QRCode">
     <div id="qrcode"></div>
 </div>
-
-<!--<button class="QRbutton" onclick="window.location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=http%3A%2F%2Fshiftlin.top%3A4908%2FQRCode&response_type=code&scope=snsapi_base&state=true#wechat_redirect'">刷新</button>-->
 </div>
+
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	var qrid = /*[[${qrid}]]*/;
     var token = /*[[${token}]]*/;
 	var qrcode = new QRCode(document.getElementById("qrcode"), {
-		text: 'http://shiftlin.top:4908/RedirectQR?qrid=' + qrid + "&token=" + token,
+		text: 'https://shiftlin.top:8443/wechat/RedirectQR?qrid=' + qrid + "&token=" + token,
 		width : 256,
 		height : 256
 	});
