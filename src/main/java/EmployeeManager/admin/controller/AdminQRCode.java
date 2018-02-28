@@ -30,20 +30,16 @@ public class AdminQRCode {
     Server server;
 
 
-    String sqli = "INSERT INTO QRCode (s_time, e_time, token, managers, value, checkins) " +
-            "VALUES (?, ?, ?, ?, ?,'')";
-    String sqls = "SELECT * FROM QRCode";
+    String sqli = "INSERT INTO QRCode (s_time, e_time, token, managers, value) " +
+            "VALUES (?, ?, ?, ?, ?)";
+    String sqls = "SELECT * FROM QRCode ORDER BY QRID";
     String sqlu = "UPDATE QRCode SET e_time = ? WHERE QRID = ? AND e_time > ?";
-    String sqllast = "SELECT LAST_INSERT_ID()";
-    String sqlm = "SELECT * FROM QRCode WHERE QRID = ?";
 
     @RequestMapping(method = RequestMethod.GET)
     public String adminQRCode(Model model) {
         List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>((QRCode.class)));
-        for (QRCode qrcode : QRCodes) {
-            qrcode.checkins = server.id2name(qrcode.checkins);
+        for (QRCode qrcode : QRCodes)
             qrcode.managers = server.id2name(qrcode.managers);
-        }
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
         model.addAttribute("AllUsers", AllUsers);
@@ -78,7 +74,7 @@ public class AdminQRCode {
         * 更新数据库
         * */
         String time = Util.currentTime();
-        Object args[] = new Object[]{time, id,time};
+        Object args[] = new Object[]{time, id, time};
         try {
             server.jdbcTemplate.update(sqlu, args);
         } catch (Exception e) {

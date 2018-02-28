@@ -110,7 +110,7 @@
                                     <th>终止时间</th>
                                     <th>管理人员</th>
                                     <th>分值</th>
-                                    <th>立即结束</th>
+                                    <th>结束</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -122,7 +122,10 @@
                                     <td style="text-align: center">
                                         <a th:href="@{/adminQRCode/stop/(id=${item.QRID})}"
                                            onclick="checktime()">
-                                            立即结束
+                                            <span
+                                                    class="glyphicon glyphicon-off"
+                                                    title="立即结束">
+                                            </span>
                                         </a>
                                     </td>
                                 </tr>

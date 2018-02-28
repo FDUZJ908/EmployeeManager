@@ -29,13 +29,21 @@ CREATE TABLE `QRCode` (
   `token`    INT(11)  NOT NULL DEFAULT '0',
   `managers` TEXT,
   `value`    INT(11)  NOT NULL DEFAULT '1',
-  `checkins` TEXT,
   PRIMARY KEY (`QRID`)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE table QRCheckin (
+  `QRID`     INT(11)  NOT NULL,
+  `userID`    CHAR(32) NOT NULL,
+  `checkTime` DATETIME NOT NULL,
+  PRIMARY KEY (QRID,userID),
+  FOREIGN KEY (userID) REFERENCES user(userID),
+  FOREIGN KEY (QRID) REFERENCES QRCode(QRID)
+) CHARSET = utf8;
 
 --
 -- Table structure for table `caseReport`
@@ -316,7 +324,12 @@ CREATE TABLE ministry (
   `dID`   INT      NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `dName` CHAR(32) NOT NULL UNIQUE
 )
-  CHARSET = utf8mb4;
+  CHARSET = utf8;
+
+ALTER TABLE department
+  CHANGE dID dID INT NOT NULL;
+ALTER TABLE department
+  ADD CONSTRAINT FOREIGN KEY FK_dID(dID) REFERENCES ministry (dID);
 
 INSERT INTO ministry
   SELECT
@@ -324,20 +337,10 @@ INSERT INTO ministry
     min(dName) AS dName
   FROM department
   GROUP BY dID;
-
-ALTER TABLE department
-  CHANGE dID dID INT NOT NULL;
-ALTER TABLE department
-  ADD CONSTRAINT FOREIGN KEY FK_dID(dID) REFERENCES ministry (dID);
-
+/*
 ALTER TABLE ministry
   CHANGE dName dName CHAR(32) NOT NULL UNIQUE;
-
-ALTER TABLE user
-  CHANGE gender gender CHAR(1) DEFAULT '0';
-
-ALTER TABLE user
-  CHANGE userName `userName` CHAR(16) NOT NULL UNIQUE;
+*/
 
 ALTER TABLE department
   DROP FOREIGN KEY FK_Reference_7;
@@ -347,10 +350,14 @@ ALTER TABLE department
   ON UPDATE CASCADE
   ON DELETE CASCADE;
 
-CREATE INDEX idx_dID
-  ON department (dID);
+ALTER TABLE user
+  CHANGE gender gender CHAR(1) DEFAULT '0';
 
-DROP TABLE QRCODe;
+ALTER TABLE user
+  CHANGE userName `userName` CHAR(32) NOT NULL UNIQUE;
+
+
+DROP TABLE QRCode;
 CREATE INDEX idx_stime_etime
   ON QRCode (s_time, e_time);
 CREATE INDEX idx_etime
@@ -369,3 +376,5 @@ SET managers = (
   END
 )
 WHERE QRID = 2;
+
+INSERT INTO QRCheckin(QRID,userID,checkTime) VALUES(2,'LinShiHan',NOW())

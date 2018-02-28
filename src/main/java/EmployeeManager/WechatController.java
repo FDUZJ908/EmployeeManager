@@ -13,7 +13,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/wechat")
-public class BackgroundController {
+public class WechatController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -599,16 +599,12 @@ public class BackgroundController {
             return "templates/failure";
         }
 
-        String[] checkins = qrCode.checkins.split(",");
-        for (String user : checkins)
-            if (user.equals(userID)) {
-                model.addAttribute("errorNum", "02");
-                return "templates/failure";// avoid repeatedly scanning QR code
-            }
-
+        if (server.updateQRCodeCheckins(QRID, userID) != 0) {
+            model.addAttribute("errorNum", "02");
+            return "templates/failure"; // avoid repeatedly scanning QR code
+        }
         try {
             server.award(userID, qrCode.value);
-            server.updateQRCodeCheckins(QRID, userID);
         } catch (Exception e) {
             model.addAttribute("errorNum", "-1");
             return "templates/failure";

@@ -652,6 +652,7 @@ public class Server {
         }
     }
 
+    /*
     public void updateQRCodeCheckins(int QRID, String userID) {
         String sql = "UPDATE QRCode SET checkins = ( " +
                 " CASE " +
@@ -660,6 +661,17 @@ public class Server {
                 " END " +
                 " ) WHERE QRID=?";
         jdbcTemplate.update(sql, userID, "," + userID, QRID);
+    }
+    */
+    
+    public int updateQRCodeCheckins(int QRID, String userID) {
+        try {
+            String sql = "INSERT INTO QRCheckin(QRID,userID,checkTime) VALUES(?,?,NOW())";
+            jdbcTemplate.update(sql, QRID, userID);
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
     }
 
 /*

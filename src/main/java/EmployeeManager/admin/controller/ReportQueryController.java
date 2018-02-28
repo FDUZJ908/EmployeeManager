@@ -60,8 +60,6 @@ public class ReportQueryController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String reportQuery(Model model) {
-
-
         model.addAttribute("list", server.getAllUsers());
         return "reportQuery/reportList";
     }
@@ -79,7 +77,8 @@ public class ReportQueryController {
         if (start.equals("")) start = "0001-01-01";
         if (end.equals("")) end = "9999-12-31";
 
-        System.out.println(server.name2id(score));
+        System.out.println(score);
+        System.out.println(submitter);
 
         Map<String, Object> defValue = new HashMap<String, Object>();
         int selectType = 0;
