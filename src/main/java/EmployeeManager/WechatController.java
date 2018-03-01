@@ -20,8 +20,6 @@ public class WechatController {
     @Autowired
     Server server;
 
-    String mesgToLeader = "您有一份新报告需要审批，可进入 报告查询-审批报告 查看。";
-    String mesgToSubordinate = "您有一份报告已被审批，可进入 报告查询-我的报告 查看。";
 
     @RequestMapping("/GeneralReport")
     public String GeneralReport(@RequestParam("state") String STATE,
@@ -82,7 +80,7 @@ public class WechatController {
 
         Variable.reported.put(UserId, --remaining);
         try {
-            server.sendMessage(leader, mesgToLeader, true, Variable.reportAgentID);
+            server.sendMessage(leader, Variable.mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -133,17 +131,14 @@ public class WechatController {
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
         logger.info("Post CaseReport: " + UserId); //log
-        ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
 
         String currentTime = Util.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
-        if (!server.saveFile(file, pathCurrent)) {
-            responseMsg.setMsg("文件上传失败！");
-            responseMsg.setNum("0");
-            return responseMsg;
-        }
+        if (!server.saveFile(file, pathCurrent))
+            return new ResponseMsg("0", "文件上传失败！");
+
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
         String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "','" + type + "','" + content + "','" +
@@ -153,13 +148,11 @@ public class WechatController {
                 "values(" + sqlMessage + ")");
 
         try {
-            server.sendMessage(leader, mesgToLeader, true, Variable.reportAgentID);
+            server.sendMessage(leader, Variable.mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        responseMsg.setMsg("个案报告提交成功！");
-        responseMsg.setNum("1");
-        return responseMsg;
+        return new ResponseMsg("1", "个案报告提交成功！");
     }
 
     @RequestMapping("/LeadershipReport")
@@ -172,16 +165,17 @@ public class WechatController {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
         }
+
         List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
         int userPrivilege = server.getUserPrivilege(UserId);
         int scoreLimit = server.getLeaderScoreLimit(userPrivilege);
-        List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
+        //List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         List<String> AllUsers = server.getAllDepartmentUsers(UserId, userPrivilege);
         model.addAttribute("UserId", UserId);
         model.addAttribute("userName", userName);
         model.addAttribute("AllUsers", AllUsers);
-        model.addAttribute("list", DLeaders);
+        //model.addAttribute("list", DLeaders);
         model.addAttribute("scoreLimit", scoreLimit);
         model.addAttribute("reportType", reportType);
         return "templates/LeadershipReport";
@@ -203,7 +197,7 @@ public class WechatController {
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            return new ResponseMsg("文件上传失败！", "0");
+            return new ResponseMsg("0", "文件上传失败！");
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
@@ -220,9 +214,9 @@ public class WechatController {
 
             server.award(UserId + "," + server.name2id(members, ","), singleScore);
         } catch (Exception e) {
-            return new ResponseMsg("领导批示提交失败！", "0");
+            return new ResponseMsg("0", "领导批示提交失败！");
         }
-        return new ResponseMsg("领导批示提交成功！", "1");
+        return new ResponseMsg("1", "领导批示提交成功！");
     }
 
 
@@ -346,7 +340,7 @@ public class WechatController {
                 }
 
                 try {
-                    server.sendMessage(userID, mesgToSubordinate, false, Variable.reportAgentID);
+                    server.sendMessage(userID, Variable.mesgToSubordinate, false, Variable.reportAgentID);
                 } catch (Exception e) {
                     logger.info(e.getMessage());
                 }
@@ -386,7 +380,7 @@ public class WechatController {
                 }
 
                 try {
-                    server.sendMessage(userID, mesgToSubordinate, false, Variable.reportAgentID);
+                    server.sendMessage(userID, Variable.mesgToSubordinate, false, Variable.reportAgentID);
                 } catch (Exception e) {
                     logger.info(e.getMessage());
                 }
@@ -526,24 +520,6 @@ public class WechatController {
         return "templates/HistoryReport";
     }
 
-    @RequestMapping("/Synchronizer")
-    @ResponseBody
-    public String Synchronizer() throws Exception {
-        logger.info("Synchronization starts!"); //log
-        server.syncUser(server.syncDepartment());
-        logger.info("Synchronization succeed!"); //log
-        return "Synchronization succeed!";
-    }
-
-    @RequestMapping("/Refresh")
-    @ResponseBody
-    public String Refresh() throws Exception {
-        logger.info("Refresh starts!"); //log
-        Variable.reported.clear();
-        logger.info("Refresh succeed!"); //log
-        return "Refresh succeed!";
-    }
-
     @RequestMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
@@ -658,7 +634,7 @@ public class WechatController {
             if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), 640, 640)) {
                 String sql = "update user set avatarURL=? where userID=?";
                 server.jdbcTemplate.update(sql, avatarURLSub, userID);
-                return new ResponseMsg("1", "https://shiftlin.top:8443/"+avatarURLSub + "?seed=1" );
+                return new ResponseMsg("1", "https://shiftlin.top:8443/" + avatarURLSub + "?seed=1");
             }
         }
         return new ResponseMsg("0", srcURL);

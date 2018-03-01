@@ -22,7 +22,10 @@ public class Variable {
         //put(reportAgentID, reportSecret);
     }};
 
-    public static int maxReportCount = 0;
+    public static int maxReportCount = 1;
     //public static Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
     public static Map<String, Integer> reported = new HashMap<String, Integer>();
+
+    public static String mesgToLeader = "您有一份新报告需要审批，可进入 报告查询-审批报告 查看。";
+    public static String mesgToSubordinate = "您有一份报告已被审批，可进入 报告查询-我的报告 查看。";
 }
