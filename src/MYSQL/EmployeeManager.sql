@@ -178,13 +178,11 @@ DROP TABLE IF EXISTS `privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `privilege` (
-  `pID` int(11) NOT NULL AUTO_INCREMENT,
-  `privilege` int(11) NOT NULL,
+  `privilege` int(11) PRIMARY KEY,
   `weekday` tinyint(4) DEFAULT NULL,
   `pushTime` time DEFAULT NULL,
   `leaderPostLimit` int(11) DEFAULT NULL,
-  `leaderScoreLimit` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pID`)
+  `leaderScoreLimit` int(11) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

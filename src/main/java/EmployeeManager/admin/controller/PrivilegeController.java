@@ -47,19 +47,16 @@ public class PrivilegeController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public String edit(@RequestParam("pid") String pid, Model model) {
-        model.addAttribute("pid", pid);
-        model.addAttribute("privilege", privilegeService.get(pid));
+    public String edit(@RequestParam("privilege") String privilege, Model model) {
+        model.addAttribute("privilege", privilegeService.get(privilege));
         model.addAttribute("WeekDayList",createWeekDayList());
         return "privilege/formEdit";
 
     }
 
     @RequestMapping(value = "/modifyEdit", method = RequestMethod.POST)
-    public String modifyEdit(@RequestParam("pid") String pid,
-                             @RequestParam(value="weekdays",required = false)String[] weekdays,
+    public String modifyEdit(@RequestParam(value="weekdays",required = false)String[] weekdays,
                              Privilege privilege) {
-        privilege.setPid(pid);
         int weekday=weekdayStringToInt(weekdays);
         privilege.setWeekday(String.valueOf(weekday));
         privilegeService.modify(privilege);
@@ -68,8 +65,8 @@ public class PrivilegeController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
-    public void delete(@RequestParam("pid") String pid) {
-        privilegeService.delete(pid);
+    public void delete(@RequestParam("privilege") String privilege) {
+        privilegeService.delete(privilege);
     }
 
     protected List<WeekDay> createWeekDayList() {

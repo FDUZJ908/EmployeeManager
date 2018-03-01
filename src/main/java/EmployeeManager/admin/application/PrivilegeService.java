@@ -16,27 +16,27 @@ public class PrivilegeService {
     @Autowired
     protected PrivilegeRepository privilegeRepository;
 
-    public void modify(Privilege privilege){
+    public void modify(Privilege privilege) {
         privilegeRepository.update(privilege);
     }
 
-    public void delete(String pid){
-        privilegeRepository.remove(pid);
+    public void delete(String privilege) {
+        privilegeRepository.remove(privilege);
     }
 
-    public void add(Privilege  privilege){
+    public Privilege get(String privilege) {
+        return privilegeRepository.get(privilege);
+    }
+
+    public void add(Privilege privilege) {
         privilegeRepository.add(privilege);
     }
 
-    public Privilege get(String pid){
-        return privilegeRepository.get(pid);
-    }
-
-    public List<Privilege> list(){
+    public List<Privilege> list() {
         return privilegeRepository.list();
     }
 
-    public void create(Privilege privilege){
+    public void create(Privilege privilege) {
         privilegeRepository.add(privilege);
     }
 }

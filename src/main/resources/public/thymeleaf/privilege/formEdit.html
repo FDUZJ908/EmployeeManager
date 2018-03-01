@@ -26,7 +26,7 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/privilege/modifyEdit(pid=${pid})}" onsubmit="return check()" method="post">
+                        <form class="form-horizontal" th:action="@{/privilege/modifyEdit}" onsubmit="return check()" method="post">
                             <div class="box-body">
 
                                 <div class="form-group">
@@ -40,12 +40,12 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="weekday" class="col-sm-2 control-label">提交天数选择</label>
+                                    <label for="weekdays" class="col-sm-2 control-label">提交天数选择</label>
 
                                     <div class="col-sm-10">
                                         <div th:each="weekday:${WeekDayList}">
                                             <input type="checkbox" name="weekdays" th:value="${weekday.id}"
-                                                   class="form-control"/>
+                                                   class="form-control" id="weekdays"/>
                                             <label th:text="${weekday.name}"></label>
                                         </div>
                                     </div>
@@ -54,10 +54,10 @@
                                     <label for="pushTime" class="col-sm-2 control-label">提交时间选择</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" list="timeList" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
+                                        <input type="time" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
                                                class="form-control" id="pushTime" placeholder="请选择正确时间格式，如12:00:00"
                                                required="required" maxlength="30"/>
-                                        <datalist id="timeList">
+                                       <!-- <datalist id="timeList">
                                             <option value="00:00:00"></option>
                                             <option value="01:00:00"></option>
                                             <option value="02:00:00"></option>
@@ -82,14 +82,14 @@
                                             <option value="21:00:00"></option>
                                             <option value="22:00:00"></option>
                                             <option value="23:00:00"></option>
-                                        </datalist>
+                                        </datalist>-->
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="leaderPostLimit" class="col-sm-2 control-label">审批次数上限</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" name="leaderPostLimit" th:value="${privilege}? ${privilege.leaderPostLimit}"
+                                        <input type="number" name="leaderPostLimit" th:value="${privilege}? ${privilege.leaderPostLimit}"
                                                class="form-control" id="leaderPostLimit" placeholder="请输入数字"
                                                required="required" maxlength="30"/>
                                     </div>
@@ -98,7 +98,7 @@
                                     <label for="leaderScoreLimit" class="col-sm-2 control-label">审批分数上限</label>
 
                                     <div class="col-sm-10" style="width: 300px">
-                                        <input type="text" name="leaderScoreLimit" th:value="${privilege}? ${privilege.leaderScoreLimit}"
+                                        <input type="number" name="leaderScoreLimit" th:value="${privilege}? ${privilege.leaderScoreLimit}"
                                                class="form-control" id="leaderScoreLimit" placeholder="请输入数字"
                                                required="required" maxlength="30"/>
                                     </div>

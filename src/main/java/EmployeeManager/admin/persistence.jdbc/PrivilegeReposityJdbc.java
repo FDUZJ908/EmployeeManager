@@ -18,30 +18,30 @@ public class PrivilegeReposityJdbc implements PrivilegeRepository {
     protected JdbcTemplate jdbcTemplate;
 
     @Override
-    public void update(Privilege privilege){
-        jdbcTemplate.update("UPDATE privilege set privilege=?,weekday=?,pushTime=?,leaderPostLimit=?,leaderScoreLimit=? where pid=?"
-                ,privilege.getPrivilege(),privilege.getWeekday(),privilege.getPushTime(),privilege.getLeaderPostLimit(),privilege.getLeaderScoreLimit(),privilege.getPid());
+    public void update(Privilege privilege) {
+        jdbcTemplate.update("UPDATE privilege set weekday=?,pushTime=?,leaderPostLimit=?,leaderScoreLimit=? where privilege=?"
+                , privilege.getWeekday(), privilege.getPushTime(), privilege.getLeaderPostLimit(), privilege.getLeaderScoreLimit(), privilege.getPrivilege());
     }
 
     @Override
-    public void remove(String pid){
-        jdbcTemplate.update("DELETE FROM privilege where pid=?",pid);
+    public void remove(String privilege) {
+        jdbcTemplate.update("DELETE FROM privilege where privilege=?", privilege);
     }
 
     @Override
-    public Privilege get(String pid){
-        return jdbcTemplate.queryForObject("select * from privilege where pid=?", BeanPropertyRowMapper.newInstance(Privilege.class),pid);
+    public Privilege get(String privilege) {
+        return jdbcTemplate.queryForObject("select * from privilege where privilege=?", BeanPropertyRowMapper.newInstance(Privilege.class), privilege);
     }
 
     @Override
-    public List<Privilege> list(){
-        return jdbcTemplate.query("select * from privilege",BeanPropertyRowMapper.newInstance(Privilege.class));
+    public List<Privilege> list() {
+        return jdbcTemplate.query("select * from privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
     }
 
     @Override
-    public void add(Privilege privilege){
-        jdbcTemplate.update("INSERT privilege (`pID`,`privilege`,`weekday`,`pushTime`,`leaderPostLimit`,`leaderScoreLimit`) VALUES (?,?,?,?,?,?)",
-                privilege.getPid(),privilege.getPrivilege(),privilege.getWeekday(),privilege.getPushTime(),privilege.getLeaderPostLimit(),privilege.getLeaderScoreLimit());
+    public void add(Privilege privilege) {
+        jdbcTemplate.update("INSERT privilege (`privilege`,`weekday`,`pushTime`,`leaderPostLimit`,`leaderScoreLimit`) VALUES (?,?,?,?,?)",
+                privilege.getPrivilege(), privilege.getWeekday(), privilege.getPushTime(), privilege.getLeaderPostLimit(), privilege.getLeaderScoreLimit());
     }
 
 }

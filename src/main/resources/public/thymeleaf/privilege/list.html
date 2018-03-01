@@ -50,14 +50,14 @@
                                     <td th:text="${item.getLeaderPostLimit()}"></td>
                                     <td th:text="${item.getLeaderScoreLimit()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/privilege/edit(pid=${item.getPid()})}"><span
+                                        <a th:href="@{/privilege/edit(privilege=${item.getPrivilege()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>
 
                                     <td style="text-align: center">
                                         <span name="trash" title="删除"
-                                              th:data="@{/privilege/delete(pid=${item.getPid()})}"
+                                              th:data="@{/privilege/delete(privilege=${item.getPrivilege()})}"
                                               style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                                     </td>
 

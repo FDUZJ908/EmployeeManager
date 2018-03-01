@@ -9,8 +9,8 @@ import java.util.List;
  */
 public interface PrivilegeRepository {
     void update(Privilege privilege);
-    void remove(String pid);
+    void remove(String privilege);
     void add(Privilege privilege);
-    Privilege get(String pid);
+    Privilege get(String privilege);
     List<Privilege> list();
 }

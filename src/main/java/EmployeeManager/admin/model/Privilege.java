@@ -4,7 +4,6 @@ package EmployeeManager.admin.model;
  * Created by 11437 on 2017/10/14.
  */
 public class Privilege {
-    private String pid;
     private int privilege;
     private String weekday;
     private String pushTime;
@@ -14,21 +13,12 @@ public class Privilege {
     public Privilege() {
     }
 
-    public Privilege(String pid, int privilege, String weekday, String pushTime, String leaderPostLimit, String leaderScoreLimit) {
-        this.pid = pid;
+    public Privilege(int privilege, String weekday, String pushTime, String leaderPostLimit, String leaderScoreLimit) {
         this.privilege = privilege;
         this.weekday = weekday;
         this.pushTime = pushTime;
         this.leaderPostLimit = leaderPostLimit;
         this.leaderScoreLimit = leaderScoreLimit;
-    }
-
-    public String getPid() {
-        return pid;
-    }
-
-    public void setPid(String pid) {
-        this.pid = pid;
     }
 
     public int getPrivilege() {
