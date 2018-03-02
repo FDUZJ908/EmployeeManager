@@ -309,8 +309,8 @@ public class WechatController {
         String updateSql = "";
         String checkTime = Util.currentTime();
 
-        logger.info("'" + check1 + "'");
-        logger.info("'" + check2 + "'");
+        logger.info("check1: '" + check1 + "'");
+        logger.info("check2: '" + check2 + "'");
 
         if (!check1.isEmpty()) {
             for (int i = 0; i < reports1.length; i++) {

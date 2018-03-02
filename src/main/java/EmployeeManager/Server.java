@@ -455,8 +455,9 @@ public class Server {
     }
 
     public List<DepartmentLeader> getUserDepartmentLeader(String userId) {
+        int privilege = getUserPrivilege(userId);
         List<DepartmentLeader> DLeader = new ArrayList<DepartmentLeader>();
-        String dIDSql = "select dID,dName from department where userID=? order by convert(dName using gbk) asc";
+        String dIDSql = "select dID,dName from department where userID=? order by dName";
         List<Map<String, Object>> department;
         try {
             department = jdbcTemplate.queryForList(dIDSql, userId);
@@ -470,9 +471,10 @@ public class Server {
         String leaderSql;
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
-            leaderSql = "select userName,userID,dName from department natural join user  where isLeader=1 and dID=? order by convert(userName using gbk) asc";
+            leaderSql = "select userName,userID,dName from department natural join user  " +
+                    "where isLeader=1 and dID=? and privilege>? order by convert(userName using gbk) asc";
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql, dID);
+                dLeader = jdbcTemplate.queryForList(leaderSql, dID, privilege);
             } catch (Exception e) {
                 return null;
             }
