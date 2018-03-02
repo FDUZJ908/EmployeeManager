@@ -225,11 +225,15 @@ public class WechatController {
                               Model model) {
         logger.info("Request RankingList"); //log
 
-        String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
+        //String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
+
+        //"3"为领导干部
+        String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + "3" + " order by s_score desc";
+
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
 
         model.addAttribute("list", users);
-        model.addAttribute("selected_type", 3);
+        model.addAttribute("selected_type", 1);
         if (STATE.equals("PC")) return "templates/RankingListPC";
         return "templates/RankingList";
     }
