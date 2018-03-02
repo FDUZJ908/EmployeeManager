@@ -478,8 +478,9 @@ hr {
 /*approval report*/
 
 .bottom_box_app{
-	height: 8%;
+	/*height: 8%;*/
 	display: flex;
+	flex-direction:column;
 	/*position: fixed;*/
 	position:relative;
 	/*bottom: 0;*/
@@ -504,60 +505,86 @@ hr {
 	z-index: 2;
 }
 
-.approval_bottom_box{
+.approval_top_box{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
-	height: 100%;
-	width: 33.3%;
+	width:100%;
+	border: 1px solid ;
+	border-radius: 3px;
 	text-align: center;
 	font-size: 1em;
+	padding: 1em 0;
+	background-color:rgb(255,255,255);
 }
 
+/*
 .approval_bottom_box ::-webkit-input-placeholder { color: rgb(255,255,255); }
 .approval_bottom_box ::-moz-placeholder { color: rgb(255,255,255); }
 .approval_bottom_box :-ms-input-placeholder { color: rgb(255,255,255); }
 .approval_bottom_box input: -moz-placeholder { color: rgb(255,255,255); }
+*/
 
-.approval_bottom_box input{
+.approval_top_box input{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
 	display: block;
-	border: 1px solid rgb(255,255,255);
 	height: 100%;
 	width: 100%;
-    font-size: 2em;
+    font-size: 3.5em;
 	text-align: center;
 	-webkit-appearance: none;
-	color: rgb(255,255,255);
-	background-color: rgb(80,119,170);
+	padding:0 auto;
+	border: none;
+	/*color: rgb(255,255,255);*/
 }
 
-.approval_bottom_box input[type="submit"]{
+
+.approval_top_box span{
+    font-size: 3.5em;
+}
+
+.approval_top_box select{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	height: 100%;
+	width: 100%;
+    font-size: 3.5em;
+	opacity: 0;
+	position:absolute;
+	left:0;
+	top:0;
+	/*color: rgb(255,255,255);*/
+}
+
+.approval_top_box select option{
+    text-align:center;
+}
+
+
+.approval_bottom_box{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	width:100%;
+	text-align: center;
+	font-size: 1em;
+}
+
+
+.approval_bottom_box input[type="button"]{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
 	border: 1px solid rgb(255,255,255);
+	font-size: 4em;
 	display: block;
 	height: 100%;
 	width: 100%;
     cursor: pointer;
 	-webkit-appearance: none;
-	color: rgb(255,255,255);
-	background-color: rgb(80,119,170);
-}
-
-.approval_bottom_box select{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing:border-box;
-	border: 1px solid rgb(255,255,255);
-	height: 100%;
-	width: 100%;
-    font-size: 2em;
-	-webkit-appearance: none;
-	padding-left: 4.25em;
 	color: rgb(255,255,255);
 	background-color: rgb(80,119,170);
 }
