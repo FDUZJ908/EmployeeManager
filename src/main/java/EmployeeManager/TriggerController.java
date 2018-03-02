@@ -48,16 +48,16 @@ public class TriggerController {
         logger.info("Reminder starts!"); //log
         int weekday = 1 << Util.getWeekday();
         List<Privilege> privilegeList = server.getAllPriviledges();
-        int[] privileges = new int[privilegeList.size()];
-        int i = 0;
+        Integer[] privileges = new Integer[privilegeList.size()];
+        int i = 0, hour = Util.getHour();
         for (Privilege privilege : privilegeList) {
-            if ((privilege.getWeekday() & weekday) > 0)
+            if ((privilege.getWeekday() & weekday) > 0 && Util.getHour(privilege.getPushTime()) == hour)
                 privileges[i] = privilege.getPrivilege();
             i++;
         }
         String userIDs = server.getUsersByPriviledges(privileges);
         try {
-            server.sendMessage(userIDs, Variable.mesgForReport, false, Variable.reportAgentID);
+            server.sendMessage(userIDs, Variable.mesgForReport, false, Variable.submitAgentID);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }

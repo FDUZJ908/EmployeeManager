@@ -11,15 +11,11 @@ public class Variable {
     public static final String submitSecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
     public static final String contactSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
     public static final String reportSecret = "x0VeHuzpagYuJmrymzJayHmN3vrzgtcISA2Q_8qhLG0";
-    /*static final String approvalSecret = "5nFQW5WCF1Gxk7Ht6crCkACsUhqP1DkGk7Fsvg8W67E";
-    static final String reportSecret = "xVBKh9GKuDGd_nJp8TBRzWzWBHkIVDFPjxewNKhBEzA";
-    static final int approvalAgentID = 1000004;
-    static final int reportAgentID = 1000005;*/
     public static final int reportAgentID = 1000017;
+    public static final int submitAgentID = 1000002;
     public static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
         put(reportAgentID, reportSecret);
-        //put(approvalAgentID, approvalSecret);
-        //put(reportAgentID, reportSecret);
+        put(submitAgentID, submitSecret);
     }};
 
     public static int maxReportCount = 1;
