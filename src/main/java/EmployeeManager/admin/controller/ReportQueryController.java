@@ -77,8 +77,8 @@ public class ReportQueryController {
         if (start.equals("")) start = "0001-01-01";
         if (end.equals("")) end = "9999-12-31";
 
-        System.out.println(score);
-        System.out.println(submitter);
+        System.out.println("score: "+score);
+        System.out.println("submitter: "+submitter);
 
         Map<String, Object> defValue = new HashMap<String, Object>();
         int selectType = 0;

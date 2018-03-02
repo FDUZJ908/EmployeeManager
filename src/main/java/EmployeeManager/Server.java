@@ -1,5 +1,6 @@
 package EmployeeManager;
 
+import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.cls.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,14 +42,14 @@ public class Server {
     @Value("${web.upload-path}")
     private String path;
 
-    public int insertMap(Map<String, Object> map, String table) {
+    public int insertMap(Map<String, Object> map, String table) throws Exception{
         StringBuffer cols = new StringBuffer();
         Object[] args = new Object[map.size()];
         int m = 0;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (m++ > 0) cols.append(',');
+            if (m > 0) cols.append(',');
             cols.append(entry.getKey());
-            args[m] = entry.getValue();
+            args[m++] = entry.getValue();
         }
         String sql = "INSERT INTO " + table + " ( " + cols + " ) VALUES" + getRepeatQMark(1, m);
         return jdbcTemplate.update(sql, args);
@@ -185,6 +187,24 @@ public class Server {
             return null;
         }
         return department;
+    }
+
+    public List<Privilege> getAllPriviledges() {
+        return jdbcTemplate.query("SELECT * FROM privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
+    }
+
+    public String getUsersByPriviledges(int[] privileges) {
+        if (privileges == null || privileges.length == 0) return "";
+        String sql = "SELECT userID FROM user WHERE privilege IN " + getRepeatQMark(1, privileges.length);
+        List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, privileges);
+        StringBuffer userIDs = new StringBuffer();
+        int i = 0;
+        for (Map<String, Object> user : users) {
+            if (i > 0) userIDs.append("|");
+            userIDs.append(user.get("userID").toString());
+            i++;
+        }
+        return userIDs.toString();
     }
 
     public int getUserPrivilege(String userId) {

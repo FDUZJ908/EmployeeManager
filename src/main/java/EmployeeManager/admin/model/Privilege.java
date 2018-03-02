@@ -5,7 +5,7 @@ package EmployeeManager.admin.model;
  */
 public class Privilege {
     private int privilege;
-    private String weekday;
+    private int weekday;
     private String pushTime;
     private String leaderPostLimit;
     private String leaderScoreLimit;
@@ -13,7 +13,7 @@ public class Privilege {
     public Privilege() {
     }
 
-    public Privilege(int privilege, String weekday, String pushTime, String leaderPostLimit, String leaderScoreLimit) {
+    public Privilege(int privilege, int weekday, String pushTime, String leaderPostLimit, String leaderScoreLimit) {
         this.privilege = privilege;
         this.weekday = weekday;
         this.pushTime = pushTime;
@@ -29,11 +29,11 @@ public class Privilege {
         this.privilege = privilege;
     }
 
-    public String getWeekday() {
+    public int getWeekday() {
         return weekday;
     }
 
-    public void setWeekday(String weekday) {
+    public void setWeekday(int weekday) {
         this.weekday = weekday;
     }
 
@@ -63,7 +63,7 @@ public class Privilege {
 
     public String getWeekdays() {
         String re = "";
-        int x = Integer.parseInt(this.weekday);
+        int x = this.weekday;
         for (int i = 0; i < 7; i++) {
             if ((x & (1 << i)) > 0) {
                 switch (i) {

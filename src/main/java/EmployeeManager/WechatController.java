@@ -219,7 +219,6 @@ public class WechatController {
         return new ResponseMsg("1", "领导批示提交成功！");
     }
 
-
     //slected_type 为设置button点击后颜色准备
     @RequestMapping("/RankingList")
     public String RankingList(@RequestParam("state") String STATE,
@@ -264,7 +263,7 @@ public class WechatController {
                 model.addAttribute("selected_type", 5);
             }
             String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
-            List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
+            List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
             model.addAttribute("list", users);
             if (STATE.equals("PC")) return "templates/RankingListPC";
             return "templates/RankingList";

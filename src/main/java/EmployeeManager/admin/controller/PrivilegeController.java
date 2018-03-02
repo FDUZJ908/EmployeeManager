@@ -41,7 +41,7 @@ public class PrivilegeController {
     @RequestMapping(value = "/modifyAdd", method = RequestMethod.POST)
     public String modifyAdd(Privilege privilege,@RequestParam(value="weekdays",required = false)String[] weekdays ) {
         int weekday=weekdayStringToInt(weekdays);
-        privilege.setWeekday(String.valueOf(weekday));
+        privilege.setWeekday(weekday);
         privilegeService.create(privilege);
         return "redirect:/privilege";
     }
@@ -58,7 +58,7 @@ public class PrivilegeController {
     public String modifyEdit(@RequestParam(value="weekdays",required = false)String[] weekdays,
                              Privilege privilege) {
         int weekday=weekdayStringToInt(weekdays);
-        privilege.setWeekday(String.valueOf(weekday));
+        privilege.setWeekday(weekday);
         privilegeService.modify(privilege);
         return "redirect:/privilege";
     }
