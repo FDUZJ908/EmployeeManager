@@ -477,7 +477,21 @@ hr {
 
 /*approval report*/
 
-.bottom_box{
+.bottom_box_app{
+	height: 8%;
+	display: flex;
+	/*position: fixed;*/
+	position:relative;
+	/*bottom: 0;*/
+	width: 100%;
+	font-size: 1em;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	z-index: 2;
+}
+
+.bottom_box_rank{
 	height: 8%;
 	display: flex;
 	position: fixed;
@@ -694,7 +708,7 @@ hr {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing:border-box;
 	height: 100%;
-	width: 20%;
+	width: 25%;
 	margin: 0 1px;
 }
 
