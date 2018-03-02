@@ -39,7 +39,8 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
     @Override
     public List<Depart> list(int dID) {
-        return jdbcTemplate.query("select department.userid,user.username,department.did,department.dname,department.isleader from department,user where user.userid=department.userid and dID=?",
+        return jdbcTemplate.query("select department.userid,user.username,department.did,department.dname,department.isleader "+
+                " from department,user where user.userid=department.userid and dID=?",
                 BeanPropertyRowMapper.newInstance(Depart.class), dID);
     }
 
