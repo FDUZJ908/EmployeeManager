@@ -42,7 +42,7 @@ public class Server {
     @Value("${web.upload-path}")
     private String path;
 
-    public int insertMap(Map<String, Object> map, String table) throws Exception{
+    public int insertMap(Map<String, Object> map, String table) throws Exception {
         StringBuffer cols = new StringBuffer();
         Object[] args = new Object[map.size()];
         int m = 0;
@@ -120,6 +120,7 @@ public class Server {
         String[] argvs = ids.split(delimiter);
         String sql = "SELECT userName FROM user WHERE userID IN " + getRepeatQMark(1, argvs.length);
         List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, argvs);
+        System.out.println(sql);
         if (res == null) return "";
 
         StringBuffer names = new StringBuffer();
@@ -160,10 +161,9 @@ public class Server {
 
     public String getUserName(String userId) {
         String dIDSql = "select userName from user where userID=? limit 1";
-        Object args[] = new Object[]{userId};
         List<Map<String, Object>> userNameCursor;
         try {
-            userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
+            userNameCursor = jdbcTemplate.queryForList(dIDSql, userId);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return null;
@@ -178,10 +178,9 @@ public class Server {
 
     public List<Map<String, Object>> getDepartment(String userId) {
         String dIDSql = "select dID,dName from department where userID=?";
-        Object args[] = new Object[]{userId};
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql, args);
+            department = jdbcTemplate.queryForList(dIDSql, userId);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return null;
@@ -193,7 +192,7 @@ public class Server {
         return jdbcTemplate.query("SELECT * FROM privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
     }
 
-    public String getUsersByPriviledges(int[] privileges) {
+    public String getUsersByPriviledges(Integer[] privileges) {
         if (privileges == null || privileges.length == 0) return "";
         String sql = "SELECT userID FROM user WHERE privilege IN " + getRepeatQMark(1, privileges.length);
         List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, privileges);
@@ -208,12 +207,10 @@ public class Server {
     }
 
     public int getUserPrivilege(String userId) {
-
         String dIDSql = "select privilege from user where userID=? limit 1";
-        Object args[] = new Object[]{userId};
         List<Map<String, Object>> userNameCursor;
         try {
-            userNameCursor = jdbcTemplate.queryForList(dIDSql, args);
+            userNameCursor = jdbcTemplate.queryForList(dIDSql, userId);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return 0;
@@ -228,10 +225,9 @@ public class Server {
     public int getIntSysVar(String varName) {
         int sysVar = 0;
         String sysVarSql = "select value from sysVar where varName= ? limit 1";
-        Object args[] = new Object[]{varName};
         List<Map<String, Object>> sysVarCursor;
         try {
-            sysVarCursor = jdbcTemplate.queryForList(sysVarSql, args);
+            sysVarCursor = jdbcTemplate.queryForList(sysVarSql, varName);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return 0;
@@ -246,10 +242,9 @@ public class Server {
     public String getStringSysVar(String varName) {
         String sysVar = "";
         String sysVarSql = "select string from sysVar where varName= ? limit 1";
-        Object args[] = new Object[]{varName};
         List<Map<String, Object>> sysVarCursor;
         try {
-            sysVarCursor = jdbcTemplate.queryForList(sysVarSql, args);
+            sysVarCursor = jdbcTemplate.queryForList(sysVarSql, varName);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return "";
@@ -264,10 +259,9 @@ public class Server {
 
     public int getLeaderScoreLimit(int userPrivilege) {
         String scoreLimitSql = "select leaderScoreLimit from privilege where privilege = ?";
-        Object args[] = new Object[]{userPrivilege};
         List<Map<String, Object>> scoreLimitCursor;
         try {
-            scoreLimitCursor = jdbcTemplate.queryForList(scoreLimitSql, args);
+            scoreLimitCursor = jdbcTemplate.queryForList(scoreLimitSql, userPrivilege);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return 0;
@@ -287,9 +281,8 @@ public class Server {
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
             leaderSql = "select userName,userID from department natural join user  where isLeader=1 and dID=?";
-            Object args[] = new Object[]{dID};
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql, args);
+                dLeader = jdbcTemplate.queryForList(leaderSql, dID);
             } catch (Exception e) {
                 return null;
             }
@@ -332,7 +325,7 @@ public class Server {
             try {
                 memberCursor = jdbcTemplate.queryForList(memberSql, args);
             } catch (Exception e) {
-                ;
+                logger.info(e.getMessage());
             }
             if (memberCursor.isEmpty()) {
                 errorUser.add(member[i]);
@@ -433,10 +426,9 @@ public class Server {
     public List<String> getAllDepartmentUsers(String userId, int userPrivilege) {
         List<String> AllUsers = new ArrayList<String>();
         String dIDSql = "select dID from department where userID=? order by dID asc";
-        Object args1[] = new Object[]{userId};
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql, args1);
+            department = jdbcTemplate.queryForList(dIDSql, userId);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return null;
@@ -448,9 +440,8 @@ public class Server {
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
             leaderSql = "select userName , privilege from department natural join user  where dID=?  order by convert(userName using gbk) asc";
-            Object args2[] = new Object[]{dID};
             try {
-                allUsers = jdbcTemplate.queryForList(leaderSql, args2);
+                allUsers = jdbcTemplate.queryForList(leaderSql, dID);
             } catch (Exception e) {
                 return null;
             }
@@ -464,12 +455,12 @@ public class Server {
     }
 
     public List<DepartmentLeader> getUserDepartmentLeader(String userId) {
+        int privilege = getUserPrivilege(userId);
         List<DepartmentLeader> DLeader = new ArrayList<DepartmentLeader>();
-        String dIDSql = "select dID,dName from department where userID=? order by convert(dName using gbk) asc";
-        Object args1[] = new Object[]{userId};
+        String dIDSql = "select dID,dName from department where userID=? order by dName";
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql, args1);
+            department = jdbcTemplate.queryForList(dIDSql, userId);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return null;
@@ -480,10 +471,10 @@ public class Server {
         String leaderSql;
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
-            leaderSql = "select userName,userID,dName from department natural join user  where isLeader=1 and dID=? order by convert(userName using gbk) asc";
-            Object args2[] = new Object[]{dID};
+            leaderSql = "select userName,userID,dName from department natural join user  " +
+                    "where isLeader=1 and dID=? and privilege>? order by convert(userName using gbk) asc";
             try {
-                dLeader = jdbcTemplate.queryForList(leaderSql, args2);
+                dLeader = jdbcTemplate.queryForList(leaderSql, dID, privilege);
             } catch (Exception e) {
                 return null;
             }
@@ -508,11 +499,10 @@ public class Server {
             limitPrivilege = userPrivilege;
         else
             limitPrivilege = caseReportCheckLimit;
-        String dIDSql = "select userName from user where privilege > ?   order by  convert(userName using gbk) asc";
-        Object args1[] = new Object[]{limitPrivilege};
+        String dIDSql = "select userName from user where privilege > ?   order by userName";
         List<Map<String, Object>> department;
         try {
-            department = jdbcTemplate.queryForList(dIDSql, args1);
+            department = jdbcTemplate.queryForList(dIDSql, limitPrivilege);
         } catch (Exception e) {
             logger.info(e.getMessage());
             return null;

@@ -29,6 +29,13 @@ public class Util {
         return (int) (System.currentTimeMillis() / 1000);
     }
 
+    public static String currentTime() {
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = format.format(date);
+        return time;
+    }
+
     public static int getWeekday() {
         Calendar calendar = Calendar.getInstance();
         Date date = new Date();
@@ -38,15 +45,18 @@ public class Util {
         return weekday;
     }
 
-    public static String currentTime() {
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = format.format(date);
-        return time;
-    }
-
     public static String truncSecond(String datetime) {
         int p = datetime.lastIndexOf(":");
         return datetime.substring(0, p);
+    }
+
+    public static int getHour(String time) {
+        int p = time.indexOf(":");
+        return Integer.parseInt(time.substring(0, p));
+    }
+
+    public static int getHour() {
+        String datetime = currentTime();
+        return getHour(datetime.substring(datetime.indexOf(" ") + 1));
     }
 }
