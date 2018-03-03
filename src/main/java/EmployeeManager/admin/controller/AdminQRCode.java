@@ -1,6 +1,7 @@
 package EmployeeManager.admin.controller;
 
 import EmployeeManager.Server;
+import EmployeeManager.Variable;
 import EmployeeManager.cls.Mapper;
 import EmployeeManager.cls.QRCode;
 import EmployeeManager.cls.Util;
@@ -43,6 +44,7 @@ public class AdminQRCode {
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
         model.addAttribute("AllUsers", AllUsers);
+        model.addAttribute("managers", Variable.QRManagers);
         return "adminQRCode/adminQRCode";
     }
 
@@ -57,6 +59,7 @@ public class AdminQRCode {
         /*
         * 插入数据库
         * */
+        Variable.QRManagers = managersname;
         String managers = server.name2id(managersname, ",");
         if (!managers.equals("")) {
             Integer token = Math.abs(new Random().nextInt());
