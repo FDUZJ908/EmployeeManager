@@ -685,10 +685,20 @@ hr {
 	font-size: 1em;
 }
 
+#approval_right_top{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
 .approval_right_title {
 	font-size: 3.5em;
 	width: 80%;
-	height: 20%;
+	height: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	float:left;
 }
 
 .approval_right_title p{
@@ -698,7 +708,11 @@ hr {
 
 .approval_right_att{
 	width: 20%;
-	height: 20%;
+	height: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	float:left;
 }
 
 .approval_right_att button{
