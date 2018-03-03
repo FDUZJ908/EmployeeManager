@@ -40,12 +40,12 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="weekdays" class="col-sm-2 control-label">提交天数选择</label>
+                                    <label class="col-sm-2 control-label">提交天数选择</label>
 
                                     <div class="col-sm-10">
                                         <div th:each="weekday:${WeekDayList}">
                                             <input type="checkbox" name="weekdays" th:value="${weekday.id}"
-                                                   class="form-control" id="weekdays"/>
+                                                   class="form-control" th:id="'weekday'+${weekday.id}"/>
                                             <label th:text="${weekday.name}"></label>
                                         </div>
                                     </div>
@@ -55,7 +55,7 @@
 
                                     <div class="col-sm-10" style="width: 300px">
                                         <input type="time" name="pushTime" th:value="${privilege}? ${privilege.pushTime}"
-                                               class="form-control" id="pushTime" placeholder="请选择正确时间格式，如12:00:00"
+                                               class="form-control" id="pushTime"
                                                required="required" maxlength="30"/>
                                        <!-- <datalist id="timeList">
                                             <option value="00:00:00"></option>
@@ -157,6 +157,16 @@
             return false;
         }
         return true;
+    }
+    /*]]>*/
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var weekdays=/*[[${privilege.getWeekday()}]]*/;
+    for(var i=0;i<7;i++) {
+        if(((1<<i)&weekdays)!=0){
+            $("#weekday"+i).attr("checked","checked");
+        }
     }
     /*]]>*/
 </script>

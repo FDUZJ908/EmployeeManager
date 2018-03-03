@@ -18,10 +18,11 @@ public class Variable {
         put(submitAgentID, submitSecret);
     }};
 
+    public static final String[] Weekdays = new String[]{"星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"};
+
     public static int maxReportCount = 1;
     //public static Map<Integer, QRCode> QRCodes = new HashMap<Integer, QRCode>();
     public static Map<String, Integer> reported = new HashMap<String, Integer>();
-
     public static String mesgToLeader = "您有一份新报告需要审批，可进入 报告查询-审批报告 查看。";
     public static String mesgToSubordinate = "您有一份报告已被审批，可进入 报告查询-我的报告 查看。";
     public static String mesgForReport = "企业微信提醒您提交今日报告，如已提交请忽略本条消息。";

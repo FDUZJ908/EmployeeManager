@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class HistoryReport {
 
-    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "typeValue","reportText", "submitTime", "checkTime", "isPass",
-            "members", "comment", "singleScore", "scoreType", "leaderName", "reportPath"};
+    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "typeValue", "reportText",
+            "submitTime", "checkTime", "isPass", "members", "comment", "singleScore", "scoreType", "leaderName", "reportPath"};
     public static int GENERAL = 0x0001;
     public static int CASE = 0x0010;
     public static int LEADER = 0x0100;
@@ -14,6 +14,7 @@ public class HistoryReport {
     private String userID;
     private String userName;
     private String type;
+    private String typeName;
     private String category;
     private String reportText;
     private String submitTime;
@@ -39,23 +40,25 @@ public class HistoryReport {
 
         int typeNum = Integer.parseInt(type);
 
-
-
         reportText = argv.get("reportText").toString();
-        submitTime = argv.get("submitTime").toString();//-5
-        checkTime = argv.get("checkTime").toString();//
+        submitTime = Util.truncSecond(argv.get("submitTime").toString());//-5
+        checkTime = Util.truncSecond(argv.get("checkTime").toString());//
 
-        submitTime = submitTime.substring(0, submitTime.lastIndexOf(":"));
-        if((typeNum & GENERAL) > 0) {
+        if ((typeNum & GENERAL) > 0) {
             singleScore = argv.get("typeValue").toString();
+            typeName = "一般报告";
         }
 
-        if ((typeNum & LEADER) > 0)
-            isPass = "通过";
-        else if ((typeNum & APPROVED) > 0) {
-            isPass = (argv.get("isPass").toString().equals("true")) ? "通过" : "不通过";
+        if ((typeNum & CASE) > 0) {
+            typeName = "个案报告";
         }
-        else isPass = "待审批";
+
+        if ((typeNum & LEADER) > 0) {
+            isPass = "通过";
+            typeName = "领导批示";
+        } else if ((typeNum & APPROVED) > 0) {
+            isPass = (argv.get("isPass").toString().equals("true")) ? "通过" : "不通过";
+        } else isPass = "待审批";
 
         members = argv.get("members").toString();
         if (members.length() == 0)
@@ -136,5 +139,9 @@ public class HistoryReport {
 
     public String getType() {
         return type;
+    }
+
+    public String getTypeName() {
+        return typeName;
     }
 }

@@ -1,5 +1,7 @@
 package EmployeeManager.admin.model;
 
+import EmployeeManager.Variable;
+
 /**
  * Created by 11437 on 2017/10/14.
  */
@@ -62,37 +64,15 @@ public class Privilege {
     }
 
     public String getWeekdays() {
-        String re = "";
+        StringBuffer res = new StringBuffer();
         int x = this.weekday;
         for (int i = 0; i < 7; i++) {
             if ((x & (1 << i)) > 0) {
-                switch (i) {
-                    case 0:
-                        re += ",星期一";
-                        break;
-                    case 1:
-                        re += ",星期二";
-                        break;
-                    case 2:
-                        re += ",星期三";
-                        break;
-                    case 3:
-                        re += ",星期四";
-                        break;
-                    case 4:
-                        re += ",星期五";
-                        break;
-                    case 5:
-                        re += ",星期六";
-                        break;
-                    case 6:
-                        re += ",星期天";
-                        break;
-                }
+                res.append("," + Variable.Weekdays[i]);
             }
         }
-        if (re.length() > 0) re = re.substring(1, re.length());
-        return re;
+        if (res.length() > 0) return res.substring(1, res.length());
+        else return res.toString();
     }
 
 }
