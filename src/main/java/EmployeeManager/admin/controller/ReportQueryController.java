@@ -39,6 +39,7 @@ public class ReportQueryController {
             "and leaderName like concat('%',?,'%') " +
             "and caseReport.userID like concat('%',?,'%') " +
             "order by submitTime desc";
+
     String sqlug = "select * " +
             "from undealedGeneralReport , reportType , user " +
             "where undealedGeneralReport.category = reportType.typeName " +
@@ -58,6 +59,15 @@ public class ReportQueryController {
             "and generalReport.userID like concat('%',?,'%') " +
             "order by submitTime desc";
 
+    String sqll = "select * " +
+            "from leaderReport , reportType , user " +
+            "where leaderReport.category = reportType.typeName " +
+            "and leaderReport.userID = user.userID " +
+            "and members like concat('%',?,'%') " +
+            "and submitTime between ? and ? " +
+            "and leaderReport.userID like concat('%',?,'%') " +
+            "order by submitTime desc";
+
     @RequestMapping(method = RequestMethod.GET)
     public String reportQuery(Model model) {
         model.addAttribute("list", server.getAllUsers());
@@ -66,54 +76,53 @@ public class ReportQueryController {
 
 
     @RequestMapping(value = "/searchReport")
-    public String searchReport(@RequestParam("score") String score,
-                               @RequestParam("type") String category,
+    public String searchReport(@RequestParam("submitter") String submitter,
+                               @RequestParam("leader") String leader,
                                @RequestParam("start") String start,
                                @RequestParam("end") String end,
-                               @RequestParam("leader") String leader,
-                               @RequestParam("submitter") String submitter,
+                               @RequestParam("type") String category,
+                               @RequestParam("score") String score,
                                Model model) {
 
         if (start.equals("")) start = "0001-01-01";
         if (end.equals("")) end = "9999-12-31";
 
-        System.out.println("score: "+score);
-        System.out.println("submitter: "+submitter);
+        System.out.println("score: " + score);
+        System.out.println("submitter: " + submitter);
+        String scoreID = server.name2id(score);
+        String submitterID = server.name2id(submitter);
 
         Map<String, Object> defValue = new HashMap<String, Object>();
-        int selectType = 0;
         List<HistoryReport> reports = new ArrayList<HistoryReport>();
-        if (category.equals("个案报告")) {
-            Object args[] = new Object[]{server.name2id(score), score, start, end, leader, server.name2id(submitter)};
+
+        if (category.equals("") || category.equals("个案报告")) {
+            Object args[] = new Object[]{scoreID, score, start, end, leader, submitterID};
             defValue.put("type", HistoryReport.CASE);
-            reports = server.jdbcTemplate.query(sqluc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
-            defValue.put("type", HistoryReport.CASE);
+            reports.addAll(server.jdbcTemplate.query(sqluc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+            defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+            System.out.println(reports.size());
+
         }
-        if (category.equals("一般报告")) {
-            Object args[] = new Object[]{server.name2id(score), start, end, leader, server.name2id(submitter)};
+
+        if (category.equals("") || category.equals("一般报告")) {
+            Object args[] = new Object[]{scoreID, start, end, leader, submitterID};
             defValue.put("type", HistoryReport.GENERAL);
-            reports = server.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports.addAll(server.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlg, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
         }
-        if (category.equals("领导报告")) {
-            Object args[] = new Object[]{score, start, end, server.name2id(submitter)};
-            String sqll = "select * " +
-                    "from leaderReport , reportType , user " +
-                    "where leaderReport.category = reportType.typeName " +
-                    "and leaderReport.userID = user.userID " +
-                    "and members like concat('%',?,'%') " +
-                    "and submitTime between ? and ? " +
-                    "and leaderReport.userID like concat('%',?,'%') " +
-                    "order by submitTime desc";
+
+        if (category.equals("") || category.equals("领导报告")) {
+            Object args[] = new Object[]{score, start, end, submitterID};
             defValue.put("type", HistoryReport.LEADER);
-            reports = server.jdbcTemplate.query(sqll, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
+            reports.addAll(server.jdbcTemplate.query(sqll, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
+            System.out.println(reports.size());
+
         }
 
-
         model.addAttribute("list", server.getAllUsers());
-        model.addAttribute("category", category);
+        System.out.println(reports.size());
         model.addAttribute("reports", reports);
         return "reportQuery/reportList";
     }
