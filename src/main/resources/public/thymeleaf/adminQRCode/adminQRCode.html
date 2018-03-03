@@ -232,6 +232,9 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    $(document).ready(function(){
+        addDefaultManagers();
+    });
 
     function checkMemberDivToInput() {
         /* check the department and leader*/
@@ -270,6 +273,16 @@
         b.setAttribute("id", "checkMember" + value.toString());
         b.setAttribute("onclick", delFunction);
         addDiv(b);
+    }
+
+    function addDefaultManagers() {
+        var managers = /*[[${managers}]]*/ "";
+        if (managers!="") {
+        managers = managers.split(",");
+        for(i = 0 ; i< managers.length; i++) {
+            addCheckBox(managers[i]);
+        }
+        }
     }
 
     function addMembers(memberName) {

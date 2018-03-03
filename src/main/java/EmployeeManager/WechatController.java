@@ -327,6 +327,7 @@ public class WechatController {
                 generalReport.put("checkTime", checkTime);
                 generalReport.put("isPass", Integer.valueOf(reportStatus));
                 generalReport.put("comment", reportComment);
+                generalReport.put("singleScore", singleScore);
                 try {
                     server.award(userID, singleScore);
                     server.insertMap(generalReport, "generalReport");

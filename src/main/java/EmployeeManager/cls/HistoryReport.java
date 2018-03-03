@@ -76,7 +76,7 @@ public class HistoryReport {
         }
 
         leaderName = argv.get("leaderName").toString();
-        reportPath = argv.get("reportPath").toString();
+        reportPath = "https://shiftlin.top:8443/" + argv.get("reportPath").toString();
     }
 
 
