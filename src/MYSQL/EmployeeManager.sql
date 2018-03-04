@@ -50,7 +50,7 @@ CREATE TABLE `QRCode` (
   PRIMARY KEY (`QRID`),
   KEY `idx_stime_etime` (`s_time`,`e_time`),
   KEY `idx_etime` (`e_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,10 +76,8 @@ CREATE TABLE `caseReport` (
   `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_2` (`userID`),
-  KEY `FK_Reference_9` (`category`),
-  CONSTRAINT `FK_Reference_2` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
-  CONSTRAINT `FK_Reference_9` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_Reference_2` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,11 +117,10 @@ CREATE TABLE `generalReport` (
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
   `comment` text,
+  `singleScore` int(11) DEFAULT NULL,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_1` (`userID`),
-  KEY `FK_Reference_11` (`category`),
-  CONSTRAINT `FK_Reference_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
-  CONSTRAINT `FK_Reference_11` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`)
+  CONSTRAINT `FK_Reference_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -149,8 +146,6 @@ CREATE TABLE `leaderReport` (
   `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_3` (`userID`),
-  KEY `FK_Reference_13` (`category`),
-  CONSTRAINT `FK_Reference_13` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`),
   CONSTRAINT `FK_Reference_3` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -178,11 +173,13 @@ DROP TABLE IF EXISTS `privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `privilege` (
-  `privilege` int(11) PRIMARY KEY,
+  `pID` int(11) NOT NULL AUTO_INCREMENT,
+  `privilege` int(11) NOT NULL,
   `weekday` tinyint(4) DEFAULT NULL,
   `pushTime` time DEFAULT NULL,
   `leaderPostLimit` int(11) DEFAULT NULL,
-  `leaderScoreLimit` int(11) DEFAULT NULL
+  `leaderScoreLimit` int(11) DEFAULT NULL,
+  PRIMARY KEY (`pID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -239,10 +236,8 @@ CREATE TABLE `undealedCaseReport` (
   `comment` text,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_6` (`userID`),
-  KEY `FK_Reference_15` (`category`),
-  CONSTRAINT `FK_Reference_15` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`),
   CONSTRAINT `FK_Reference_6` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,12 +258,11 @@ CREATE TABLE `undealedGeneralReport` (
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
   `comment` text,
+  `singleScore` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_8` (`userID`),
-  KEY `FK_Reference_17` (`category`),
-  CONSTRAINT `FK_Reference_17` FOREIGN KEY (`category`) REFERENCES `reportType` (`typeName`),
   CONSTRAINT `FK_Reference_8` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -280,7 +274,7 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `userID` char(32) NOT NULL,
-  `avatarURL` char(255),
+  `avatarURL` char(255) DEFAULT NULL,
   `userName` char(32) NOT NULL,
   `duty` char(64) DEFAULT NULL,
   `title` tinyint(4) DEFAULT NULL,
@@ -291,21 +285,11 @@ CREATE TABLE `user` (
   `tel` char(11) DEFAULT NULL,
   `gender` char(1) DEFAULT '0',
   `email` char(32) DEFAULT NULL,
-  `remark` text,
   `privilege` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`),
-  UNIQUE KEY `userName` (`userName`),
-  UNIQUE KEY `userName_2` (`userName`)
+  UNIQUE KEY `userName` (`userName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping events for database 'EmployeeManager'
---
-
---
--- Dumping routines for database 'EmployeeManager'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -316,4 +300,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-28 20:05:42
+-- Dump completed on 2018-03-04 23:05:28
