@@ -81,6 +81,7 @@ public class PrivilegeController {
     }
 
     protected int weekdaysToInt(int[] weekdays) {
+        if (weekdays == null) return 0;
         int re = 0;
         for (int i = 0; i < weekdays.length; i++) {
             re |= (1 << weekdays[i]);

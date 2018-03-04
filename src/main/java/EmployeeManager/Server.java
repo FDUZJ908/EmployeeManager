@@ -2,7 +2,6 @@ package EmployeeManager;
 
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.cls.*;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,6 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
-import static EmployeeManager.cls.User.userAttrs;
-import static EmployeeManager.cls.User.userKeys;
 import static EmployeeManager.cls.Util.getRepeatQMark;
 import static EmployeeManager.cls.Util.getTimestamp;
 
@@ -424,7 +421,7 @@ public class Server {
 
     public List<String> getAllDepartmentUsers(String userId, int userPrivilege) {
         List<String> AllUsers = new ArrayList<String>();
-        String dIDSql = "select dID from department where userID=? order by dID asc";
+        String dIDSql = "select dID from department where userID=? and isLeader=1 order by dID asc";
         List<Map<String, Object>> department;
         try {
             department = jdbcTemplate.queryForList(dIDSql, userId);
@@ -433,21 +430,18 @@ public class Server {
             return null;
         }
 
-        Object dID = "";
         List<Map<String, Object>> allUsers;
         String leaderSql;
         for (Map<String, Object> map : department) {
-            dID = map.get("dID");
-            leaderSql = "select userName , privilege from department natural join user  where dID=?  order by convert(userName using gbk) asc";
+            String dID = map.get("dID").toString();
+            leaderSql = "select distinct userName from department natural join user  where dID=? and privilege<? order by userName";
             try {
                 allUsers = jdbcTemplate.queryForList(leaderSql, dID);
             } catch (Exception e) {
                 return null;
             }
             for (Map<String, Object> user : allUsers) {
-                String User = user.get("userName").toString();
-                if (!AllUsers.contains(User) && Integer.parseInt(user.get("privilege").toString()) < userPrivilege)
-                    AllUsers.add(User);
+                AllUsers.add(user.get("userName").toString());
             }
         }
         return AllUsers;

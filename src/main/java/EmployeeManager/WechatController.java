@@ -233,7 +233,7 @@ public class WechatController {
         try {
             server.insertMap(caseReport, "leaderReport");
             if (scoreType == 0) score = -score;
-            server.award(UserId + "," + server.name2id(members, ","), score);
+            server.award(server.name2id(members, ","), score);
         } catch (Exception e) {
             return new ResponseMsg("0", "领导批示提交失败！");
         }

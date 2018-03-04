@@ -46,12 +46,19 @@ public class Util {
     }
 
     public static String truncSecond(String datetime) {
-        int p = datetime.lastIndexOf(":");
-        return datetime.substring(0, p);
+        int n = datetime.length(), cnt = 0, p = -1;
+        for (int i = 0; i < n; i++)
+            if (datetime.charAt(i) == ':') {
+                cnt += 1;
+                p = i;
+            }
+        if (cnt == 2) return datetime.substring(0, p);
+        else return datetime;
     }
 
     public static int getHour(String time) {
         int p = time.indexOf(":");
+        if (p == -1) return -1;
         return Integer.parseInt(time.substring(0, p));
     }
 

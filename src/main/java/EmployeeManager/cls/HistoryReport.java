@@ -68,7 +68,7 @@ public class HistoryReport {
             comment = "无";
 
         singleScore = argv.get("singleScore").toString();
-        
+
         if ((typeNum & (CASE | LEADER)) > 0) {
             scoreType = argv.get("scoreType").toString();
             if (scoreType.equals("false"))
@@ -86,6 +86,10 @@ public class HistoryReport {
 
     public String getReportID() {
         return reportID;
+    }
+
+    public void setReportID(String id) {
+        reportID = id;
     }
 
     public String getUserID() {

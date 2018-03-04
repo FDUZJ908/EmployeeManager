@@ -37,7 +37,6 @@ public class Mapper<T> implements RowMapper<T> {
             String[] Attrs = (String[]) (field.get(obj));
             Map<String, Object> argv = new HashMap<String, Object>();
             for (String attr : Attrs) {
-                System.out.println(attr);
                 try {
                     Object value = result.getObject(attr);
                     if (value != null) argv.put(attr, value);
