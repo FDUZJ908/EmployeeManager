@@ -50,7 +50,7 @@ CREATE TABLE `QRCode` (
   PRIMARY KEY (`QRID`),
   KEY `idx_stime_etime` (`s_time`,`e_time`),
   KEY `idx_etime` (`e_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `caseReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_2` (`userID`),
   CONSTRAINT `FK_Reference_2` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,15 +113,15 @@ CREATE TABLE `generalReport` (
   `category` char(32) NOT NULL,
   `reportText` text,
   `reportPath` text,
+  `singleScore` int(11) DEFAULT NULL,
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
   `comment` text,
-  `singleScore` int(11) DEFAULT NULL,
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_1` (`userID`),
   CONSTRAINT `FK_Reference_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +147,7 @@ CREATE TABLE `leaderReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_3` (`userID`),
   CONSTRAINT `FK_Reference_3` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,14 +173,12 @@ DROP TABLE IF EXISTS `privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `privilege` (
-  `pID` int(11) NOT NULL AUTO_INCREMENT,
-  `privilege` int(11) NOT NULL,
+  `privilege` int(11) PRIMARY KEY,
   `weekday` tinyint(4) DEFAULT NULL,
   `pushTime` time DEFAULT NULL,
   `leaderPostLimit` int(11) DEFAULT NULL,
-  `leaderScoreLimit` int(11) DEFAULT NULL,
-  PRIMARY KEY (`pID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+  `leaderScoreLimit` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +235,7 @@ CREATE TABLE `undealedCaseReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_6` (`userID`),
   CONSTRAINT `FK_Reference_6` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,15 +252,15 @@ CREATE TABLE `undealedGeneralReport` (
   `category` char(32) NOT NULL,
   `reportText` text,
   `reportPath` text,
+  `singleScore` int(11) NOT NULL DEFAULT '0',
   `submitTime` datetime DEFAULT NULL,
   `checkTime` datetime DEFAULT NULL,
   `isPass` tinyint(1) DEFAULT NULL,
   `comment` text,
-  `singleScore` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_8` (`userID`),
   CONSTRAINT `FK_Reference_8` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
