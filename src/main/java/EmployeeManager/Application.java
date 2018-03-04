@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application {
+    private static int httpPort = Integer.parseInt(System.getenv("EMHTTPPort"));
+    private static int httpsPort = Integer.parseInt(System.getenv("EMHTTPSPort"));
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -31,6 +34,7 @@ public class Application {
                 context.addConstraint(constraint);
             }
         };
+        tomcat.setPort(httpsPort);
         tomcat.addAdditionalTomcatConnectors(httpConnector());
         return tomcat;
     }
@@ -40,15 +44,15 @@ public class Application {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         //Connector监听的http的端口号
-        connector.setPort(4908);
+        connector.setPort(httpPort);
         connector.setSecure(false);
         //监听到http的端口号后转向到的https的端口号
-        connector.setRedirectPort(8443);
+        connector.setRedirectPort(httpsPort);
         return connector;
     }
 
     @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer(){
+    public EmbeddedServletContainerCustomizer containerCustomizer() {
         return new EmbeddedServletContainerCustomizer() {
             @Override
             public void customize(ConfigurableEmbeddedServletContainer container) {
