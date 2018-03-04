@@ -2,6 +2,8 @@ package EmployeeManager;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.boot.SpringApplication;
@@ -61,4 +63,13 @@ public class Application {
         };
     }
 
+    @Bean
+    public DataSource dataSource() {
+        PoolProperties poolProperties = new PoolProperties();
+        poolProperties.setUrl("jdbc:mysql://localhost:3306/EmployeeManager?useUnicode=true&characterEncoding=UTF-8");
+        poolProperties.setUsername("root");
+        poolProperties.setPassword(System.getenv("DatabasePassword"));
+        poolProperties.setDriverClassName("com.mysql.jdbc.Driver");
+        return new DataSource(poolProperties);
+    }
 }
