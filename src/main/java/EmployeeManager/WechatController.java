@@ -659,7 +659,7 @@ public class WechatController {
             if (server.imgSub(avatarURL, avatarURLSub, suffix, Integer.parseInt(x), Integer.parseInt(y), 640, 640)) {
                 String sql = "update user set avatarURL=? where userID=?";
                 server.jdbcTemplate.update(sql, avatarURLSub, userID);
-                return new ResponseMsg("1", "https://shiftlin.top:8443/" + avatarURLSub + "?seed=1");
+                return new ResponseMsg("1", "/" + avatarURLSub + "?seed=1");
             }
         }
         return new ResponseMsg("0", srcURL);

@@ -24,7 +24,7 @@
 	var qrid = /*[[${qrid}]]*/;
     var token = /*[[${token}]]*/;
 	var qrcode = new QRCode(document.getElementById("qrcode"), {
-		text: 'https://shiftlin.top:8443/wechat/RedirectQR?qrid=' + qrid + "&token=" + token,
+		text: 'https://shiftlin.top/wechat/RedirectQR?qrid=' + qrid + "&token=" + token,
 		width : 256,
 		height : 256
 	});

@@ -25,7 +25,7 @@ public class GeneralReport {
         this.singleScore = argv.get("singleScore").toString();
         this.reportText = argv.get("reportText").toString();
         this.submitTime = argv.get("submitTime").toString();
-        this.reportPath = "https://shiftlin.top:8443/" + argv.get("reportPath").toString();
+        this.reportPath = "/" + argv.get("reportPath").toString();
         this.submitTime = this.submitTime.substring(0, this.submitTime.lastIndexOf(":"));
     }
 
