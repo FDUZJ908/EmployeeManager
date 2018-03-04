@@ -52,14 +52,11 @@ public class WechatController {
                                          @RequestParam("UserId") String UserId,
                                          Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
-        ResponseMsg responseMsg = new ResponseMsg("", ""); // create ajax response
         if (!Variable.reported.containsKey(UserId))
             Variable.reported.put(UserId, Variable.maxReportCount);
         int remaining = Variable.reported.get(UserId);
         if (remaining <= 0) {
-            responseMsg.setMsg("超过每天提交次数上限！请明天再提交。");
-            responseMsg.setNum("0");
-            return responseMsg;
+            return new ResponseMsg("0", "超过每天提交次数上限！请明天再提交。");
         }
 
         String currentTime = Util.currentTime();
@@ -67,16 +64,27 @@ public class WechatController {
         server.mkDir(UserId);
         String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent)) {
-            responseMsg.setMsg("文件上传失败！");
-            responseMsg.setNum("0");
-            return responseMsg;
+            return new ResponseMsg("0", "文件上传失败！");
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
-        String sqlMessage = "'" + UserId + "','" + leader + "','" + type + "','" + content + "','" + pathCurrent + "','" +
-                currentTime + "'";
-        server.jdbcTemplate.update("insert into undealedGeneralReport " +
-                "(userID,leaderName,category,reportText,reportPath,submitTime) values(" + sqlMessage + ")");
+
+        Map<String, Object> generalReport = new HashMap<>();
+
+        generalReport.put("userID", UserId);
+        generalReport.put("leaderName", leader);
+        generalReport.put("category", type);
+        generalReport.put("reportText", content);
+        generalReport.put("reportPath", pathCurrent);
+        generalReport.put("submitTime", currentTime);
+        generalReport.put("singleScore", server.getTypeValue(type));
+
+        try {
+            server.insertMap(generalReport, "undealedGeneralReport");
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return new ResponseMsg("0", "一般报告提交失败！");
+        }
 
         Variable.reported.put(UserId, --remaining);
         try {
@@ -84,9 +92,7 @@ public class WechatController {
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        responseMsg.setMsg("一般报告提交成功！");
-        responseMsg.setNum("1");
-        return responseMsg;
+        return new ResponseMsg("1", "一般报告提交成功！");
     }
 
     @RequestMapping("/CaseReport")
@@ -125,8 +131,8 @@ public class WechatController {
                                       @RequestParam("UserId") String UserId,
                                       @RequestParam("content") String content,
                                       @RequestParam("type") String type,
-                                      @RequestParam("score_type") String score_type,
-                                      @RequestParam("score") String score,
+                                      @RequestParam("score_type") int scoreType,
+                                      @RequestParam("score") int score,
                                       @RequestParam("leader") String leader,
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
@@ -138,14 +144,26 @@ public class WechatController {
         String pathCurrent = UserId + "/" + currentFileName;
         if (!server.saveFile(file, pathCurrent))
             return new ResponseMsg("0", "文件上传失败！");
-
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
-        String sqlMessage = "'" + UserId + "','" + leader + "','" + members + "','" + type + "','" + content + "','" +
-                pathCurrent + "'," + score + ",'" + currentTime + "'," + score_type;
-        server.jdbcTemplate.update("insert into undealedCaseReport " +
-                "(userID,leaderName,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
-                "values(" + sqlMessage + ")");
+
+        Map<String, Object> caseReport = new HashMap<>();
+        caseReport.put("userID", UserId);
+        caseReport.put("leaderName", leader);
+        caseReport.put("members", members);
+        caseReport.put("category", type);
+        caseReport.put("reportText", content);
+        caseReport.put("reportPath", pathCurrent);
+        caseReport.put("submitTime", currentTime);
+        caseReport.put("singleScore", score);
+        caseReport.put("scoreType", scoreType);
+
+        try {
+            server.insertMap(caseReport, "undealedCaseReport");
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return new ResponseMsg("0", "个案报告提交失败！");
+        }
 
         try {
             server.sendMessage(leader, Variable.mesgToLeader, true, Variable.reportAgentID);
@@ -187,8 +205,8 @@ public class WechatController {
                                       @RequestParam("UserId") String UserId,
                                       @RequestParam("content") String content,
                                       @RequestParam("type") String type,
-                                      @RequestParam("score_type") String score_type,
-                                      @RequestParam("score") String score,
+                                      @RequestParam("score_type") int scoreType,
+                                      @RequestParam("score") int score,
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
@@ -201,21 +219,25 @@ public class WechatController {
         }
         if (file.getOriginalFilename().equals(""))
             pathCurrent = "";
+
+        Map<String, Object> caseReport = new HashMap<>();
+        caseReport.put("userID", UserId);
+        caseReport.put("members", members);
+        caseReport.put("category", type);
+        caseReport.put("reportText", content);
+        caseReport.put("reportPath", pathCurrent);
+        caseReport.put("singleScore", score);
+        caseReport.put("scoreType", scoreType);
+        caseReport.put("submitTime", currentTime);
+
         try {
-            String sqlMessage = "'" + UserId + "','" + members + "','" + type + "','" + content + "','" + pathCurrent + "'," +
-                    score + ",'" + Util.currentTime() + "'," + score_type;
-            server.jdbcTemplate.update("insert into leaderReport " +
-                    "(userID,members,category,reportText,reportPath,singleScore,submitTime,scoreType) " +
-                    "values(" + sqlMessage + ")");
-
-            int singleScore = Integer.parseInt(score);
-            if (score_type.equals("0"))
-                singleScore = -singleScore;
-
-            server.award(UserId + "," + server.name2id(members, ","), singleScore);
+            server.insertMap(caseReport, "leaderReport");
+            if (scoreType == 0) score = -score;
+            server.award(UserId + "," + server.name2id(members, ","), score);
         } catch (Exception e) {
             return new ResponseMsg("0", "领导批示提交失败！");
         }
+
         return new ResponseMsg("1", "领导批示提交成功！");
     }
 
@@ -285,9 +307,9 @@ public class WechatController {
             return "templates/failure";
         }
 
-        String sqlGen = "select reportID,userID,category,typeValue,reportText,submitTime,userName,reportPath " +
-                "from undealedGeneralReport natural join user , reportType where leaderName=(select userName from user " +
-                "where userID=?) and undealedGeneralReport.category = reportType.typeName";
+        String sqlGen = "select reportID,userID,category,singleScore,reportText,submitTime,userName,reportPath " +
+                "from undealedGeneralReport natural join user " +
+                "where leaderName=(select userName from user where userID=?)";
 
         String sqlCase = "select reportID,userID,category,reportText,submitTime,members,singleScore,userName,reportPath " +
                 "from undealedCaseReport natural join user " +
@@ -322,12 +344,11 @@ public class WechatController {
                 if (generalReport == null) continue;
                 String userID = generalReport.get("userID").toString();
 
-                int singleScore = server.getTypeValue(generalReport.get("category").toString());
-
                 generalReport.put("checkTime", checkTime);
                 generalReport.put("isPass", Integer.valueOf(reportStatus));
                 generalReport.put("comment", reportComment);
-                generalReport.put("singleScore", singleScore);
+
+                int singleScore = (int) generalReport.get("singleScore");
                 try {
                     server.award(userID, singleScore);
                     server.insertMap(generalReport, "generalReport");
@@ -359,10 +380,10 @@ public class WechatController {
 
                 int singleScore = 0;
                 if (reportStatus.equals("1")) {
-                    if (caseReport.get("scoreType").toString().equals("true")) {
-                        singleScore = Integer.parseInt(caseReport.get("singleScore").toString());
+                    if ((int) caseReport.get("scoreType") == 1) {
+                        singleScore = (int) caseReport.get("singleScore");
                     } else
-                        singleScore = -Integer.parseInt(caseReport.get("singleScore").toString());
+                        singleScore = -(int) caseReport.get("singleScore");
                 }
 
                 caseReport.put("checkTime", checkTime);
@@ -409,8 +430,8 @@ public class WechatController {
         defValue.put("userName", UserName);
         defValue.put("userID", UserId);
 
-        String sqlGen = "select reportID,leaderName,category,typeValue,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                "from generalReport,reportType where userID =? and generalReport.category = reportType.typeName order by submitTime desc";
+        String sqlGen = "select reportID,leaderName,category,singleScore,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                "from generalReport where userID =? order by submitTime desc";
         Object args[] = new Object[]{UserId};
         defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
         List<HistoryReport> reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -454,8 +475,8 @@ public class WechatController {
         List<HistoryReport> reports = new ArrayList<HistoryReport>();
 
         if (type.equals("我的提交(未审批)")) {
-            String sqlGen = "select reportID,leaderName,category,typeValue,reportText,submitTime,reportPath " +
-                    "from undealedGeneralReport , reportType where userID =? and undealedGeneralReport.category = reportType.typeName order by submitTime desc";
+            String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
+                    "from undealedGeneralReport where userID =? order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -470,8 +491,8 @@ public class WechatController {
         } else if (type.equals("我的提交(已审批)")) {
              /* generalReport
             * */
-            String sqlGen = "select reportID,leaderName,category,typeValue,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                    "from generalReport , reportType where userID =? and generalReport.category = reportType.typeName order by submitTime desc";
+            String sqlGen = "select reportID,leaderName,category,singleScore,reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                    "from generalReport where userID =? order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
@@ -493,8 +514,8 @@ public class WechatController {
         } else if (type.equals("我的审批")) {
             defValue.put("leaderName", UserName);
 
-            String sqlGen = "select reportID, userID, userName, category,typeValue ,reportText,submitTime,checkTime,isPass,comment,reportPath " +
-                    "from generalReport natural join user , reportType where leaderName = ? and generalReport.category = reportType.typeName order by submitTime desc";
+            String sqlGen = "select reportID, userID, userName, category, reportText,submitTime,checkTime,isPass,comment,reportPath " +
+                    "from generalReport natural join user  where leaderName = ? order by submitTime desc";
             Object args[] = new Object[]{UserName};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));

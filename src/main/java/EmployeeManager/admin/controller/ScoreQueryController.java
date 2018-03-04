@@ -59,9 +59,8 @@ public class ScoreQueryController {
         /*
         * UserId: [{userID: "...", userName: "..."}, ...]
         * */
-        List<Map<String, Object>> UserId = new ArrayList<Map<String, Object>>();
         String sql = "SELECT userID, userName FROM user";
-        UserId = server.jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> UserId = server.jdbcTemplate.queryForList(sql);
 
         /*
         * IdScore = {Id: Score}

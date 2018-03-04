@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class HistoryReport {
 
-    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "typeValue", "reportText",
+    public static String[] Attrs = {"reportID", "userID", "userName", "type", "category", "reportText",
             "submitTime", "checkTime", "isPass", "members", "comment", "singleScore", "scoreType", "leaderName", "reportPath"};
     public static int GENERAL = 0x0001;
     public static int CASE = 0x0010;
@@ -45,7 +45,6 @@ public class HistoryReport {
         checkTime = Util.truncSecond(argv.get("checkTime").toString());//
 
         if ((typeNum & GENERAL) > 0) {
-            singleScore = argv.get("typeValue").toString();
             typeName = "一般报告";
         }
 
@@ -68,8 +67,9 @@ public class HistoryReport {
         if (comment.length() == 0)
             comment = "无";
 
+        singleScore = argv.get("singleScore").toString();
+        
         if ((typeNum & (CASE | LEADER)) > 0) {
-            singleScore = argv.get("singleScore").toString();
             scoreType = argv.get("scoreType").toString();
             if (scoreType.equals("false"))
                 singleScore = "-" + singleScore;
