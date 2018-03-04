@@ -41,7 +41,6 @@ public class ReportQueryController {
     String sqlug = "select * " +
             "from undealedGeneralReport, user " +
             "where undealedGeneralReport.userID = user.userID " +
-            "and undealedGeneralReport.userID like concat(?,'%') " +
             "and submitTime between ? and ? " +
             "and leaderName like concat(?,'%') " +
             "and undealedGeneralReport.userID like concat(?,'%') " +
@@ -49,7 +48,6 @@ public class ReportQueryController {
     String sqlg = "select * " +
             "from generalReport, user " +
             "where generalReport.userID = user.userID " +
-            "and generalReport.userID like concat(?,'%') " +
             "and submitTime between ? and ? " +
             "and leaderName like concat(?,'%') " +
             "and generalReport.userID like concat(?,'%') " +
@@ -93,9 +91,9 @@ public class ReportQueryController {
         if (types != null) {
             for (int x : types) type |= x;
         }
-
+        
         if ((type & 1) != 0) {
-            Object args[] = new Object[]{scoreID, start, end, leader, submitterID};
+            Object args[] = new Object[]{start, end, leader, submitterID};
             defValue.put("type", HistoryReport.GENERAL);
             reports.addAll(server.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
