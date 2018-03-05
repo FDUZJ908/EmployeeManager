@@ -1,8 +1,8 @@
 
-function exportTo(type) {
+function exportTo(type,name) {
 
 	$('.table').tableExport({
-		filename: '阿斯顿负',
+		filename: name,
 		format: type,
 		cols: '1,2'
 	});

@@ -68,7 +68,8 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">得分者</label>
                                         <div class="col-sm-10" style="width: 300px">
-                                            <input type="text" list="userlist" name="score" id="score" th:value="${score}"
+                                            <input type="text" list="userlist" name="score" id="score"
+                                                   th:value="${score}"
                                                    class="form-control" maxlength="20"/>
                                         </div>
 
@@ -97,7 +98,8 @@
 
                     </div>
                     <div class="box">
-                        <button onclick="method(dataTable)">生成excel</button>
+                        <button><a onclick="exportTo();" href="javascript://">生成excel</a></button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="box-body">
                             <table id="dataTable" class="table table-bordered table-striped" style="font-size: 10px">
                                 <thead>
@@ -166,107 +168,25 @@
 </script>
 <script th:src="@{/js/list-page.js}"></script>
 
-<script>
-    var idTmr;
 
-    function getExplorer() {
-        var explorer = window.navigator.userAgent;
-        //ie
-        if (explorer.indexOf("MSIE") >= 0) {
-            return 'ie';
-        }
-        //firefox
-        else if (explorer.indexOf("Firefox") >= 0) {
-            return 'Firefox';
-        }
-        //Chrome
-        else if (explorer.indexOf("Chrome") >= 0) {
-            return 'Chrome';
-        }
-        //Opera
-        else if (explorer.indexOf("Opera") >= 0) {
-            return 'Opera';
-        }
-        //Safari
-        else if (explorer.indexOf("Safari") >= 0) {
-            return 'Safari';
-        }
-    }
-
-    function method(tableid) {
-        if (getExplorer() == 'ie') {
-            var curTbl = document.getElementById(tableid);
-            var oXL = new ActiveXObject("Excel.Application");
-            var oWB = oXL.Workbooks.Add();
-            var xlsheet = oWB.Worksheets(1);
-            var sel = document.body.createTextRange();
-            sel.moveToElementText(curTbl);
-            sel.select();
-            sel.execCommand("Copy");
-            xlsheet.Paste();
-            oXL.Visible = true;
-
-            try {
-                var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
-            } catch (e) {
-                print("Nested catch caught " + e);
-            } finally {
-                oWB.SaveAs(fname);
-                oWB.Close(savechanges = false);
-                oXL.Quit();
-                oXL = null;
-                idTmr = window.setInterval("Cleanup();", 1);
-            }
-
-        }
-        else {
-            tableToExcel(tableid)
-        }
-    }
-
-    function Cleanup() {
-        window.clearInterval(idTmr);
-        CollectGarbage();
-    }
-
-    var tableToExcel = (function () {
-        var uri = 'data:application/vnd.ms-excel;base64,',
-            template = '<html><head><meta charset="UTF-8"></meta></head><body><table>{table}</table></body></html>',
-            base64 = function (s) {
-                return window.btoa(unescape(encodeURIComponent(s)))
-            },
-            format = function (s, c) {
-                return s.replace(/{(\w+)}/g,
-                    function (m, p) {
-                        return c[p];
-                    })
-            }
-        return function (table, name) {
-            if (!table.nodeType) table = document.getElementById(table)
-            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-            window.location.href = uri + base64(format(template, ctx))
-        }
-    })()
-</script>
-
-<script th:inline ="javascript">
+<script th:inline="javascript">
     /*<![CDATA[*/
     function fill(s) {
-        return s < 10 ? '0' + s: s;
+        return s < 10 ? '0' + s : s;
     }
 
-    function getDateString(myDate){
-        var year=myDate.getFullYear();
-        var month=myDate.getMonth()+1;
-        var date=myDate.getDate();
-        return year+'-'+fill(month)+"-"+fill(date);
+    function getDateString(myDate) {
+        var year = myDate.getFullYear();
+        var month = myDate.getMonth() + 1;
+        var date = myDate.getDate();
+        return year + '-' + fill(month) + "-" + fill(date);
     }
 
     function setDate() {
-        var end=new Date();
+        var end = new Date();
         $("#end").val(getDateString(end));
 
-        var start=end.getFullYear()+'-01-01';
+        var start = end.getFullYear() + '-01-01';
         $("#start").val(start);
     }
 
@@ -276,31 +196,46 @@
         $("#leader").val('');
         $("#score").val('');
     }
+
     /*]]>*/
 </script>
 
-<script th:inline ="javascript">
+<script th:inline="javascript">
     /*<![CDATA[*/
-    $(document).ready(function(){
+    $(document).ready(function () {
         var end = /*[[${end}]]*/;
         var start = /*[[${start}]]*/;
-        if(end==null || start==null)
-        {
+        if (end == null || start == null) {
             setDate();
-        }else
-        {
+        } else {
             $("#end").val(end);
             $("#start").val(start);
         }
     })
 
     /*should not be put in the document.ready*/
-    var types=/*[[${types}?${types}:0]]*/;
-    for(var i=0;i<3;i++) {
-        if((types&(1<<i))!=0)
-            $("#type"+i).attr("checked","checked");
+    var types =/*[[${types}?${types}:0]]*/;
+    for (var i = 0; i < 3; i++) {
+        if ((types & (1 << i)) != 0)
+            $("#type" + i).attr("checked", "checked");
     }
     /*]]>*/
 </script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function exportTo() {
+        var name = '报告查询';
+        $('.table').tableExport({
+            filename: name,
+            format: 'xls',
+            cols: '1,2,3,4,5,6,7,8,9,10,11,12'
+        });
+
+    }
+
+    /*]]>*/
+</script>
+<script src="../../js/tableExport.js"></script>
+
 </body>
 </html>
