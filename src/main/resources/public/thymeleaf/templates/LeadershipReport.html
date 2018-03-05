@@ -135,6 +135,7 @@
     function checkDL () {
         var content = document.getElementById("content");
         var score = document.getElementById("score");
+        var members = document.getElementById("members");
         var sub = "-";
         var scoreLimit =  /*[[${scoreLimit}]]*/ "";
         if (content.value.toString() == "") {
@@ -162,6 +163,12 @@
             alert("任务分值超出最大值:" + scoreLimit.toString());
             return false;
         }
+
+        if (members.value == "") {
+            alert("队伍成员不能为空!");
+            return false;
+        }
+        
         var con = confirm("确认提交报告？");
         if (con == false)
             return false;

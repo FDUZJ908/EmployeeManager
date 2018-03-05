@@ -380,7 +380,7 @@ public class WechatController {
 
                 int singleScore = 0;
                 if (reportStatus.equals("1")) {
-                    if ((int) caseReport.get("scoreType") == 1) {
+                    if ((Boolean)caseReport.get("scoreType")) {
                         singleScore = (int) caseReport.get("singleScore");
                     } else
                         singleScore = -(int) caseReport.get("singleScore");
