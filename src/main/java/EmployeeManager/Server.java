@@ -433,15 +433,17 @@ public class Server {
         List<Map<String, Object>> allUsers;
         String leaderSql;
         for (Map<String, Object> map : department) {
-            String dID = map.get("dID").toString();
+            Object dID[] = {map.get("dID").toString(),Integer.toString(userPrivilege)};
             leaderSql = "select distinct userName from department natural join user  where dID=? and privilege<? order by userName";
             try {
                 allUsers = jdbcTemplate.queryForList(leaderSql, dID);
             } catch (Exception e) {
+                logger.info(e.getMessage());
                 return null;
             }
             for (Map<String, Object> user : allUsers) {
-                AllUsers.add(user.get("userName").toString());
+                if (!AllUsers.contains(user.get("userName").toString()))
+                    AllUsers.add(user.get("userName").toString());
             }
         }
         return AllUsers;
