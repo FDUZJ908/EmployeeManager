@@ -253,9 +253,9 @@ public class WechatController {
         String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + "3" + " order by s_score desc";
 
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
-
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 1);
+
         if (STATE.equals("PC")) return "templates/RankingListPC";
         return "templates/RankingList";
     }
@@ -263,9 +263,25 @@ public class WechatController {
     @PostMapping(value = "/RankingList")
     public String RankingListPost(@RequestParam("button") String type,
                                   @RequestParam("state") String STATE,
+                                  @RequestParam("userInput") String userInput,
                                   Model model) {
         logger.info("Post RankingList: " + type); //log
 
+        if(!userInput.equals("")) {
+            String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
+            List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
+            List<User> usersSearch = new ArrayList<>();
+            String target = "";
+            for (User user : users) {
+                target = "";
+                target = user.getDuty() + user.getUsername() + user.getScore() + user.getTitle();
+                if (target.contains(userInput))
+                    usersSearch.add(user);
+            }
+            model.addAttribute("list",usersSearch);
+            model.addAttribute("userInput",userInput);
+            return  "templates/RankingList";
+        }
         if (type.equals("总排行")) {
             String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));

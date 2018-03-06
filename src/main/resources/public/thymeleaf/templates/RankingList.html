@@ -9,6 +9,17 @@
 </head>
 
 <body onload="changeBGC1()">
+
+<form method="post" onsubmit="return checkDL()">
+    <div class="rankingList-key-search">
+        <input type="text" id="searchB" placeholder="请输入关键字搜索" autocomplete="off" name="userInput"/>
+        <input type="image" src="/images/search.png" alt="Submit" align="right"/>
+    </div>
+    <input value="MOBILE" name="STATE" style="display:none;"/>
+    <input value="search" name="button" style="display:none;"/>
+
+</form>
+
 <div class="page">
     <!--
     <div class="page-title">
@@ -48,8 +59,9 @@
 </div>
 
 
-<form method="post" nctype="multipart/form-data">
+<form method="post">
     <input value="MOBILE" name="STATE" style="display:none;"/>
+    <input value="" name="userInput" style="display:none;"/>
     <div class="bottom_box_rank">
         <div class="rank_button"><input type="submit" id="B1" value="领导干部" name="button"/></div>
         <div class="rank_button"><input type="submit" id="B2" value="中层干部" name="button"/></div>
@@ -63,6 +75,7 @@
 	/*<![CDATA[*/
 	function changeBGC1(){
 		var BGCnum = /*[[${selected_type}]]*/ "";
+		var userInput = /*[[${userInput}]]*/ "";
 		switch(BGCnum){
 			case 1 :
 				var B1=document.getElementById("B1");
@@ -85,6 +98,17 @@
 				B5.setAttribute("style","background-color:red;");
 				break;
 		}
+		if (userInput != "")
+		    document.getElementById("searchB").value = userInput;
+	}
+
+	function checkDL(){
+	    var userInput = document.getElementById("searchB");
+	    if (userInput.value.toString() == "") {
+	        alert("搜索内容不能为空!");
+	        return false;
+	        }
+	    return true;
 	}
 	/*]]>*/
 
