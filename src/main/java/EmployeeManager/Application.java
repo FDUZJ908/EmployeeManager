@@ -49,7 +49,7 @@ public class Application {
         connector.setPort(httpPort);
         connector.setSecure(false);
         //监听到http的端口号后转向到的https的端口号
-        connector.setRedirectPort(httpsPort);
+        //connector.setRedirectPort(httpsPort);
         return connector;
     }
 
