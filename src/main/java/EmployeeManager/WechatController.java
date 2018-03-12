@@ -491,7 +491,7 @@ public class WechatController {
         List<HistoryReport> reports = new ArrayList<HistoryReport>();
 
         if (type.equals("我的提交(未审批)")) {
-            String sqlGen = "select reportID,leaderName,category,reportText,submitTime,reportPath " +
+            String sqlGen = "select reportID,leaderName,category,reportText,submitTime,singleScore,reportPath " +
                     "from undealedGeneralReport where userID =? order by submitTime desc";
             Object args[] = new Object[]{UserId};
             defValue.put("type", HistoryReport.GENERAL);
@@ -530,7 +530,7 @@ public class WechatController {
         } else if (type.equals("我的审批")) {
             defValue.put("leaderName", UserName);
 
-            String sqlGen = "select reportID, userID, userName, category, reportText,submitTime,checkTime,isPass,comment,reportPath " +
+            String sqlGen = "select reportID, userID, userName, category, singleScore,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport natural join user  where leaderName = ? order by submitTime desc";
             Object args[] = new Object[]{UserName};
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);

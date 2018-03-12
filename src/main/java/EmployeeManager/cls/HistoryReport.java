@@ -76,7 +76,12 @@ public class HistoryReport {
         }
 
         leaderName = argv.get("leaderName").toString();
-        reportPath = "/" + argv.get("reportPath").toString();
+        if (!argv.get("reportPath").toString().isEmpty()) {
+            reportPath = "/" + argv.get("reportPath").toString();
+        }
+        else {
+            reportPath = argv.get("reportPath").toString();
+        }
     }
 
 

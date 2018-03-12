@@ -137,6 +137,7 @@
 	var div_h = $('#avatarDiv').height();
 	$('#avatarDiv').Jcrop({
 	allowSelect: false,
+	allowResize: false,
 	aspectRatio: 1,
     setSelect: [ div_w/2-320,div_h/2-320,div_w/2+320,div_h/2+320 ],
 	onSelect: updateCoords

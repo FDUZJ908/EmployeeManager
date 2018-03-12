@@ -27,7 +27,12 @@ public class CaseReport {
         this.submitTime = argv.get("submitTime").toString();
         this.members = argv.get("members").toString();
         this.singleScore = argv.get("singleScore").toString();
-        this.reportPath = "/" + argv.get("reportPath").toString();
+        if (!argv.get("reportPath").toString().isEmpty()) {
+            this.reportPath = "/" + argv.get("reportPath").toString();
+        }
+        else{
+            this.reportPath = argv.get("reportPath").toString();
+        }
         this.submitTime = this.submitTime.substring(0 , this.submitTime.lastIndexOf(":"));
         if (argv.get("members").toString() == "") {
             this.members = "无";

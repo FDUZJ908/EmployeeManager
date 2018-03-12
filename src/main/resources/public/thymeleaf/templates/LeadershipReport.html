@@ -111,8 +111,10 @@
                     $("#innerDiv").fadeOut("fast");
         },
          success : function(responseMsg) {
-            if(responseMsg.num == "1")
+            if(responseMsg.num == "1") {
+                alert(responseMsg.msg);
                 reset();
+            }
 
         },
         error : function(responseMsg) {
@@ -163,17 +165,18 @@
             alert("任务分值超出最大值:" + scoreLimit.toString());
             return false;
         }
+        checkMemberDivToInput();
 
         if (members.value == "") {
             alert("队伍成员不能为空!");
             return false;
         }
-        
+
         var con = confirm("确认提交报告？");
         if (con == false)
             return false;
 
-        checkMemberDivToInput();
+
     }
 
     function checkMemberDivToInput() {
