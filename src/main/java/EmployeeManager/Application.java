@@ -65,11 +65,18 @@ public class Application {
 
     @Bean
     public DataSource dataSource() {
-        PoolProperties poolProperties = new PoolProperties();
-        poolProperties.setUrl("jdbc:mysql://localhost:3306/EmployeeManager?useUnicode=true&characterEncoding=UTF-8");
-        poolProperties.setUsername("root");
-        poolProperties.setPassword(System.getenv("DatabasePassword"));
-        poolProperties.setDriverClassName("com.mysql.jdbc.Driver");
-        return new DataSource(poolProperties);
+        PoolProperties p = new PoolProperties();
+        p.setUrl("jdbc:mysql://localhost:3306/EmployeeManager?useUnicode=true&characterEncoding=UTF-8");
+        p.setUsername("root");
+        p.setPassword(System.getenv("DatabasePassword"));
+        p.setDriverClassName("com.mysql.jdbc.Driver");
+        p.setMaxActive(100);
+        p.setInitialSize(10);
+        p.setMaxWait(10000);
+        p.setValidationQuery("SELECT 1");
+        p.setTestWhileIdle(true);
+        p.setTestOnBorrow(false);
+        p.setTimeBetweenEvictionRunsMillis(30000);
+        return new DataSource(p);
     }
 }
