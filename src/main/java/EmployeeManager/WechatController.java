@@ -522,7 +522,7 @@ public class WechatController {
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             /* leaderReport
             * */
-            String sqlLeader = "select reportID,category, reportText, submitTime, singleScore, scoreType, reportPath " +
+            String sqlLeader = "select reportID,category, reportText, submitTime, singleScore, scoreType, members, reportPath " +
                     "from leaderReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.LEADER);
             reports.addAll(server.jdbcTemplate.query(sqlLeader, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
