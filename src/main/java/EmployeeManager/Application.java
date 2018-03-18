@@ -70,13 +70,15 @@ public class Application {
         p.setUsername("root");
         p.setPassword(System.getenv("DatabasePassword"));
         p.setDriverClassName("com.mysql.jdbc.Driver");
-        p.setMaxActive(100);
-        p.setInitialSize(10);
-        p.setMaxWait(10000);
-        p.setValidationQuery("SELECT 1");
+        p.setMaxActive(10);
+        p.setInitialSize(5);
+        p.setMaxIdle(5);
+        p.setMinIdle(1);
         p.setTestWhileIdle(true);
-        p.setTestOnBorrow(false);
-        p.setTimeBetweenEvictionRunsMillis(30000);
+        p.setTestOnBorrow(true);
+        p.setValidationQuery("SELECT 1");
+        p.setTimeBetweenEvictionRunsMillis(5000);
+        p.setMinEvictableIdleTimeMillis(60000);
         return new DataSource(p);
     }
 }
