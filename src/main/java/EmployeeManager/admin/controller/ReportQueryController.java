@@ -3,6 +3,7 @@ package EmployeeManager.admin.controller;
 import EmployeeManager.Server;
 import EmployeeManager.cls.HistoryReport;
 import EmployeeManager.cls.Mapper;
+import EmployeeManager.cls.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,7 +80,10 @@ public class ReportQueryController {
                                Model model) {
 
         if (start.equals("")) start = "0001-01-01";
-        if (end.equals("")) end = "9999-12-31";
+        if (end.equals("")) end = "9998-12-31";
+
+        String originEnd=end;
+        end = Util.AddOneDay(end);
 
         String scoreID = server.name2id(score);
         String submitterID = server.name2id(submitter);
@@ -123,7 +127,7 @@ public class ReportQueryController {
         model.addAttribute("submitter", submitter);
         model.addAttribute("leader", leader);
         model.addAttribute("start", start);
-        model.addAttribute("end", end);
+        model.addAttribute("end", originEnd);
         model.addAttribute("score", score);
         model.addAttribute("types", type);
         model.addAttribute("reports", reports);

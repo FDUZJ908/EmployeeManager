@@ -66,4 +66,25 @@ public class Util {
         String datetime = currentTime();
         return getHour(datetime.substring(datetime.indexOf(" ") + 1));
     }
+
+    public static long dateToStamp(String datetime) throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = format.parse(datetime);
+        return date.getTime();
+    }
+
+    public static String stampToDate(long timestamp) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(timestamp);
+        return format.format(date);
+    }
+
+    public static String AddOneDay(String date) {
+        try {
+            String datetime=stampToDate(dateToStamp(date+" 12:00:00")+86400000);
+            return datetime.substring(0,datetime.indexOf(' '));
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

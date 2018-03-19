@@ -52,7 +52,7 @@
                                     <br/>
                                     <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: center;">
-                                        <button type="reset" class="btn btn-default">重置</button>
+                                        <button type="button" class="btn btn-default" onclick="Reset()">重置</button>
                                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                         <button type="submit" class="btn btn-info">查询</button>
                                     </div>
@@ -145,7 +145,7 @@
     }
 </script>
 
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
     function fill(s) {
         return s < 10 ? '0' + s : s;
@@ -158,12 +158,27 @@
         return year + '-' + fill(month) + "-" + fill(date);
     }
 
-    $(document).ready(function () {
+    function setDate() {
         var end = new Date();
         $("#end").val(getDateString(end));
 
         var start = end.getFullYear() + '-01-01';
         $("#start").val(start);
+    }
+
+    function Reset() {
+        setDate();
+    }
+
+    $(document).ready(function () {
+        var end = /*[[${end}]]*/;
+        var start = /*[[${start}]]*/;
+        if (end == null || start == null) {
+            setDate();
+        } else {
+            $("#end").val(end);
+            $("#start").val(start);
+        }
     })
     /*]]>*/
 </script>
@@ -180,7 +195,6 @@
         });
 
     }
-
     /*]]>*/
 </script>
 <script src="../../js/tableExport.js"></script>

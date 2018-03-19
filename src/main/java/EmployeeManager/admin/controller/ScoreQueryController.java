@@ -2,6 +2,7 @@ package EmployeeManager.admin.controller;
 
 import EmployeeManager.Server;
 import EmployeeManager.admin.model.userScore;
+import EmployeeManager.cls.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,7 @@ public class ScoreQueryController {
 
     @Autowired
     Server server;
-    
+
     String sqlc = "select userID, members, scoreType, singleScore " +
             "from caseReport " +
             "where submitTime between ? and ? " +
@@ -53,6 +54,8 @@ public class ScoreQueryController {
         if (start.equals("") || end.equals(""))
             return "scoreQuery/scoreQuery";
 
+        String originEnd=end;
+        end = Util.AddOneDay(end);
 
         List<userScore> userScores = new ArrayList<userScore>();
 
@@ -100,8 +103,9 @@ public class ScoreQueryController {
             total += entry.getValue();
             userScores.add(tmp);
         }
+
         model.addAttribute("start", start);
-        model.addAttribute("end", end);
+        model.addAttribute("end", originEnd);
         model.addAttribute("total", total);
         model.addAttribute("scores", userScores);
         return "scoreQuery/scoreQuery";
