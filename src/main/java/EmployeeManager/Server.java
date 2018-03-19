@@ -252,7 +252,6 @@ public class Server {
         return sysVar;
     }
 
-
     public int getLeaderScoreLimit(int userPrivilege) {
         String scoreLimitSql = "select leaderScoreLimit from privilege where privilege = ?";
         List<Map<String, Object>> scoreLimitCursor;
@@ -267,6 +266,22 @@ public class Server {
             scoreLimit = Integer.parseInt(map.get("leaderScoreLimit").toString());
         }
         return scoreLimit;
+    }
+
+    public int getLeaderPostLimit(String userID) {
+        String sql = "select leaderPostLimit from privilege,user where userID=? and user.privilege = privilege.privilege";
+        List<Map<String, Object>> scoreLimitCursor;
+        try {
+            scoreLimitCursor = jdbcTemplate.queryForList(sql, userID);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return 0;
+        }
+        int postLimit = 0;
+        for (Map<String, Object> map : scoreLimitCursor) {
+            postLimit = Integer.parseInt(map.get("leaderPostLimit").toString());
+        }
+        return postLimit;
     }
 
     public List<User> getLeader(String UserId, List<Map<String, Object>> department) {
@@ -433,7 +448,7 @@ public class Server {
         List<Map<String, Object>> allUsers;
         String leaderSql;
         for (Map<String, Object> map : department) {
-            Object dID[] = {map.get("dID").toString(),Integer.toString(userPrivilege)};
+            Object dID[] = {map.get("dID").toString(), Integer.toString(userPrivilege)};
             leaderSql = "select distinct userName from department natural join user  where dID=? and privilege<? order by userName";
             try {
                 allUsers = jdbcTemplate.queryForList(leaderSql, dID);

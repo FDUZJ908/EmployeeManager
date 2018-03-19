@@ -2,6 +2,7 @@ package EmployeeManager;
 
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.cls.Util;
+import org.aspectj.weaver.ast.Var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class TriggerController {
         logger.info("Refresh starts!"); //log
         Variable.reported.clear();
         Variable.maxReportCount = server.getIntSysVar("maxReportCount");
+
+        Variable.leaderCount.clear();
         logger.info("Refresh succeed!"); //log
         return "Refresh succeed!";
     }

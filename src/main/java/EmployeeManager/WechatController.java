@@ -210,6 +210,14 @@ public class WechatController {
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
         logger.info("Post LeadershipReport: " + UserId); //log
+
+        if (!Variable.leaderCount.containsKey(UserId))
+            Variable.leaderCount.put(UserId, 0);
+        int count = Variable.leaderCount.get(UserId);
+        if (count >= server.getLeaderPostLimit(UserId) ) {
+            return new ResponseMsg("0", "超过每天提交次数上限！请明天再提交。");
+        }
+
         String currentTime = Util.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
         server.mkDir(UserId);
