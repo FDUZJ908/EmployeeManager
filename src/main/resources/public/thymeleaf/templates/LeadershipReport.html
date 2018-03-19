@@ -111,8 +111,8 @@
                     $("#innerDiv").fadeOut("fast");
         },
          success : function(responseMsg) {
+            alert(responseMsg.msg);
             if(responseMsg.num == "1") {
-                alert(responseMsg.msg);
                 reset();
             }
 

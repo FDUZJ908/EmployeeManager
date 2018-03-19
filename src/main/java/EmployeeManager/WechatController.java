@@ -214,9 +214,10 @@ public class WechatController {
         if (!Variable.leaderCount.containsKey(UserId))
             Variable.leaderCount.put(UserId, 0);
         int count = Variable.leaderCount.get(UserId);
-        if (count >= server.getLeaderPostLimit(UserId) ) {
+        if (count >= server.getLeaderPostLimit(UserId)) {
             return new ResponseMsg("0", "超过每天提交次数上限！请明天再提交。");
         }
+        Variable.leaderCount.put(UserId, ++count);
 
         String currentTime = Util.currentTime();
         String currentFileName = server.currentFileName(currentTime, file.getOriginalFilename());
@@ -275,7 +276,7 @@ public class WechatController {
                                   Model model) {
         logger.info("Post RankingList: " + type); //log
 
-        if(!userInput.equals("")) {
+        if (!userInput.equals("")) {
             String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             List<User> usersSearch = new ArrayList<>();
@@ -286,9 +287,9 @@ public class WechatController {
                 if (target.contains(userInput))
                     usersSearch.add(user);
             }
-            model.addAttribute("list",usersSearch);
-            model.addAttribute("userInput",userInput);
-            return  "templates/RankingList";
+            model.addAttribute("list", usersSearch);
+            model.addAttribute("userInput", userInput);
+            return "templates/RankingList";
         }
         if (type.equals("总排行")) {
             String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
@@ -404,7 +405,7 @@ public class WechatController {
 
                 int singleScore = 0;
                 if (reportStatus.equals("1")) {
-                    if ((Boolean)caseReport.get("scoreType")) {
+                    if ((Boolean) caseReport.get("scoreType")) {
                         singleScore = (int) caseReport.get("singleScore");
                     } else
                         singleScore = -(int) caseReport.get("singleScore");
