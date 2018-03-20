@@ -672,7 +672,6 @@ public class WechatController {
                                     @RequestParam("srcURL") String srcURL
     ) {
         logger.info("Post UploadAvatar: " + userID); //log
-
         String suffix = "png";
         String avatarURL = userID + "/" + userID + "." + suffix;
         String avatarURLSub = userID + "/" + userID + "sub." + suffix;

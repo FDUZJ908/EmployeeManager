@@ -99,9 +99,10 @@
     var reader = new FileReader();
         reader.onload = function(e){
                 document.getElementById("avatar").src = e.target.result;
+                html2image();
         };
     reader.readAsDataURL(newSrc);
-    $("#att").text("已上传头像√");
+    $("#att").text("已选择头像√");
     document.getElementById('avatar').onload=function () {
     if($("#uploadFinish").is(":hidden")){
     $("#upDiv").fadeIn("fast");
@@ -109,7 +110,7 @@
     $("#upDiv").fadeOut("fast");
     }
     };
-    html2image();
+
     }
 
 
@@ -165,13 +166,15 @@
    		EXIF.getData(img, function () {
    			orient = Number(EXIF.getTag(this, 'Orientation'));
    		});
+   		if (typeof(orient) == "undefined") {
+   		    orient = 1;
+   		}
    		return orient;
 	}
 
 	function drawPhoto(photo,canvas,srcURL) {
     //获取照片的拍摄方向
     var orient = getPhotoOrientation(photo);
-
    	var img_w = photo.naturalWidth;
    	var img_h = photo.naturalHeight;
     if (canvas.getContext) {
@@ -195,11 +198,13 @@
                 // 执行Canvas的drawImage语句
                 ctx.drawImage(img, y - canvas_h / 2, parseInt(x) - canvas_w / 2, img_h, img_w);//把图片绘制在画布translate之前的中心点，
             }
-            var imageData = canvas.toDataURL(1);
-            srcURL.value = imageData;
+
+
         }
         img.src = photo.src; // 设置图片源地址
     }
+    var imageData = canvas.toDataURL(1);
+    srcURL.value = imageData;
 }
 
 
@@ -221,9 +226,7 @@
         url : "UploadAvatar",
         type : "POST",
         data : formData,
-        // 告诉jQuery不要去处理发送的数据
         processData : false,
-        // 告诉jQuery不要去设置Content-Type请求头
         contentType : false,
         beforeSend:function(){
         $("#innerDiv").fadeIn("fast");
