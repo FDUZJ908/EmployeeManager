@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `QRCheckin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRCheckin` (
   `QRID` int(11) NOT NULL,
   `userID` char(32) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `QRCheckin` (
   KEY `userID` (`userID`),
   CONSTRAINT `QRCheckin_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
   CONSTRAINT `QRCheckin_ibfk_2` FOREIGN KEY (`QRID`) REFERENCES `QRCode` (`QRID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `QRCheckin` (
 
 DROP TABLE IF EXISTS `QRCode`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRCode` (
   `QRID` int(11) NOT NULL AUTO_INCREMENT,
   `s_time` datetime NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE `QRCode` (
   PRIMARY KEY (`QRID`),
   KEY `idx_stime_etime` (`s_time`,`e_time`),
   KEY `idx_etime` (`e_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +59,7 @@ CREATE TABLE `QRCode` (
 
 DROP TABLE IF EXISTS `caseReport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `caseReport` (
   `reportID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` char(32) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE `caseReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_2` (`userID`),
   CONSTRAINT `FK_Reference_2` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,7 @@ CREATE TABLE `caseReport` (
 
 DROP TABLE IF EXISTS `department`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `department` (
   `dID` int(11) NOT NULL,
   `userID` char(32) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE `department` (
   KEY `FK_Reference_7` (`userID`),
   CONSTRAINT `FK_Reference_7` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `department_ibfk_1` FOREIGN KEY (`dID`) REFERENCES `ministry` (`dID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +105,7 @@ CREATE TABLE `department` (
 
 DROP TABLE IF EXISTS `generalReport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `generalReport` (
   `reportID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` char(32) NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE `generalReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_1` (`userID`),
   CONSTRAINT `FK_Reference_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `generalReport` (
 
 DROP TABLE IF EXISTS `leaderReport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `leaderReport` (
   `reportID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` char(32) NOT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE `leaderReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_3` (`userID`),
   CONSTRAINT `FK_Reference_3` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,13 +156,13 @@ CREATE TABLE `leaderReport` (
 
 DROP TABLE IF EXISTS `ministry`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ministry` (
   `dID` int(11) NOT NULL AUTO_INCREMENT,
   `dName` char(32) NOT NULL,
   PRIMARY KEY (`dID`),
   UNIQUE KEY `dName` (`dName`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,14 +171,14 @@ CREATE TABLE `ministry` (
 
 DROP TABLE IF EXISTS `privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `privilege` (
   `privilege` int(11) PRIMARY KEY,
   `weekday` tinyint(4) DEFAULT NULL,
   `pushTime` time DEFAULT NULL,
   `leaderPostLimit` int(11) DEFAULT NULL,
   `leaderScoreLimit` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,13 +187,13 @@ CREATE TABLE `privilege` (
 
 DROP TABLE IF EXISTS `reportType`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reportType` (
   `typeName` char(32) NOT NULL,
   `typeValue` int(11) NOT NULL DEFAULT '0',
   `typeRemark` char(64) DEFAULT NULL,
   PRIMARY KEY (`typeName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,13 +202,13 @@ CREATE TABLE `reportType` (
 
 DROP TABLE IF EXISTS `sysVar`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sysVar` (
   `varName` char(32) NOT NULL,
   `value` int(11) DEFAULT NULL,
   `string` char(32) DEFAULT NULL,
   PRIMARY KEY (`varName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +217,7 @@ CREATE TABLE `sysVar` (
 
 DROP TABLE IF EXISTS `undealedCaseReport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `undealedCaseReport` (
   `reportID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` char(32) NOT NULL,
@@ -235,7 +235,7 @@ CREATE TABLE `undealedCaseReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_6` (`userID`),
   CONSTRAINT `FK_Reference_6` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +244,7 @@ CREATE TABLE `undealedCaseReport` (
 
 DROP TABLE IF EXISTS `undealedGeneralReport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `undealedGeneralReport` (
   `reportID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` char(32) NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE `undealedGeneralReport` (
   PRIMARY KEY (`reportID`),
   KEY `FK_Reference_8` (`userID`),
   CONSTRAINT `FK_Reference_8` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -269,7 +269,7 @@ CREATE TABLE `undealedGeneralReport` (
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `userID` char(32) NOT NULL,
   `avatarURL` char(255) DEFAULT NULL,
@@ -286,7 +286,7 @@ CREATE TABLE `user` (
   `privilege` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`),
   UNIQUE KEY `userName` (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
