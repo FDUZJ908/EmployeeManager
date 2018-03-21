@@ -98,7 +98,8 @@
     var newSrc = $('#file').get(0).files[0];
     var reader = new FileReader();
         reader.onload = function(e){
-                document.getElementById("avatar").src = e.target.result;
+                var avatar = document.getElementById("avatar");
+                avatar.src = e.target.result;
                 html2image();
         };
     reader.readAsDataURL(newSrc);
@@ -174,6 +175,7 @@
 
 	function drawPhoto(photo,canvas,srcURL) {
     //获取照片的拍摄方向
+
     var orient = getPhotoOrientation(photo);
    	var img_w = photo.naturalWidth;
    	var img_h = photo.naturalHeight;
@@ -198,14 +200,15 @@
                 // 执行Canvas的drawImage语句
                 ctx.drawImage(img, y - canvas_h / 2, parseInt(x) - canvas_w / 2, img_h, img_w);//把图片绘制在画布translate之前的中心点，
             }
+        var imageData = canvas.toDataURL(1);
+        srcURL.value = imageData;
 
-
-        }
+        };
         img.src = photo.src; // 设置图片源地址
+
     }
-    var imageData = canvas.toDataURL(1);
-    srcURL.value = imageData;
-}
+
+    }
 
 
 </script>
