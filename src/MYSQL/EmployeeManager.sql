@@ -209,6 +209,7 @@ CREATE TABLE `sysVar` (
   `string` char(32) DEFAULT NULL,
   PRIMARY KEY (`varName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

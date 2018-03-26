@@ -33,15 +33,31 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> list() {
-        return jdbcTemplate.query("select * from user", BeanPropertyRowMapper.newInstance(Employee.class));
+    public List<Employee> listEmp(String name) {
+        name = '%' + name + '%';
+        return jdbcTemplate.query("select * from user where userName like ?", BeanPropertyRowMapper.newInstance(Employee.class), name);
     }
 
     @Override
-    public List<Depart> list(int dID) {
-        return jdbcTemplate.query("select department.userid,user.username,department.did,department.dname,department.isleader "+
-                " from department,user where user.userid=department.userid and dID=?",
-                BeanPropertyRowMapper.newInstance(Depart.class), dID);
+    public List<Employee> listEmp(int dID, String name) {
+        name = '%' + name + '%';
+        return jdbcTemplate.query("select distinct * from user,department where user.userID=department.userID AND dID=? AND userName like ?", BeanPropertyRowMapper.newInstance(Employee.class), dID, name);
+    }
+
+    @Override
+    public List<Depart> list(String name) {
+        name = '%' + name + '%';
+        return jdbcTemplate.query("select department.userid,user.username,user.privilege,department.did,department.dname,department.isleader " +
+                        " from department,user where user.userid=department.userid and user.userName like ?",
+                BeanPropertyRowMapper.newInstance(Depart.class), name);
+    }
+
+    @Override
+    public List<Depart> list(int dID, String name) {
+        name = '%' + name + '%';
+        return jdbcTemplate.query("select department.userid,user.username,user.privilege,department.did,department.dname,department.isleader " +
+                        " from department,user where user.userid=department.userid and dID=? and user.userName like ?",
+                BeanPropertyRowMapper.newInstance(Depart.class), dID, name);
     }
 
     @Override
@@ -112,7 +128,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
     @Override
     public void updateLeaders(int dID, String[] leaders) {
         jdbcTemplate.update("update department set isleader=0 where dID=?", dID);
-        if (leaders == null || leaders.length==0) return;
+        if (leaders == null || leaders.length == 0) return;
         String sql = "update department set isleader=1 where dID=" + String.valueOf(dID) + " and userID in " + getRepeatQMark(1, leaders.length);
         jdbcTemplate.update(sql, leaders);
     }
@@ -169,6 +185,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
     @Override
     public int getDepartID(String dName) {
+        if (dName == null) return 0;
         List<Map<String, Object>> res = jdbcTemplate.queryForList("select dID from ministry where dName=?", dName);
         if (res.size() == 0) return 0;
         return (int) res.get(0).get("dID");

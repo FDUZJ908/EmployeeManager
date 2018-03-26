@@ -21,8 +21,6 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-
-
                     <div class="box">
                         <div class="box box-info">
                             <div class="box-header with-border">
@@ -30,38 +28,36 @@
                             </div>
                             <!-- /.box-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" th:action="@{/employee/depEmp}" method="get">
+                            <form class="form-horizontal" th:action="@{/employee}" method="get">
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">选择部门查询</label>
-
-                                        <div class="col-sm-10" style="width: 200px">
+                                        <div class="col-sm-10" style="width: 300px">
                                             <input type="text" list="departmentlist" name="department"
-                                                   class="form-control"
-                                                   id="department" maxlength="20"/>
+                                                   class="form-control" th:value="${searchDepart}"
+                                                   id="searchDepart" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}"
-                                                        th:text="${depar.getDname()}"></option>
+                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
                                             </datalist>
+                                        </div>
+
+                                        <label class="col-sm-2 control-label">人员查询</label>
+                                        <div class="col-sm-10" style="width: 300px">
+                                            <input type="text" name="userName"
+                                                   class="form-control" th:value="${searchName}"
+                                                   id="searchName" maxlength="20"/>
                                         </div>
                                     </div>
 
-
                                     <br/><br/>
 
-                                    <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: center;">
                                         <button type="submit" class="btn btn-info">查询</button>
                                     </div>
-                                    <!-- /.box-footer -->
-
-
                                 </div>
                             </form>
                         </div>
-
                     </div>
-
 
                     <div class="box">
                         <div class="box-header with-border">
@@ -98,7 +94,7 @@
                                     <td th:text="${item.getGender_()}"></td>
                                     <td th:text="${item.getEmail()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/editEmp(userid=${item.getUserID()})}"><span
+                                        <a th:href="@{/employee/editEmp(userid=${item.getUserID()},redirect=0)}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑"></span></a>
                                     </td>
@@ -140,7 +136,6 @@
             "autoWidth": false
         });
     });
-
 </script>
 
 <script>

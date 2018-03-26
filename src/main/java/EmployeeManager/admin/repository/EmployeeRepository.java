@@ -13,9 +13,13 @@ public interface EmployeeRepository {
 
     Employee get(String userid);
 
-    List<Employee> list();
+    List<Employee> listEmp(String name);
 
-    List<Depart> list(int dID);
+    List<Employee> listEmp(int dID, String name);
+
+    List<Depart> list(String name);
+
+    List<Depart> list(int dID, String name);
 
     List<Depart> getDepartmentList();
 

@@ -23,13 +23,29 @@ public class EmployeeService {
     }
 
     //获取所有成员
-    public List<Employee> list() {
-        return employeeRepository.list();
+    public List<Employee> listEmp() {
+        return this.listEmp("");
+    }
+
+    public List<Employee> listEmp(String name) {
+        return employeeRepository.listEmp(name);
+    }
+
+    public List<Employee> listEmp(int dID, String name) {
+        return employeeRepository.listEmp(dID, name);
     }
 
     //获取部门下的成员 包括ID、姓名、部门和是否为领导
     public List<Depart> list(int dID) {
-        return employeeRepository.list(dID);
+        return this.list(dID, "");
+    }
+
+    public List<Depart> list(String name) {
+        return employeeRepository.list(name);
+    }
+
+    public List<Depart> list(int dID, String name) {
+        return employeeRepository.list(dID, name);
     }
 
     public int getDepartID(String dName) {

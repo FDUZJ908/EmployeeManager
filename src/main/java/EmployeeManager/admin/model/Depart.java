@@ -5,9 +5,10 @@ package EmployeeManager.admin.model;
  */
 public class Depart {
     private String did;
+    private String dname;
     private String userid;
     private String username;
-    private String dname;
+    private int privilege;
     private int isleader;
     private int selected = 0;
 
@@ -72,5 +73,13 @@ public class Depart {
 
     public void setSelected(int selected) {
         this.selected = selected;
+    }
+
+    public int getPrivilege() {
+        return this.privilege;
+    }
+
+    public void setPrivilege(int privilege) {
+        this.privilege = privilege;
     }
 }

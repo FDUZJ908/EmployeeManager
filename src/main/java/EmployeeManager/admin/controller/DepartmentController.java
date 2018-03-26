@@ -27,14 +27,14 @@ public class DepartmentController {
     @RequestMapping(method = RequestMethod.GET)
     public String listDepartment(Model model) {
         List<Depart> departmentList = employeeService.getDepartmentList();
-        model.addAttribute("list", departmentList);//获取部门列表
+        model.addAttribute("departmentList", departmentList);//获取部门列表
         return "employee/listAllDep";
     }
 
     //增加部门
     @RequestMapping(value = "/addDep", method = RequestMethod.GET)
     public String addDep(Model model) {
-        model.addAttribute("users", employeeService.list());
+        model.addAttribute("users", employeeService.listEmp());
         return "employee/formAddDep";
     }
 
@@ -71,7 +71,7 @@ public class DepartmentController {
         model.addAttribute("dID", dID);
         model.addAttribute("dName", dName);
 
-        List<Employee> users = employeeService.list();
+        List<Employee> users = employeeService.listEmp();
         List<Depart> depEmps = employeeService.list(dID);
         for (Employee user : users) {
             for (Depart emp : depEmps)

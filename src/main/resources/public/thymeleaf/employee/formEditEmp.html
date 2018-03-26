@@ -28,7 +28,7 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" th:action="@{/employee/editEmp}" onsubmit="return check()"
+                        <form class="form-horizontal" th:action="@{/employee/editEmp(redirect=${redirect})}" onsubmit="return check()"
                               method="post" id="multiform">
                             <div class="box-body">
 

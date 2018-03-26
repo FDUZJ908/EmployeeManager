@@ -29,10 +29,17 @@ public class EmployeeController {
 
     //查询所有人员
     @RequestMapping(method = RequestMethod.GET)
-    public String listEmployee(Model model) {
-        model.addAttribute("list", employeeService.list()); //获取所有成员
-        List<Depart> departmentList = employeeService.getDepartmentList(); //获取所有部门
-        model.addAttribute("departmentList", departmentList);
+    public String listEmployee(@RequestParam(value = "department", required = false) String department,
+                               @RequestParam(value = "userName", required = false) String name,
+                               Model model) {
+        int dID = employeeService.getDepartID(department);
+        if (name == null) name = "";
+        else name = name.trim();
+        List<Employee> list = (dID == 0) ? employeeService.listEmp(name) : employeeService.listEmp(dID, name);
+        model.addAttribute("list", list); //获取所有成员
+        model.addAttribute("departmentList", employeeService.getDepartmentList());
+        model.addAttribute("searchName", name);
+        model.addAttribute("searchDepart", department);
         return "employee/listAllEmp";
     }
 
@@ -77,7 +84,9 @@ public class EmployeeController {
 
     //编辑人员信息
     @RequestMapping(value = "/editEmp", method = RequestMethod.GET)
-    public String editEmp(@RequestParam("userid") String userid, Model model) {
+    public String editEmp(@RequestParam("userid") String userid,
+                          @RequestParam("redirect") String redirect,
+                          Model model) {
         List<Depart> departs = employeeService.getDepartmentList();
         List<Depart> empDeps = employeeService.getDepartmentList(userid);
         for (Depart d1 : departs) {
@@ -89,6 +98,7 @@ public class EmployeeController {
         model.addAttribute("employee", employeeService.get(userid));
         model.addAttribute("departmentList", departs); //获取所有部门
         model.addAttribute("privilegeList", employeeService.getPrivilegeList());
+        model.addAttribute("redirect", redirect);
         return "employee/formEditEmp";
     }
 
@@ -98,6 +108,8 @@ public class EmployeeController {
                                 @RequestParam(value = "title_", required = false) String title_,
                                 @RequestParam(value = "status_") String status_,
                                 @RequestParam("selectedDeps") String selected,
+                                @RequestParam("redirect") String redirect,
+                                RedirectAttributes redirectAttributes,
                                 Model model) {
         employee.setPosition_(position_);
         employee.setTitle_(title_);
@@ -116,6 +128,10 @@ public class EmployeeController {
             return "templates/failure";
         }
 
+        if (!redirect.equals("0")) {
+            redirectAttributes.addAttribute("department", redirect);
+            return "redirect:/employee/depEmp";
+        }
         return "redirect:/employee";
     }
 
@@ -127,20 +143,26 @@ public class EmployeeController {
     @RequestMapping(value = "/depEmp", method = RequestMethod.GET)
     public String listDepEmployee(@RequestParam(value = "dID", required = false) Integer dID,
                                   @RequestParam("department") String department,
+                                  @RequestParam(value = "userName", required = false) String name,
                                   Model model) {
         if (dID == null) dID = employeeService.getDepartID(department);
+        if (name == null) name = "";
+        else name = name.trim();
+        List<Depart> list = (dID == 0) ? employeeService.list(name) : employeeService.list(dID, name);
         model.addAttribute("dID", dID);
         model.addAttribute("department", department);
-        model.addAttribute("list", employeeService.list(dID));//获取部门department下的成员 包括ID、姓名、部门和是否为领导
-        model.addAttribute("departmentList", employeeService.getDepartmentList());//获取部门列表
+        model.addAttribute("list", list);//获取部门department下的成员 包括ID、姓名、部门和是否为领导
+        model.addAttribute("departmentList", employeeService.getDepartmentList());
+        model.addAttribute("searchName", name);
+        model.addAttribute("searchDepart", department);
         return "employee/listDepEmp";
     }
 
     //批量编辑领导
     @RequestMapping(value = "/editDepLeader", method = RequestMethod.GET)
-    public String adminDepEmp(@RequestParam("dID") int dID,
-                              @RequestParam("dName") String dName,
-                              Model model) {
+    public String editDepLeader(@RequestParam("dID") int dID,
+                                @RequestParam("dName") String dName,
+                                Model model) {
         model.addAttribute("dID", dID);
         model.addAttribute("dName", dName);
         model.addAttribute("list", employeeService.list(dID));
@@ -148,10 +170,10 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/editDepLeader", method = RequestMethod.POST)
-    public String modifyAdminDepEmp(@RequestParam("dID") int dID,
-                                    @RequestParam("department") String department,
-                                    @RequestParam("selected") String selected,
-                                    RedirectAttributes redirectAttributes) {
+    public String modifyEditDepLeader(@RequestParam("dID") int dID,
+                                      @RequestParam("department") String department,
+                                      @RequestParam("selected") String selected,
+                                      RedirectAttributes redirectAttributes) {
         String[] users = (selected.length() > 0) ? selected.split(",") : new String[0];
         employeeService.updateLeaders(dID, users);
         redirectAttributes.addAttribute("dID", dID);
