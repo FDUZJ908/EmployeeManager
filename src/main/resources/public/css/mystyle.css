@@ -63,6 +63,10 @@ hr {
 	background-color: rgb(255,255,255);
 }
 
+.rankingList-key-search input[type="img"] {
+    width: 10%;
+}
+
 .rankingList-key-search input[type="text"]{
 	width: 90%;
 	font-size: 3em;
@@ -74,10 +78,6 @@ hr {
 	background-color: rgb(237,238,240);
 	-webkit-border-radius: 1em;
 	-moz-border-radius: 1em;
-}
-
-.rankingList-key-search input[type="img"] {
-    width: 10%;
 }
 
 .page{

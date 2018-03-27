@@ -66,7 +66,7 @@ public class Application {
     @Bean
     public DataSource dataSource() {
         PoolProperties p = new PoolProperties();
-        p.setUrl("jdbc:mysql://localhost:3306/EmployeeManager?useUnicode=true&characterEncoding=UTF-8");
+        p.setUrl("jdbc:mysql://localhost:3306/EmployeeManager?useUnicode=true&characterEncoding=UTF-8&useSSL=false");
         p.setUsername("root");
         p.setPassword(System.getenv("DatabasePassword"));
         p.setDriverClassName("com.mysql.jdbc.Driver");
