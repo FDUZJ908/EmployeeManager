@@ -10,11 +10,7 @@
 
 <body onload="changeBGC1()">
 <div class="page" style="width:1024px;height:768px;">
-    <!--
-    <div class="page-title">
-        <h3 th:text="'���ְ�-'+${selected_type}"></h3>
-    </div>
-    -->
+
     <hr>
     <div th:each="everyone,rowStat:${list}" class="rank_box_PC">
         <div class="rank_box_left"><p th:text="${rowStat.count}"></p></div>

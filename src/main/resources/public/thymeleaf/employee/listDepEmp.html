@@ -87,11 +87,11 @@
                                     <td th:text="${item.getPrivilege()}"></td>
                                     <td th:text="${item.getIsleader_()}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/employee/editDepEmp(dID=${dID},dName=${department},userid=${item.getUserid()},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
+                                        <a th:href="@{/employee/editDepEmp(dID=${item.getDid()},dName=${item.getDname()},userid=${item.getUserid()},username=${item.getUsername()},isleader=${item.getIsleader()})}"><span
                                                 class="glyphicon glyphicon-edit"
                                                 title="编辑是否领导"></span></a>
                                         &nbsp;
-                                        <a th:href="@{/employee/editEmp(userid=${item.getUserid()},redirect=${department})}"><span
+                                        <a th:href="@{/employee/editEmp(userid=${item.getUserid()},redirect=${item.getDname()})}"><span
                                                 class="glyphicon glyphicon-edit" style="color:rgb(255,0,0);"
                                                 title="编辑成员信息"></span></a>
                                     </td>
