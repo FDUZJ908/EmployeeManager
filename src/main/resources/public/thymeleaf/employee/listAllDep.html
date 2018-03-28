@@ -38,16 +38,18 @@
                                                    class="form-control" th:value="${searchDepart}"
                                                    id="searchDepart" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                                <option th:each="depar:${departmentList}"
+                                                        th:text="${depar.getDname()}"></option>
                                             </datalist>
                                         </div>
-
+                                        <!--
                                         <label class="col-sm-2 control-label">人员查询</label>
                                         <div class="col-sm-10" style="width: 300px">
                                             <input type="text" name="userName"
                                                    class="form-control" th:value="${searchName}"
                                                    id="searchName" maxlength="20"/>
                                         </div>
+                                        -->
                                     </div>
 
                                     <br/><br/>
@@ -80,21 +82,25 @@
                                 <tbody>
                                 <tr th:each="item:${departmentList}">
                                     <td>
-                                        <a class="alink" th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}" th:text="${item.getDid()}">
+                                        <a class="alink"
+                                           th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}"
+                                           th:text="${item.getDid()}">
                                         </a>
                                     </td>
 
 
                                     <td>
-                                        <a class="alink" th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}" th:text="${item.getDname()}">
+                                        <a class="alink"
+                                           th:href="@{/employee/depEmp(dID=${item.getDid()},department=${item.getDname()})}"
+                                           th:text="${item.getDname()}">
                                         </a>
                                     </td>
 
                                     <td style="text-align: center">
                                         <a th:href="@{/department/editDep(dID=${item.getDid()},dName=${item.getDname()},redirect=0)}">
                                             <span
-                                                class="glyphicon glyphicon-edit"
-                                                title="编辑">
+                                                    class="glyphicon glyphicon-edit"
+                                                    title="编辑">
                                             </span>
                                         </a>
                                     </td>
@@ -127,16 +133,19 @@
 
 <!-- page script -->
 <script>
-    $(function () {
+        $(document).ready( function () {
         $('#dataTable').DataTable({
-            "paging": false,
+            "paging": true,
+            "pageLength":20,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "info": true,
-            "autoWidth": false
+            "autoWidth": true,
+            "aaSorting": []
         });
-    });
+        });
+
 </script>
 
 <script>
@@ -157,6 +166,7 @@
 			})
         }
     }
+
 </script>
 <script th:src="@{/js/list-page.js}"></script>
 </body>
@@ -174,4 +184,5 @@ a.alink:visited{
 a.alink:hover{
     color:#72ACE3
 }
+
 </style>
