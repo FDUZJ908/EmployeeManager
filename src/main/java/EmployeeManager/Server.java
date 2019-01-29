@@ -323,6 +323,22 @@ public class Server {
         return true;
     }
 
+    public String currentFileName(String currentTime, String originalFileName) {
+
+        return currentTime.replace(" ", "-").replace(":", "-") + "_" +
+                originalFileName.replace(" ", "%20");
+    }
+
+    public void mkDir(String UserId) {
+        File dir = new File(path + UserId);
+        if (!dir.exists())
+            try {
+                dir.mkdir();
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+            }
+    }
+
     public List<String> checkMember(String members) {
         //分解队伍成员
         String[] member = members.split(",");
@@ -345,21 +361,6 @@ public class Server {
         return errorUser;
     }
 
-    public String currentFileName(String currentTime, String originalFileName) {
-
-        return currentTime.replace(" ", "-").replace(":", "-") + "_" +
-                originalFileName.replace(" ", "%20");
-    }
-
-    public void mkDir(String UserId) {
-        File dir = new File(path + UserId);
-        if (!dir.exists())
-            try {
-                dir.mkdir();
-            } catch (Exception e) {
-                logger.info(e.getMessage());
-            }
-    }
 
     public Map<String, Object> getUndealedGeneralReport(String reportID) {
         String sql = "SELECT * FROM undealedGeneralReport WHERE reportID=" + reportID + " LIMIT 1";

@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application {
-    private static final int httpPort = (System.getenv("EMHTTPPort") == null) ? 4908 : Integer.parseInt(System.getenv("EMHTTPPort"));
-    private static final int httpsPort = (System.getenv("EMHTTPSPort") == null) ? 8443 : Integer.parseInt(System.getenv("EMHTTPSPort"));
+    private static final int httpPort = (System.getenv("EMHTTPPort") == null) ? 80 : Integer.parseInt(System.getenv("EMHTTPPort"));
+    private static final int httpsPort = (System.getenv("EMHTTPSPort") == null) ? 443 : Integer.parseInt(System.getenv("EMHTTPSPort"));
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -49,7 +49,7 @@ public class Application {
         connector.setPort(httpPort);
         connector.setSecure(false);
         //监听到http的端口号后转向到的https的端口号
-        //connector.setRedirectPort(httpsPort);
+        connector.setRedirectPort(httpsPort);
         return connector;
     }
 

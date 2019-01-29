@@ -22,44 +22,41 @@ public class ReportQueryController {
     @Autowired
     Server server;
 
-    String sqluc = "select * " +
-            "from undealedCaseReport, user " +
-            "where undealedCaseReport.userID = user.userID " +
-            "and (undealedCaseReport.userID like concat(?,'%') or members like concat('%',?,'%')) " +
-            "and submitTime between ? and ? " +
-            "and leaderName like concat(?,'%') " +
-            "and undealedCaseReport.userID like concat(?,'%') " +
-            "order by submitTime desc";
-    String sqlc = "select * " +
-            "from caseReport , user " +
-            "where caseReport.userID = user.userID " +
-            "and (caseReport.userID like concat(?,'%') or members like concat('%',?,'%')) " +
-            "and submitTime between ? and ? " +
-            "and leaderName like concat(?,'%') " +
-            "and caseReport.userID like concat(?,'%') " +
-            "order by submitTime desc";
-
-    String sqlug = "select * " +
-            "from undealedGeneralReport, user " +
+    String sqlug = "select * from undealedGeneralReport, user " +
             "where undealedGeneralReport.userID = user.userID " +
             "and submitTime between ? and ? " +
-            "and leaderName like concat(?,'%') " +
-            "and undealedGeneralReport.userID like concat(?,'%') " +
+            "and leaderName like concat('%',?,'%') " +
+            "and userName like concat('%',?,'%') " +
+            "and userName like concat('%',?,'%') " +
             "order by submitTime desc";
-    String sqlg = "select * " +
-            "from generalReport, user " +
+    String sqlg = "select * from generalReport, user " +
             "where generalReport.userID = user.userID " +
             "and submitTime between ? and ? " +
-            "and leaderName like concat(?,'%') " +
-            "and generalReport.userID like concat(?,'%') " +
+            "and leaderName like concat('%',?,'%') " +
+            "and userName like concat('%',?,'%') " +
+            "and userName like concat('%',?,'%') " +
             "order by submitTime desc";
 
-    String sqll = "select * " +
-            "from leaderReport , user " +
-            "where leaderReport.userID = user.userID " +
-            "and members like concat('%',?,'%') " +
+    String sqluc = "select * from undealedCaseReport, user " +
+            "where undealedCaseReport.userID = user.userID " +
             "and submitTime between ? and ? " +
-            "and leaderReport.userID like concat(?,'%') " +
+            "and leaderName like concat('%',?,'%') " +
+            "and userName like concat('%',?,'%') " +
+            "and (userName like concat('%',?,'%') or members like concat('%',?,'%')) " +
+            "order by submitTime desc";
+    String sqlc = "select * from caseReport, user " +
+            "where caseReport.userID = user.userID " +
+            "and submitTime between ? and ? " +
+            "and leaderName like concat('%',?,'%') " +
+            "and userName like concat('%',?,'%') " +
+            "and (userName like concat('%',?,'%') or members like concat('%',?,'%')) " +
+            "order by submitTime desc";
+
+    String sqll = "select * from leaderReport, user " +
+            "where leaderReport.userID = user.userID " +
+            "and submitTime between ? and ? " +
+            "and userName like concat('%',?,'%') " +
+            "and members like concat('%',?,'%') " +
             "order by submitTime desc";
 
     @RequestMapping(method = RequestMethod.GET)
@@ -82,11 +79,8 @@ public class ReportQueryController {
         if (start.equals("")) start = "0001-01-01";
         if (end.equals("")) end = "9998-12-31";
 
-        String originEnd=end;
+        String originEnd = end;
         end = Util.AddOneDay(end);
-
-        String scoreID = server.name2id(score);
-        String submitterID = server.name2id(submitter);
 
         Map<String, Object> defValue = new HashMap<String, Object>();
         List<HistoryReport> reports = new ArrayList<HistoryReport>();
@@ -95,9 +89,9 @@ public class ReportQueryController {
         if (types != null) {
             for (int x : types) type |= x;
         }
-        
+
         if ((type & 1) != 0) {
-            Object args[] = new Object[]{start, end, leader, submitterID};
+            Object args[] = new Object[]{start, end, leader, submitter,score};
             defValue.put("type", HistoryReport.GENERAL);
             reports.addAll(server.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
@@ -105,7 +99,7 @@ public class ReportQueryController {
         }
 
         if ((type & 2) != 0) {
-            Object args[] = new Object[]{scoreID, score, start, end, leader, submitterID};
+            Object args[] = new Object[]{start, end, leader, submitter, score, score};
             defValue.put("type", HistoryReport.CASE);
             reports.addAll(server.jdbcTemplate.query(sqluc, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
@@ -114,7 +108,7 @@ public class ReportQueryController {
         }
 
         if ((type & 4) != 0) {
-            Object args[] = new Object[]{score, start, end, submitterID};
+            Object args[] = new Object[]{start, end, submitter, score};
             defValue.put("type", HistoryReport.LEADER);
             reports.addAll(server.jdbcTemplate.query(sqll, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
         }
