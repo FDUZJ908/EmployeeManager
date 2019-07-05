@@ -17,7 +17,7 @@
         <div class="rank_box_left_PC"><img th:src="@{${everyone.getAvatarURL()}}"/></div>
         <div class="rank_box_left"><p th:text="${everyone.getUsername()}"></p></div>
         <div class="rank_box_left"><p th:text="${everyone.getDuty()}"></p></div>
-        <div class="rank_box_left"><p th:text="${everyone.getTitle()}"></p></div>
+        <!--<div class="rank_box_left"><p th:text="${everyone.getTitle()}"></p></div>-->
         <div class="rank_box_right"><p th:text="${everyone.getScore()}"></p></div>
     </div>
     </hr>
@@ -46,6 +46,7 @@
 
 <form method="post" nctype="multipart/form-data">
     <input value="PC" name="STATE" style="display:none;"/>
+    <input value="" name="userInput" style="display:none;"/>
     <div class="bottom_box_rank">
         <div class="rank_button"><input type="submit" id="B1" value="领导干部" name="button"/></div>
         <div class="rank_button"><input type="submit" id="B2" value="中层干部" name="button"/></div>

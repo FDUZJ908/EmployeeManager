@@ -32,7 +32,7 @@
             <div class="report_box">
                 <label>任务类型:</label>
                 <select name="type" id="type">
-                    <div th:each="reportType:${reportType}">
+                    <div th:each="reportType:${reportTypes}">
                         <option th:value="${reportType.getTypeName()}" th:text="${reportType.getTypeName()}"></option>
                     </div>
                 </select>
@@ -48,7 +48,7 @@
 
             <div class="report_box">
                 <label>任务分值:</label>
-                <input type="text" name="score"  id="score"/>
+                <input type="text" name="score" id="score"/>
             </div>
 
             <div class="report_box">
@@ -63,8 +63,7 @@
             <div class="report_box">
                 <label>队伍成员:</label>
                 <div class="selected-box">
-                    <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members">
-                    </div>
+                    <div name="checkMemberDiv" id="checkMemberDiv" class="selected-members"></div>
                     <input type="search" placeholder="搜索" autocomplete="off" name="userInput" id="userInput"
                            oninput="memberSearch()"/>
                 </div>
@@ -81,7 +80,7 @@
 </div>
 
 <div class="uploadProcess" id="innerDiv">
-            <p>正在提交报告...</p>
+    <p>正在提交报告...</p>
 </div>
 
 <select name="members_hide" id="members_hide" style="display:none">
@@ -96,43 +95,43 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         $("#caseSubmit").click(function () {
 
-        var result = checkDL();
+            var result = checkDL();
 
-        if (result == false)
-            return false;
+            if (result == false)
+                return false;
 
-        var caseForm = document.getElementById("caseForm");
-        var formData = new FormData(caseForm);
+            var caseForm = document.getElementById("caseForm");
+            var formData = new FormData(caseForm);
 
-        $.ajax({
-        url : "CaseReport",
-        type : "POST",
-        data : formData,
-        // 告诉jQuery不要去处理发送的数据
-        processData : false,
-        // 告诉jQuery不要去设置Content-Type请求头
-        contentType : false,
-        beforeSend:function(){
-        $("#innerDiv").fadeIn("fast");
-        },
-        complete : function() {
+            $.ajax({
+                url: "CaseReport",
+                type: "POST",
+                data: formData,
+                // 告诉jQuery不要去处理发送的数据
+                processData: false,
+                // 告诉jQuery不要去设置Content-Type请求头
+                contentType: false,
+                beforeSend: function () {
+                    $("#innerDiv").fadeIn("fast");
+                },
+                complete: function () {
                     $("#innerDiv").fadeOut("fast");
-        },
-        success : function(responseMsg) {
-            alert(responseMsg.msg);
-            if(responseMsg.num == "1")
-                reset();
+                },
+                success: function (responseMsg) {
+                    alert(responseMsg.msg);
+                    if (responseMsg.num == "1")
+                        reset();
 
-        },
-        error : function(responseMsg) {
-            $("#innerDiv").fadeOut("fast");
-            alert("error");
-        }
-        });
+                },
+                error: function (responseMsg) {
+                    $("#innerDiv").fadeOut("fast");
+                    alert("error");
+                }
+            });
 
         });
     });
@@ -140,7 +139,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    function checkDL () {
+    function checkDL() {
         var content = document.getElementById("content");
         var score = document.getElementById("score");
         var sub = "-";
@@ -159,7 +158,7 @@
             return false;
         }
 
-        if (score.value.toString().indexOf(sub)!= -1) {
+        if (score.value.toString().indexOf(sub) != -1) {
             alert("任务分值不能为负数！")
             return false;
         }
@@ -175,7 +174,7 @@
 
     function changeFile() {
 
-		$("#att").text("已上传√");
+        $("#att").text("已上传√");
     }
 
     function checkMemberDivToInput() {
@@ -183,50 +182,49 @@
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
         var checkMember = checkMemberDiv.children;
-        for (i = 0; i < checkMember.length ; i++){
+        for (i = 0; i < checkMember.length; i++) {
             members.setAttribute("value", members.value.toString() + checkMember[i].value.toString() + ",");
         }
-        members.setAttribute("value",members.value.toString().substring(0,members.value.toString().length-1))
+        members.setAttribute("value", members.value.toString().substring(0, members.value.toString().length - 1))
     }
 
 
     function reset() {
         var content = document.getElementById("content");
-            content.value = "";
+        content.value = "";
         var file = document.getElementById("file");
-         if (file.outerHTML) {
-             file.outerHTML = file.outerHTML;
-         } else {
-             file.value = "";
-         }
-         $("#att").text("上传附件");
+        if (file.outerHTML) {
+            file.outerHTML = file.outerHTML;
+        } else {
+            file.value = "";
+        }
+        $("#att").text("上传附件");
 
         var resetScore_type = document.getElementById("resetScore_type");
-            resetScore_type.selected = true;
+        resetScore_type.selected = true;
 
-         $("#leader").get(0).selectedIndex = 0;
+        $("#leader").get(0).selectedIndex = 0;
         $("#score").val(null);
         $("#checkMemberDiv").empty();
         var userInput = document.getElementById('userInput');
-        userInput.value="";
+        userInput.value = "";
         memberSearch();
         loadType();
-
-
-
+        members.setAttribute("value", "");
     }
+
     function loadType() {
-    $("#type").val('急难危重');
+        $("#type").val('急难险重');
     }
 
     function addDiv(value) {
         var mydiv = document.getElementById("checkMemberDiv");
-        if(mydiv.firstChild){
-        mydiv.insertBefore(value,mydiv.firstChild);
+        if (mydiv.firstChild) {
+            mydiv.insertBefore(value, mydiv.firstChild);
         }
         else {
-        mydiv.appendChild(value);
-    }
+            mydiv.appendChild(value);
+        }
     }
 
     function deleteObjCheckMemberDiv(value) {
@@ -236,9 +234,10 @@
         memberSearch();
 
     }
-    function addCheckBox (value){
+
+    function addCheckBox(value) {
         var b = document.createElement("input");
-        var delFunction = "deleteObjCheckMemberDiv(" +"checkMember" + value.toString() +")";
+        var delFunction = "deleteObjCheckMemberDiv(" + "checkMember" + value.toString() + ")";
         b.setAttribute("value", value);
         b.setAttribute("type", "button");
         b.setAttribute("id", "checkMember" + value.toString());
@@ -252,7 +251,7 @@
         memberSearch();
     }
 
-    function  memberSearch() {
+    function memberSearch() {
         var userInput = document.getElementById('userInput').value;
         var members_hide = document.getElementById('members_hide');
         var checkMemberDiv = document.getElementById("checkMemberDiv");
@@ -301,14 +300,7 @@
     }
 
 
-
-
     /*]]>*/
-
-
-
-
-
 
 
 </script>

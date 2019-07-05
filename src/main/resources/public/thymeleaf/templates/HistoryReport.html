@@ -5,17 +5,17 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-     $(document).ready(function() {
+    $(document).ready(function () {
         $(":button").click(function () {
-        var _this = $(this);
-        var src = _this.attr("value");
-        $("#holonomicImg").attr("src", src);
-        $("#outerDiv").fadeIn("fast");
-        $("#outerDiv").click(function(){
-            $(this).fadeOut("fast");
+            var _this = $(this);
+            var src = _this.attr("value");
+            $("#holonomicImg").attr("src", src);
+            $("#outerDiv").fadeIn("fast");
+            $("#outerDiv").click(function () {
+                $(this).fadeOut("fast");
+            });
         });
     });
-});
 
     function reportSearch() {
         var userInPut = document.getElementById("userInPut").value;
@@ -27,18 +27,18 @@
         var reportType;
         var count;
         var targetReport;
-       /* var targetP;*/
-        for (i=0 ; i < reportList.length ; i++) {
+
+        for (var i = 0; i < reportList.length; i++) {
             count = 0;
             report = reportList[i].children;
             report = report[0];
             reportID = report[1].value;
             reportType = report[0].value;
             targetReport = document.getElementById(reportID.toString() + '_' + reportType.toString());
-         /*   targetP = targetReport.children;
-            var re = new RegExp(userInPut,"g");
-            targetP[0].setAttribute("text",targetP[0].text.Replace(re,""<span style="color:#F00">" + targetP[0].text + "</span>""));*/
-            for (j = 1; j < report.length; j++) {
+            /*   targetP = targetReport.children;
+               var re = new RegExp(userInPut,"g");
+               targetP[0].setAttribute("text",targetP[0].text.Replace(re,""<span style="color:#F00">" + targetP[0].text + "</span>""));*/
+            for (var j = 1; j < report.length; j++) {
                 flag = report[j].value.indexOf(userInPut);
                 if (flag != -1)
                     count++;
@@ -50,33 +50,39 @@
 
         }
     }
+
     function setReport() {
         var userInput = document.getElementById("userInPut");
         userInput.value = "";
         reportSearch();
     }
-	
-	function changeBGC2(){
-		var BGCnum = /*[[${selected_type}]]*/ "";
-		switch(BGCnum){
-			case 1 :
-				var B1=document.getElementById("B1");
-				B1.setAttribute("style","background-color:red;");
-				break;
-			case 2 :
-				var B2=document.getElementById("B2");
-				B2.setAttribute("style","background-color:red;");
-				break;
-			case 3 :
-				var B3=document.getElementById("B3");
-				B3.setAttribute("style","background-color:red;");
-				break;
-		}
-	}
 
+    function changeBGC2() {
+        var BGCnum = /*[[${selected_type}]]*/ "";
+        switch (BGCnum) {
+            case 1 :
+                var B1 = document.getElementById("B1");
+                B1.setAttribute("style", "background-color:red;");
+                break;
+            case 2 :
+                var B2 = document.getElementById("B2");
+                B2.setAttribute("style", "background-color:red;");
+                break;
+            case 3 :
+                var B3 = document.getElementById("B3");
+                B3.setAttribute("style", "background-color:red;");
+                break;
+        }
+    }
 
-     /*]]>*/
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+    });
+
+    /*]]>*/
 </script>
+
 <head>
     <meta charset="UTF-8"/>
     <title>查询与统计</title>
@@ -98,7 +104,7 @@
     <div th:each="report:${list}" class="history_box" th:id="${report.getReportID()} + '_' + ${report.getType()}">
         <div style="display: flex;flex-direction: row;align-items:center;">
             <div class="history_title">
-            <p th:text="${report.getUserName()}"></p>
+                <p th:text="${report.getUserName()}"></p>
             </div>
             <div class="history_submitTime">
                 <p th:text="${report.getSubmitTime()}"></p>
@@ -115,7 +121,8 @@
             </div>
 
             <div class="approval_right_att">
-                <button th:if="${!report.getReportPath().isEmpty()}" type="button" th:value="${report.getReportPath()}"></button>
+                <button th:if="${!report.getReportPath().isEmpty()}" type="button"
+                        th:value="${report.getReportPath()}"></button>
             </div>
         </div>
         <div style="display: flex; flex-direction:column;">
@@ -207,5 +214,6 @@
         </div>
     </div>
 </form>
+
 </body>
 </html>

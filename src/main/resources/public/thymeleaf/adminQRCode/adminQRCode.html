@@ -106,8 +106,9 @@
                             <table id="dataTable" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>起始时间</th>
-                                    <th>终止时间</th>
+                                    <th>ID</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
                                     <th>管理人员</th>
                                     <th>分值</th>
                                     <th>结束</th>
@@ -115,6 +116,10 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${QRCodes}">
+                                    <td>
+                                        <a th:href="@{/adminQRCode/detail(id=${item.QRID})}"
+                                           th:text="${item.QRID}"></a>
+                                    </td>
                                     <td th:text="${item.s_time}"></td>
                                     <td th:text="${item.e_time}"></td>
                                     <td th:text="${item.managers}"></td>
@@ -182,36 +187,35 @@
             return false;
         }
         else if (startdate[0] == enddate[0]) {
-                if (startdate[1] > enddate[1]) {
+            if (startdate[1] > enddate[1]) {
+                alert("错误的起始（终止）时间");
+                return false;
+            }
+            else if (startdate[1] == enddate[1]) {
+                if (startdate[2] > enddate[2]) {
                     alert("错误的起始（终止）时间");
                     return false;
                 }
-                else if (startdate[1] == enddate[1]) {
-                        if (startdate[2] > enddate[2]) {
+                else if (startdate[2] == enddate[2]) {
+                    if (starttime[0] > endtime[0]) {
+                        alert("错误的起始（终止）时间");
+                        return false;
+                    }
+                    else if (starttime[0] == endtime[0]) {
+                        if (starttime[1] > endtime[1]) {
                             alert("错误的起始（终止）时间");
                             return false;
                         }
-                        else if (startdate[2] == enddate[2]) {
-                                if (starttime[0] > endtime[0]) {
-                                    alert("错误的起始（终止）时间");
-                                    return false;
-                                }
-                                else if (starttime[0] == endtime[0]) {
-                                        if (starttime[1] > endtime[1]) {
-                                            alert("错误的起始（终止）时间");
-                                            return false;
-                                        }
-                                        else if (starttime[1] == endtime[1]) {
-                                            alert("错误的起始（终止）时间");
-                                            return false;
-                                        }
-                                }
+                        else if (starttime[1] == endtime[1]) {
+                            alert("错误的起始（终止）时间");
+                            return false;
                         }
+                    }
                 }
+            }
         }
         checkMemberDivToInput();
-        if($("#members").val()=='')
-        {
+        if ($("#members").val() == '') {
             alert("请选择二维码管理人员！");
             return false;
         }
@@ -232,7 +236,7 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    $(document).ready(function(){
+    $(document).ready(function () {
         addDefaultManagers();
     });
 
@@ -277,11 +281,11 @@
 
     function addDefaultManagers() {
         var managers = /*[[${managers}]]*/ "";
-        if (managers!="") {
-        managers = managers.split(",");
-        for(i = 0 ; i< managers.length; i++) {
-            addCheckBox(managers[i]);
-        }
+        if (managers != "") {
+            managers = managers.split(",");
+            for (i = 0; i < managers.length; i++) {
+                addCheckBox(managers[i]);
+            }
         }
     }
 
@@ -344,37 +348,37 @@
 </script>
 
 <script>
-/*<![CDATA[*/
+    /*<![CDATA[*/
     function fill(s) {
-        return s < 10 ? '0' + s: s;
+        return s < 10 ? '0' + s : s;
     }
 
-    function getDateString(myDate){
-        var year=myDate.getFullYear();
-        var month=myDate.getMonth()+1;
-        var date=myDate.getDate();
-        return year+'-'+fill(month)+"-"+fill(date);
+    function getDateString(myDate) {
+        var year = myDate.getFullYear();
+        var month = myDate.getMonth() + 1;
+        var date = myDate.getDate();
+        return year + '-' + fill(month) + "-" + fill(date);
     }
 
-    function getTimeString(myDate){
-        var h=myDate.getHours();
-        var m=myDate.getMinutes();
-        return fill(h)+':'+fill(m);
+    function getTimeString(myDate) {
+        var h = myDate.getHours();
+        var m = myDate.getMinutes();
+        return fill(h) + ':' + fill(m);
     }
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         var start = new Date();
         $("#startdate").val(getDateString(start));
         $("#starttime").val(getTimeString(start));
 
-        var timestamp = start.getTime()+3600*1000;
+        var timestamp = start.getTime() + 3600 * 1000;
         var end = new Date(timestamp);
         $("#enddate").val(getDateString(end));
         $("#endtime").val(getTimeString(end));
 
         $('#value').val(2);
     })
-/*]]>*/
+    /*]]>*/
 </script>
 </body>
 </html>

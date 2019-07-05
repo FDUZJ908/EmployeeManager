@@ -106,12 +106,12 @@ public class WechatController {
             return "templates/failure";
         }
         int userPrivilege = server.getUserPrivilege(UserId);
-        int caseReportEntryLimit = server.getIntSysVar("caseReportEntryLimit");
-        if (caseReportEntryLimit > userPrivilege) {
+        if (userPrivilege < server.getIntSysVar("caseReportEntryLimit")) {
             model.addAttribute("errorNum", "04");
             return "templates/failure";
         }
-        List<ReportType> reportType = server.getReportType();
+
+        List<ReportType> reportTypes = server.getReportType();
         String userName = server.getUserName(UserId);
         List<String> AllUsers = server.getAllUsers();
         // Department-Leader-LeaderID
@@ -121,7 +121,7 @@ public class WechatController {
         model.addAttribute("userName", userName);
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
-        model.addAttribute("reportType", reportType);
+        model.addAttribute("reportTypes", reportTypes);
         return "templates/CaseReport";
     }
 
@@ -484,10 +484,9 @@ public class WechatController {
         return "templates/HistoryReport";
     }
 
-    //添加查询与统计
     @PostMapping(value = "/HistoryReport") //case: Username,type general: case,//scoretype,singlescore,scoretype
     public String HistoryReportPost(@RequestParam("button") String type,
-                                    /*@RequestParam("search") String search,*/
+            /*@RequestParam("search") String search,*/
                                     @RequestParam("UserID") String UserId,
                                     @RequestParam("UserName") String UserName,
                                     Model model) {
@@ -506,7 +505,7 @@ public class WechatController {
             defValue.put("type", HistoryReport.GENERAL);
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
             /* caseReport
-            * */
+             * */
             String sqlCase = "select reportID, leaderName, category, reportText, submitTime, singleScore, scoreType, members, reportPath " +
                     "from undealedCaseReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE);
@@ -514,8 +513,8 @@ public class WechatController {
             selectType = 2;
 
         } else if (type.equals("我的提交(已审批)")) {
-             /* generalReport
-            * */
+            /* generalReport
+             * */
             String sqlGen = "select reportID,leaderName,category,singleScore,reportText,submitTime,checkTime,isPass,comment,reportPath " +
                     "from generalReport where userID =? order by submitTime desc";
             Object args[] = new Object[]{UserId};
@@ -523,14 +522,14 @@ public class WechatController {
             reports = server.jdbcTemplate.query(sqlGen, args, new Mapper<HistoryReport>(HistoryReport.class, defValue));
 
             /* caseReport
-            * */
+             * */
             String sqlCase = "select reportID, leaderName, category, reportText, submitTime, checkTime, isPass, " +
                     "comment, singleScore, scoreType, members, reportPath " +
                     "from caseReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.CASE | HistoryReport.APPROVED);
             reports.addAll(server.jdbcTemplate.query(sqlCase, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             /* leaderReport
-            * */
+             * */
             String sqlLeader = "select reportID,category, reportText, submitTime, singleScore, scoreType, members, reportPath " +
                     "from leaderReport where userID = ? order by submitTime desc";
             defValue.put("type", HistoryReport.LEADER);

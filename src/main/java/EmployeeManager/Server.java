@@ -148,7 +148,6 @@ public class Server {
 
     public String id2name(String ids) {
         return id2name(ids, ",");
-
     }
 
     public String name2id(String names) {
@@ -229,7 +228,6 @@ public class Server {
             return 0;
         }
         for (Map<String, Object> map : sysVarCursor) {
-
             sysVar = Integer.parseInt(map.get("value").toString());
         }
         return sysVar;
@@ -246,7 +244,6 @@ public class Server {
             return "";
         }
         for (Map<String, Object> map : sysVarCursor) {
-
             sysVar = map.get("string").toString();
         }
         return sysVar;
@@ -483,7 +480,7 @@ public class Server {
         for (Map<String, Object> map : department) {
             dID = map.get("dID");
             leaderSql = "select userName,userID,dName from department natural join user  " +
-                    "where isLeader=1 and dID=? and privilege>? order by convert(userName using gbk) asc";
+                    "where isLeader=1 and dID=? and privilege > ? order by convert(userName using gbk) asc";
             try {
                 dLeader = jdbcTemplate.queryForList(leaderSql, dID, privilege);
             } catch (Exception e) {
@@ -510,7 +507,7 @@ public class Server {
             limitPrivilege = userPrivilege;
         else
             limitPrivilege = caseReportCheckLimit;
-        String dIDSql = "select userName from user where privilege > ?   order by userName";
+        String dIDSql = "select userName from user where privilege > ? order by convert(userName using gbk) asc";
         List<Map<String, Object>> department;
         try {
             department = jdbcTemplate.queryForList(dIDSql, limitPrivilege);

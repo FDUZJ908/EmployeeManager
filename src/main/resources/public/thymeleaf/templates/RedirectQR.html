@@ -11,8 +11,19 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    // function getLocation() {
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(function (pos) {
+    //             window.alert("经度：" + pos.coords.longitude + "纬度：" + pos.coords.latitude)
+    //         })
+    //     } else {
+    //         window.alert("当前系统不支持GPS API")
+    //     }
+    // }
+
+    getLocation();
     var state = /*[[${state}]]*/;
-    self.location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=https%3A%2F%2Fshiftlin.top%2Fwechat%2FCheckin&response_type=code&scope=snsapi_base&state='+state+'#wechat_redirect';
+    self.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=https%3A%2F%2Fphxxz.shiftlin.top%2Fwechat%2FCheckin&response_type=code&scope=snsapi_base&state=' + state + '#wechat_redirect';
     /*]]>*/
 </script>
 

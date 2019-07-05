@@ -2,6 +2,7 @@ package EmployeeManager.admin.controller;
 
 import EmployeeManager.Server;
 import EmployeeManager.Variable;
+import EmployeeManager.admin.model.QRCheckers;
 import EmployeeManager.cls.Mapper;
 import EmployeeManager.cls.QRCode;
 import EmployeeManager.cls.Util;
@@ -34,11 +35,13 @@ public class AdminQRCode {
     String sqli = "INSERT INTO QRCode (s_time, e_time, token, managers, value) " +
             "VALUES (?, ?, ?, ?, ?)";
     String sqls = "SELECT * FROM QRCode ORDER BY QRID";
+    String sqlq = "SELECT * FROM QRCode WHERE QRID = ?";
     String sqlu = "UPDATE QRCode SET e_time = ? WHERE QRID = ? AND e_time > ?";
+    String sqlc = "SELECT userName, QRCheckin.* FROM QRCheckin,user WHERE QRCheckin.userID = user.userID AND QRCheckin.QRID = ?";
 
     @RequestMapping(method = RequestMethod.GET)
     public String adminQRCode(Model model) {
-        List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>((QRCode.class)));
+        List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>(QRCode.class));
         for (QRCode qrcode : QRCodes)
             qrcode.managers = server.id2name(qrcode.managers);
         List<String> AllUsers = server.getAllUsers();
@@ -56,9 +59,6 @@ public class AdminQRCode {
                           @RequestParam("members") String managersname,
                           @RequestParam("value") int value,
                           Model model) {
-        /*
-        * 插入数据库
-        * */
         Variable.QRManagers = managersname;
         String managers = server.name2id(managersname, ",");
         if (!managers.equals("")) {
@@ -70,12 +70,8 @@ public class AdminQRCode {
         return "redirect:/adminQRCode";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/stop")
-    public String stop(@RequestParam(value = "id", required = false) String id,
-                       Model model) {
-        /*
-        * 更新数据库
-        * */
+    @RequestMapping(value = "/stop", method = RequestMethod.GET)
+    public String stop(@RequestParam(value = "id", required = false) String id, Model model) {
         String time = Util.currentTime();
         Object args[] = new Object[]{time, id, time};
         try {
@@ -85,5 +81,15 @@ public class AdminQRCode {
         }
 
         return "redirect:/adminQRCode";
+    }
+
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public String detail(@RequestParam("id") String id, Model model) {
+        QRCode qrcode = jdbcTemplate.queryForObject(sqlq, new Object[]{id}, new Mapper<QRCode>(QRCode.class));
+        qrcode.managers = server.id2name(qrcode.managers);
+        List<QRCheckers> checkers = jdbcTemplate.query(sqlc, new Object[]{id}, new Mapper<QRCheckers>(QRCheckers.class));
+        model.addAttribute("qrcode", qrcode);
+        model.addAttribute("checkers", checkers);
+        return "adminQRCode/detail";
     }
 }

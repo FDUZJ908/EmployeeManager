@@ -15,7 +15,7 @@
     </div>
     -->
     <div class="submit-form">
-        <form method="post" enctype="multipart/form-data"  id="leaderForm">
+        <form method="post" enctype="multipart/form-data" id="leaderForm">
             <select name="UserId" style="display:none">
                 <option th:value="${UserId}" th:text="${UserId}"></option>
             </select>
@@ -24,8 +24,8 @@
                 <textarea name="content" id="content" required="required"></textarea>
                 <div class="select-file">
                     <input type="file" name="file" id="file" onchange="changeFile()"/>
-                   <!-- <label for="file" id="att" style="font-size:3em;">上传附件
-                    </label>-->
+                    <!-- <label for="file" id="att" style="font-size:3em;">上传附件
+                     </label>-->
                 </div>
             </div>
 
@@ -75,7 +75,7 @@
         <option th:value="${AllUser}"><span th:text="${AllUser}"></span></option>
     </div>
 </select>
-<div class="uploadProcess" id="innerDiv" >
+<div class="uploadProcess" id="innerDiv">
     <p>正在提交...</p>
 </div>
 
@@ -83,44 +83,44 @@
 <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
-	 $(document).ready(function(){
+    $(document).ready(function () {
 
         $("#leaderSubmit").click(function () {
 
 
-        var result = checkDL();
+            var result = checkDL();
 
-        if (result == false)
-            return false;
+            if (result == false)
+                return false;
 
-        var leaderForm = document.getElementById("leaderForm");
-        var formData = new FormData(leaderForm);
+            var leaderForm = document.getElementById("leaderForm");
+            var formData = new FormData(leaderForm);
 
-        $.ajax({
-        url : "LeadershipReport",
-        type : "POST",
-        data : formData,
-        // 告诉jQuery不要去处理发送的数据
-        processData : false,
-        // 告诉jQuery不要去设置Content-Type请求头
-        contentType : false,
-        beforeSend:function(){
-        $("#innerDiv").fadeIn("fast");
-        },
-        complete : function() {
+            $.ajax({
+                url: "LeadershipReport",
+                type: "POST",
+                data: formData,
+                // 告诉jQuery不要去处理发送的数据
+                processData: false,
+                // 告诉jQuery不要去设置Content-Type请求头
+                contentType: false,
+                beforeSend: function () {
+                    $("#innerDiv").fadeIn("fast");
+                },
+                complete: function () {
                     $("#innerDiv").fadeOut("fast");
-        },
-         success : function(responseMsg) {
-            alert(responseMsg.msg);
-            if(responseMsg.num == "1") {
-                reset();
-            }
+                },
+                success: function (responseMsg) {
+                    alert(responseMsg.msg);
+                    if (responseMsg.num == "1") {
+                        reset();
+                    }
 
-        },
-        error : function(responseMsg) {
-            alert("error");
-        }
-        });
+                },
+                error: function (responseMsg) {
+                    alert("error");
+                }
+            });
 
         });
     });
@@ -129,17 +129,17 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    function changeFile () {
-    		$("#att").text("已上传√");
+    function changeFile() {
+        $("#att").text("已上传√");
 
     }
 
-    function checkDL () {
+    function checkDL() {
         var content = document.getElementById("content");
         var score = document.getElementById("score");
         var members = document.getElementById("members");
         var sub = "-";
-        var scoreLimit =  /*[[${scoreLimit}]]*/ "";
+        var scoreLimit = /*[[${scoreLimit}]]*/ "";
         if (content.value.toString() == "") {
             alert("报告内容不能为空！");
             return false;
@@ -156,7 +156,7 @@
             return false;
         }
 
-        if (score.value.toString().indexOf(sub)!= -1) {
+        if (score.value.toString().indexOf(sub) != -1) {
             alert("任务分值不能为负数！")
             return false;
         }
@@ -183,20 +183,20 @@
         var checkMemberDiv = document.getElementById("checkMemberDiv");
         var members = document.getElementById("members");
         var checkMember = checkMemberDiv.children;
-        for (i = 0; i < checkMember.length ; i++){
+        for (i = 0; i < checkMember.length; i++) {
             members.setAttribute("value", members.value.toString() + checkMember[i].value.toString() + ",");
         }
-        members.setAttribute("value",members.value.toString().substring(0,members.value.toString().length-1))
+        members.setAttribute("value", members.value.toString().substring(0, members.value.toString().length - 1))
     }
 
     function addDiv(value) {
         var mydiv = document.getElementById("checkMemberDiv");
-        if(mydiv.firstChild){
-        mydiv.insertBefore(value,mydiv.firstChild);
+        if (mydiv.firstChild) {
+            mydiv.insertBefore(value, mydiv.firstChild);
         }
         else {
-        mydiv.appendChild(value);
-    }
+            mydiv.appendChild(value);
+        }
     }
 
     function deleteObjCheckMemberDiv(value) {
@@ -206,9 +206,10 @@
         memberSearch();
 
     }
-    function addCheckBox (value){
+
+    function addCheckBox(value) {
         var b = document.createElement("input");
-        var delFunction = "deleteObjCheckMemberDiv(" +"checkMember" + value.toString() +")";
+        var delFunction = "deleteObjCheckMemberDiv(" + "checkMember" + value.toString() + ")";
         b.setAttribute("value", value);
         b.setAttribute("type", "button");
         b.setAttribute("id", "checkMember" + value.toString());
@@ -222,7 +223,7 @@
         memberSearch();
     }
 
-    function  memberSearch() {
+    function memberSearch() {
         var userInput = document.getElementById('userInput').value;
         var members_hide = document.getElementById('members_hide');
         var checkMemberDiv = document.getElementById("checkMemberDiv");
@@ -273,29 +274,29 @@
 
     function reset() {
         var content = document.getElementById("content");
-            content.value = "";
+        content.value = "";
         var file = document.getElementById("file");
-         if (file.outerHTML) {
-             file.outerHTML = file.outerHTML;
-         } else {
-             file.value = "";
-         }
+        if (file.outerHTML) {
+            file.outerHTML = file.outerHTML;
+        } else {
+            file.value = "";
+        }
         var resetScore_type = document.getElementById("resetScore_type");
-            resetScore_type.selected = true;
+        resetScore_type.selected = true;
         $("#score").val(null);
         $("#checkMemberDiv").empty();
         var userInput = document.getElementById('userInput');
-        userInput.value="";
+        userInput.value = "";
         memberSearch();
         loadType();
+        members.setAttribute("value", "");
     }
 
     function loadType() {
-    $("#type").val('日常工作');
+        $("#type").val('日常工作');
     }
 
     /*]]>*/
-
 
 
 </script>
