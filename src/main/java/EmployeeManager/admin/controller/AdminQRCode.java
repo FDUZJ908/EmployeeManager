@@ -47,7 +47,7 @@ public class AdminQRCode {
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
         model.addAttribute("AllUsers", AllUsers);
-        model.addAttribute("managers", Variable.QRManagers);
+        model.addAttribute("managers", QRCodes.get(QRCodes.size() - 1).managers);
         return "adminQRCode/adminQRCode";
     }
 
@@ -59,7 +59,6 @@ public class AdminQRCode {
                           @RequestParam("members") String managersname,
                           @RequestParam("value") int value,
                           Model model) {
-        Variable.QRManagers = managersname;
         String managers = server.name2id(managersname, ",");
         if (!managers.equals("")) {
             Integer token = Math.abs(new Random().nextInt());

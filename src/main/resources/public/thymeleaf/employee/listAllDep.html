@@ -133,10 +133,10 @@
 
 <!-- page script -->
 <script>
-        $(document).ready( function () {
+    $(document).ready(function () {
         $('#dataTable').DataTable({
             "paging": true,
-            "pageLength":20,
+            "pageLength": 20,
             "lengthChange": false,
             "searching": true,
             "ordering": true,
@@ -144,45 +144,45 @@
             "autoWidth": true,
             "aaSorting": []
         });
-        });
+    });
 
 </script>
 
 <script>
-    function del(dName){
-        var ret=confirm("确认删除部门 \""+dName+"\" 吗?");
-        if (ret==true){
+    function del(dName) {
+        var ret = confirm("确认删除部门 \"" + dName + "\" 吗?");
+        if (ret == true) {
             $.ajax({
-			    type: 'POST',
-			    url: '/department/deleteDep',
-			    data: {"department":dName},
+                type: 'POST',
+                url: '/department/deleteDep',
+                data: {"department": dName},
 
-			    success: function(data) {
-			    	window.location.href="/department";
-			    },
-			    error: function(xhr, type) {
-			    	window.alert('删除失败！');
-			    }
-			})
+                success: function (data) {
+                    window.location.href = "/department";
+                },
+                error: function (xhr, type) {
+                    window.alert('删除失败！');
+                }
+            })
         }
     }
 
 </script>
 <script th:src="@{/js/list-page.js}"></script>
 </body>
-</html>
 
 <style>
-a.alink:link{
-    color:black
-}
+    /*a.alink:link{*/
+    /*color:#72ACE3*/
+    /*}*/
 
-a.alink:visited{
-    color:black
-}
+    a.alink:visited {
+        color: #72ACE3
+    }
 
-a.alink:hover{
-    color:#72ACE3
-}
+    /*a.alink:hover{*/
+    /*color:#72ACE3*/
+    /*}*/
 
 </style>
+</html>

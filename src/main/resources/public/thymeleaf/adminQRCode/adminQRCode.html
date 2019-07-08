@@ -91,7 +91,7 @@
                                     <input name="members" id="members" style="display: none" value=""/>
                                     <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: center;">
-                                        <button type="reset" class="btn btn-default">重置</button>
+                                        <button type="button" class="btn btn-default" onclick="ready()">重置</button>
                                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                         <button type="submit" class="btn btn-info">设置</button>
                                     </div>
@@ -125,8 +125,7 @@
                                     <td th:text="${item.managers}"></td>
                                     <td th:text="${item.value}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/adminQRCode/stop/(id=${item.QRID})}"
-                                           onclick="checktime()">
+                                        <a th:href="@{/adminQRCode/stop/(id=${item.QRID})}" onclick="checktime()">
                                             <span
                                                     class="glyphicon glyphicon-off"
                                                     title="立即结束">
@@ -225,7 +224,6 @@
 </script>
 <script>
     function checktime() {
-        window.alert(e_time);
         var msg = "您真的确定要停止吗？\n\n请确认！";
         if (confirm(msg) == true) {
             return true;
@@ -236,9 +234,38 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    $(document).ready(function () {
+    function ready() {
+        var start = new Date();
+        $("#startdate").val(getDateString(start));
+        $("#starttime").val(getTimeString(start));
+
+        var timestamp = start.getTime() + 3600 * 1000;
+        var end = new Date(timestamp);
+        $("#enddate").val(getDateString(end));
+        $("#endtime").val(getTimeString(end));
+
+        $('#value').val(2);
         addDefaultManagers();
-    });
+    }
+
+    $(document).ready(ready());
+
+    function fill(s) {
+        return s < 10 ? '0' + s : s;
+    }
+
+    function getDateString(myDate) {
+        var year = myDate.getFullYear();
+        var month = myDate.getMonth() + 1;
+        var date = myDate.getDate();
+        return year + '-' + fill(month) + "-" + fill(date);
+    }
+
+    function getTimeString(myDate) {
+        var h = myDate.getHours();
+        var m = myDate.getMinutes();
+        return fill(h) + ':' + fill(m);
+    }
 
     function checkMemberDivToInput() {
         /* check the department and leader*/
@@ -343,42 +370,8 @@
         }
     }
 
-
     /*]]>*/
 </script>
 
-<script>
-    /*<![CDATA[*/
-    function fill(s) {
-        return s < 10 ? '0' + s : s;
-    }
-
-    function getDateString(myDate) {
-        var year = myDate.getFullYear();
-        var month = myDate.getMonth() + 1;
-        var date = myDate.getDate();
-        return year + '-' + fill(month) + "-" + fill(date);
-    }
-
-    function getTimeString(myDate) {
-        var h = myDate.getHours();
-        var m = myDate.getMinutes();
-        return fill(h) + ':' + fill(m);
-    }
-
-    $(document).ready(function () {
-        var start = new Date();
-        $("#startdate").val(getDateString(start));
-        $("#starttime").val(getTimeString(start));
-
-        var timestamp = start.getTime() + 3600 * 1000;
-        var end = new Date(timestamp);
-        $("#enddate").val(getDateString(end));
-        $("#endtime").val(getTimeString(end));
-
-        $('#value').val(2);
-    })
-    /*]]>*/
-</script>
 </body>
 </html>
