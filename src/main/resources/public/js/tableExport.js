@@ -25,8 +25,8 @@
     var data_type = {
       csv: 'text/csv',
       txt: 'text/plain',
-      xls: 'application/vnd.ms-excel',
-      json: 'application/json',
+      xls: 'service/vnd.ms-excel',
+      json: 'service/json',
     };
 
     if (

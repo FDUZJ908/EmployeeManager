@@ -1,4 +1,4 @@
-package EmployeeManager.admin.application;
+package EmployeeManager.admin.service;
 
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * Created by 11437 on 2017/10/13.
  */
-
 @Service
 public class EmployeeService {
+
     @Autowired
     protected EmployeeRepository employeeRepository;
 

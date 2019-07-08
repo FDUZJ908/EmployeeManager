@@ -10577,7 +10577,7 @@
 		 * superseded by that provided through `ajax`, which should be used instead.
 		 *
 		 * This parameter allows you to override the default function which obtains
-		 * the data from the server so something more suitable for your application.
+		 * the data from the server so something more suitable for your service.
 		 * For example you could use POST data, or pull information from a Gears or
 		 * AIR database.
 		 *  @type function
@@ -12600,7 +12600,7 @@
 	
 	/**
 	 * DataTables settings object - this holds all the information needed for a
-	 * given table, including configuration, data and current application of the
+	 * given table, including configuration, data and current service of the
 	 * table options. DataTables does not have a single instance for each DataTable
 	 * with the settings attached to that instance, but rather instances of the
 	 * DataTable "class" are created on-the-fly as needed (typically by a

@@ -1,6 +1,6 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.application.EmployeeService;
+import EmployeeManager.admin.service.EmployeeService;
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import static EmployeeManager.Util.getTimestamp;
 @Controller
 @RequestMapping("/employee")
 public class EmployeeController {
+
     @Autowired
     protected EmployeeService employeeService;
 

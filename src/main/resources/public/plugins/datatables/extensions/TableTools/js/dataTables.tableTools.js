@@ -217,7 +217,7 @@ ZeroClipboard_TableTools.Client.prototype = {
 		}
 		else {
 			// all other browsers get an EMBED tag
-			html += '<embed id="'+this.movieId+'" src="'+ZeroClipboard_TableTools.moviePath+'" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="'+width+'" height="'+height+'" name="'+this.movieId+'" align="middle" allowScriptAccess="always" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="'+flashvars+'" wmode="transparent" />';
+			html += '<embed id="'+this.movieId+'" src="'+ZeroClipboard_TableTools.moviePath+'" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="'+width+'" height="'+height+'" name="'+this.movieId+'" align="middle" allowScriptAccess="always" allowFullScreen="false" type="service/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="'+flashvars+'" wmode="transparent" />';
 		}
 		return html;
 	},
@@ -1909,8 +1909,8 @@ TableTools.prototype = {
 		catch (e) {
 			if (
 				navigator.mimeTypes &&
-				navigator.mimeTypes['application/x-shockwave-flash'] !== undefined &&
-				navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin
+				navigator.mimeTypes['service/x-shockwave-flash'] !== undefined &&
+				navigator.mimeTypes['service/x-shockwave-flash'].enabledPlugin
 			) {
 				return true;
 			}

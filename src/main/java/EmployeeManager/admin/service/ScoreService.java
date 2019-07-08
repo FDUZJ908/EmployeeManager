@@ -1,4 +1,4 @@
-package EmployeeManager.admin.application;
+package EmployeeManager.admin.service;
 
 import EmployeeManager.admin.model.Score;
 import EmployeeManager.admin.repository.ScoreRepository;
@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Service
 public class ScoreService {
+
     @Autowired
     protected ScoreRepository scoreRepository;
 

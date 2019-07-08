@@ -1,6 +1,6 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.application.EmployeeService;
+import EmployeeManager.admin.service.EmployeeService;
 import EmployeeManager.admin.model.Depart;
 import EmployeeManager.admin.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping("/department")
 @Controller
 public class DepartmentController {
+
     @Autowired
     protected EmployeeService employeeService;
 

@@ -46,7 +46,7 @@ KeyTable = function ( oInit )
 
 	/*
 	 * Variable: event
-	 * Purpose:  Container for all event application methods
+	 * Purpose:  Container for all event service methods
 	 * Scope:    KeyTable - public
 	 * Notes:    This object contains all the public methods for adding and removing events - these
 	 *           are dynamically added later on

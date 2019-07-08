@@ -1,4 +1,4 @@
-package EmployeeManager.admin.application;
+package EmployeeManager.admin.service;
 
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.repository.PrivilegeRepository;
@@ -10,9 +10,9 @@ import java.util.List;
 /**
  * Created by 11437 on 2017/10/14.
  */
-
 @Service
 public class PrivilegeService {
+
     @Autowired
     protected PrivilegeRepository privilegeRepository;
 

@@ -1,6 +1,6 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.application.ScoreService;
+import EmployeeManager.admin.service.ScoreService;
 import EmployeeManager.admin.model.Score;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

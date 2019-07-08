@@ -1,6 +1,6 @@
 package EmployeeManager.admin.controller;
 
-import EmployeeManager.admin.application.PrivilegeService;
+import EmployeeManager.admin.service.PrivilegeService;
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.model.WeekDay;
 import org.slf4j.Logger;
