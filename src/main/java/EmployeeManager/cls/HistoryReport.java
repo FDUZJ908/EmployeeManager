@@ -1,5 +1,7 @@
 package EmployeeManager.cls;
 
+import EmployeeManager.Util;
+
 import java.util.Map;
 
 public class HistoryReport {

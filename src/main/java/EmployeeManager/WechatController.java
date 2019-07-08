@@ -52,10 +52,8 @@ public class WechatController {
                                          @RequestParam("UserId") String UserId,
                                          Model model) {
         logger.info("Post GeneralReport: " + UserId); //log
-        if (!Variable.reported.containsKey(UserId))
-            Variable.reported.put(UserId, Variable.maxReportCount);
-        int remaining = Variable.reported.get(UserId);
-        if (remaining <= 0) {
+        int count = Variable.generalCount.getOrDefault(UserId, 0);
+        if (count >= Variable.maxGeneralReportCount) {
             return new ResponseMsg("0", "超过每天提交次数上限！请明天再提交。");
         }
 
@@ -86,7 +84,7 @@ public class WechatController {
             return new ResponseMsg("0", "一般报告提交失败！");
         }
 
-        Variable.reported.put(UserId, --remaining);
+        Variable.generalCount.put(UserId, ++count);
         try {
             server.sendMessage(leader, Variable.mesgToLeader, true, Variable.reportAgentID);
         } catch (Exception e) {
@@ -173,12 +171,12 @@ public class WechatController {
         return new ResponseMsg("1", "个案报告提交成功！");
     }
 
-    @RequestMapping("/LeadershipReport")
-    public String Leadership(@RequestParam("code") String CODE,
+    @RequestMapping("/LeaderReport")
+    public String LeaderReport(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
         String UserId = server.getUserId(CODE, Variable.submitSecret);
-        logger.info("Request LeadershipReport: " + UserId); //log
+        logger.info("Request LeaderReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
@@ -196,12 +194,12 @@ public class WechatController {
         //model.addAttribute("list", DLeaders);
         model.addAttribute("scoreLimit", scoreLimit);
         model.addAttribute("reportType", reportType);
-        return "templates/LeadershipReport";
+        return "templates/LeaderReport";
     }
 
-    @PostMapping(value = "/LeadershipReport")
+    @PostMapping(value = "/LeaderReport")
     @ResponseBody
-    public ResponseMsg LeadershipPost(@RequestParam("members") String members,
+    public ResponseMsg LeaderPost(@RequestParam("members") String members,
                                       @RequestParam("UserId") String UserId,
                                       @RequestParam("content") String content,
                                       @RequestParam("type") String type,
@@ -209,7 +207,7 @@ public class WechatController {
                                       @RequestParam("score") int score,
                                       @RequestParam("file") MultipartFile file,
                                       Model model) {
-        logger.info("Post LeadershipReport: " + UserId); //log
+        logger.info("Post LeaderReport: " + UserId); //log
 
         if (!Variable.leaderCount.containsKey(UserId))
             Variable.leaderCount.put(UserId, 0);

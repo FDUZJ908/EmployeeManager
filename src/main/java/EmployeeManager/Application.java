@@ -14,10 +14,12 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 
+
 @SpringBootApplication
 public class Application {
     private static final int httpPort = (System.getenv("EMHTTPPort") == null) ? 80 : Integer.parseInt(System.getenv("EMHTTPPort"));
     private static final int httpsPort = (System.getenv("EMHTTPSPort") == null) ? 443 : Integer.parseInt(System.getenv("EMHTTPSPort"));
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
-import static EmployeeManager.cls.Util.getRepeatQMark;
+import static EmployeeManager.Util.getRepeatQMark;
 
 /**
  * Created by 11437 on 2017/10/13.

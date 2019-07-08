@@ -1,7 +1,5 @@
 package EmployeeManager.admin.model;
 
-import EmployeeManager.cls.Util;
-
 import java.util.Map;
 
 public class QRCheckers {

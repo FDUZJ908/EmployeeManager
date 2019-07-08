@@ -23,8 +23,8 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
-import static EmployeeManager.cls.Util.getRepeatQMark;
-import static EmployeeManager.cls.Util.getTimestamp;
+import static EmployeeManager.Util.getRepeatQMark;
+import static EmployeeManager.Util.getTimestamp;
 
 @Component
 public class Server {
@@ -38,6 +38,7 @@ public class Server {
 
     @Value("${web.upload-path}")
     private String path;
+
 
     public int insertMap(Map<String, Object> map, String table) throws Exception {
         StringBuffer cols = new StringBuffer();

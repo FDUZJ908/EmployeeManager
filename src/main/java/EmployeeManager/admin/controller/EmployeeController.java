@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-import static EmployeeManager.cls.Util.getTimestamp;
+import static EmployeeManager.Util.getTimestamp;
 
 
 /**

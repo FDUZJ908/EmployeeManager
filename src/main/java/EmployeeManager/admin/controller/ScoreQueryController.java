@@ -2,7 +2,7 @@ package EmployeeManager.admin.controller;
 
 import EmployeeManager.Server;
 import EmployeeManager.admin.model.userScore;
-import EmployeeManager.cls.Util;
+import EmployeeManager.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

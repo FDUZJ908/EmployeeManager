@@ -3,7 +3,7 @@ package EmployeeManager.admin.controller;
 import EmployeeManager.Server;
 import EmployeeManager.cls.HistoryReport;
 import EmployeeManager.cls.Mapper;
-import EmployeeManager.cls.Util;
+import EmployeeManager.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,7 +63,7 @@ public class ReportQueryController {
     public String reportQuery(Model model) {
         model.addAttribute("list", server.getAllUsers());
         model.addAttribute("types", 7);
-        return "reportQuery/reportList";
+        return "reportQuery/listReport";
     }
 
 
@@ -91,7 +91,7 @@ public class ReportQueryController {
         }
 
         if ((type & 1) != 0) {
-            Object args[] = new Object[]{start, end, leader, submitter,score};
+            Object args[] = new Object[]{start, end, leader, submitter, score};
             defValue.put("type", HistoryReport.GENERAL);
             reports.addAll(server.jdbcTemplate.query(sqlug, args, new Mapper<HistoryReport>(HistoryReport.class, defValue)));
             defValue.put("type", HistoryReport.GENERAL | HistoryReport.APPROVED);
@@ -125,6 +125,6 @@ public class ReportQueryController {
         model.addAttribute("score", score);
         model.addAttribute("types", type);
         model.addAttribute("reports", reports);
-        return "reportQuery/reportList";
+        return "reportQuery/listReport";
     }
 }
