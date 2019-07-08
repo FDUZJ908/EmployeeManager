@@ -25,7 +25,7 @@ public class WechatController {
     public String GeneralReport(@RequestParam("state") String STATE,
                                 @RequestParam("code") String code,
                                 Model model) {
-        String UserId = server.getUserId(code, Variable.submitSecret);
+        String UserId = server.getUserId(code, Variable.Secret);
         logger.info("Request GeneralReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -86,7 +86,7 @@ public class WechatController {
 
         Variable.generalCount.put(UserId, ++count);
         try {
-            server.sendMessage(leader, Variable.mesgToLeader, true, Variable.reportAgentID);
+            server.sendMessage(leader, Variable.mesgToLeader, true, Variable.AgentID);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -97,7 +97,7 @@ public class WechatController {
     public String CaseReport(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
-        String UserId = server.getUserId(CODE, Variable.submitSecret);
+        String UserId = server.getUserId(CODE, Variable.Secret);
         logger.info("Request CaseReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -164,7 +164,7 @@ public class WechatController {
         }
 
         try {
-            server.sendMessage(leader, Variable.mesgToLeader, true, Variable.reportAgentID);
+            server.sendMessage(leader, Variable.mesgToLeader, true, Variable.AgentID);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -175,7 +175,7 @@ public class WechatController {
     public String LeaderReport(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
-        String UserId = server.getUserId(CODE, Variable.submitSecret);
+        String UserId = server.getUserId(CODE, Variable.Secret);
         logger.info("Request LeaderReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -323,7 +323,7 @@ public class WechatController {
     public String ReportApproval(@RequestParam("code") String CODE,
                                  @RequestParam("state") String STATE,
                                  Model model) {
-        String UserId = server.getUserId(CODE, Variable.submitSecret);
+        String UserId = server.getUserId(CODE, Variable.Secret);
         logger.info("Request ReportApproval: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -388,7 +388,7 @@ public class WechatController {
                 }
 
                 try {
-                    server.sendMessage(userID, Variable.mesgToSubordinate, false, Variable.reportAgentID);
+                    server.sendMessage(userID, Variable.mesgToSubordinate, false, Variable.AgentID);
                 } catch (Exception e) {
                     logger.info(e.getMessage());
                 }
@@ -428,7 +428,7 @@ public class WechatController {
                 }
 
                 try {
-                    server.sendMessage(userID, Variable.mesgToSubordinate, false, Variable.reportAgentID);
+                    server.sendMessage(userID, Variable.mesgToSubordinate, false, Variable.AgentID);
                 } catch (Exception e) {
                     logger.info(e.getMessage());
                 }
@@ -441,7 +441,7 @@ public class WechatController {
     public String HistoryReport(@RequestParam("code") String CODE,
                                 @RequestParam("state") String STATE,
                                 Model model) {
-        String UserId = server.getUserId(CODE, Variable.submitSecret);
+        String UserId = server.getUserId(CODE, Variable.Secret);
         logger.info("Request HistoryReport: " + UserId); //log
         if (!server.isUser(UserId)) {
             model.addAttribute("errorNum", "00");
@@ -571,7 +571,7 @@ public class WechatController {
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
                          Model model) {
-        String userID = server.getUserId(CODE, Variable.submitSecret);
+        String userID = server.getUserId(CODE, Variable.Secret);
         logger.info("Request QRCode: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
@@ -603,7 +603,7 @@ public class WechatController {
     public String Checkin(@RequestParam("code") String CODE,
                           @RequestParam("state") String STATE,
                           Model model) {
-        String userID = server.getUserId(CODE, Variable.submitSecret);
+        String userID = server.getUserId(CODE, Variable.Secret);
         logger.info("Request checkin: " + userID + " / " + STATE); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");
@@ -639,7 +639,7 @@ public class WechatController {
     public String UploadAvatar(@RequestParam("code") String CODE,
                                @RequestParam("state") String STATE,
                                Model model) {
-        String userID = server.getUserId(CODE, Variable.submitSecret);
+        String userID = server.getUserId(CODE, Variable.Secret);
         logger.info("Request UploadAvatar: " + userID); //log
         if (!server.isUser(userID)) {
             model.addAttribute("errorNum", "00");

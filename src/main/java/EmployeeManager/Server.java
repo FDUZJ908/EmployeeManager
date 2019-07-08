@@ -109,7 +109,7 @@ public class Server {
         if (userID == "failure") return false;
         String sql = "select * from user where userID=? limit 1";
         List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, userID);
-        if (res.size() == 0) return updateUser(userID, Variable.submitSecret);
+        if (res.size() == 0) return updateUser(userID, Variable.Secret);
         return true;
     }
 
@@ -617,6 +617,7 @@ public class Server {
         jsonObject.put("text", text);
 
         jsonObject = httpReq.sendPost(url, jsonObject);
+        System.out.println(jsonObject.toString());
     }
 
 

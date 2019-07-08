@@ -8,17 +8,21 @@ import java.util.Map;
  */
 public class Variable {
     public static final String corpid = "wx7635106ee1705d6d";
-    //public static final String submitSecret = "SjKBiPi1lPrTjGCgjUEv4cOZvcVvaV3RMn0a3kQmlnY";
+
+    public static final int AgentID = 1000020;
+    //public static final int reportAgentID = 1000017;
+    //public static final int submitAgentID = 1000002;
+
     public static final String contactSecret = "eRepbi6SM0Qk6DbHsbO0NqhKWEhL4_CtFLt-UKO_P5k";
     //public static final String reportSecret = "x0VeHuzpagYuJmrymzJayHmN3vrzgtcISA2Q_8qhLG0";
-    public static final String submitSecret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
-    public static final String reportSecret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
+    //public static final String submitSecret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
+    //public static final String reportSecret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
+    public static final String Secret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
 
-    public static final int reportAgentID = 1000017;
-    public static final int submitAgentID = 1000002;
     public static final Map<Integer, String> corpsecret = new HashMap<Integer, String>() {{
-        put(reportAgentID, reportSecret);
-        put(submitAgentID, submitSecret);
+        //put(reportAgentID, reportSecret);
+        //put(submitAgentID, submitSecret);
+        put(AgentID, Secret);
     }};
 
     public static final String[] Weekdays = new String[]{"星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"};
