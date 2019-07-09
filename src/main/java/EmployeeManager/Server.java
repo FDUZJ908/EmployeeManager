@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -622,10 +621,10 @@ public class Server {
 
 
     public Boolean base64ToImg(String srcURLFile, String avatarURL) {
-        BASE64Decoder decoder = new BASE64Decoder();
+        Base64.Decoder decoder = Base64.getDecoder();
         try {
             //Base64解码
-            byte[] b = decoder.decodeBuffer(srcURLFile);
+            byte[] b = decoder.decode(srcURLFile);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {//调整异常数据
                     b[i] += 256;

@@ -7,10 +7,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Created by lsh on 08/02/2018.
  */
+
+class PlaintextEncoder implements PasswordEncoder {
+
+    @Override
+    public String encode(CharSequence charSequence) {
+        return charSequence.toString();
+    }
+
+    @Override
+    public boolean matches(CharSequence charSequence, String s) {
+        return s.equals(charSequence.toString());
+    }
+}
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        //web.ignoring().antMatchers("/**/*.html");
         web.ignoring().antMatchers("/wechat/**");
         web.ignoring().antMatchers("/bootstrap/**", "/css/**", "/dist/**", "/images/**", "/js/**", "/plugins/**");
         web.ignoring().antMatchers("/**/*.js", "/**/*.css", "/**/*.jpg", "/**/*.jpeg", "/**/*.png", "/**/*.txt");
@@ -39,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .inMemoryAuthentication()
-                .withUser("admin").password("123456").roles("USER");
+                .inMemoryAuthentication().passwordEncoder(new PlaintextEncoder())
+                .withUser(System.getenv("AdminUsername")).password(System.getenv("AdminPassword")).roles("USER");
 
     }
 

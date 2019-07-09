@@ -2,32 +2,26 @@ package EmployeeManager;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 
 
 @SpringBootApplication
 public class Application {
-    private static final int httpPort = (System.getenv("EMHTTPPort") == null) ? 80 : Integer.parseInt(System.getenv("EMHTTPPort"));
-    private static final int httpsPort = (System.getenv("EMHTTPSPort") == null) ? 443 : Integer.parseInt(System.getenv("EMHTTPSPort"));
-
+    private static final int httpPort = 80;
+    private static final int httpsPort = 443;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @Bean
-    public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
+    public TomcatServletWebServerFactory servletContainer() {
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
             @Override
             protected void postProcessContext(Context context) {
                 SecurityConstraint constraint = new SecurityConstraint();
@@ -55,16 +49,7 @@ public class Application {
         return connector;
     }
 
-    @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        return new EmbeddedServletContainerCustomizer() {
-            @Override
-            public void customize(ConfigurableEmbeddedServletContainer container) {
-                container.setSessionTimeout(3600);//单位为S
-            }
-        };
-    }
-
+/*
     @Bean
     public DataSource dataSource() {
         PoolProperties p = new PoolProperties();
@@ -83,4 +68,5 @@ public class Application {
         p.setMinEvictableIdleTimeMillis(60000);
         return new DataSource(p);
     }
+   */
 }

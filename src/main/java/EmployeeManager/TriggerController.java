@@ -56,7 +56,7 @@ public class TriggerController {
         }
         String userIDs = server.getUsersByPriviledges(privileges);
         try {
-            server.sendMessage(userIDs, Variable.mesgForReport, false, Variable.submitAgentID);
+            server.sendMessage(userIDs, Variable.mesgForReport, false, Variable.AgentID);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
