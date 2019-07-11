@@ -37,7 +37,8 @@
                                                    class="form-control" th:value="${searchDepart}"
                                                    id="searchDepart" maxlength="20"/>
                                             <datalist id="departmentlist">
-                                                <option th:each="depar:${departmentList}" th:text="${depar.getDname()}"></option>
+                                                <option th:each="depar:${departmentList}"
+                                                        th:text="${depar.getDname()}"></option>
                                             </datalist>
                                         </div>
 
@@ -62,7 +63,8 @@
                     <div class="box">
                         <div class="box-header with-border" th:if="${dID!=0}">
                             <h3 class="box-title" th:text="${department}"></h3>
-                            <a th:href="@{/department/editDep(dID=${dID},dName=${department},redirect=1)}" title="增减部门人员">
+                            <a th:href="@{/department/editDep(dID=${dID},dName=${department},redirect=1)}"
+                               title="增减部门人员">
                                 <span class="glyphicon glyphicon-plus"></span></a>&nbsp;
                             <a th:href="@{/employee/editDepLeader(dID=${dID},dName=${department})}" title="编辑部门领导">
                                 <span class="glyphicon glyphicon-edit"></span></a>
@@ -98,7 +100,8 @@
 
                                     <td style="text-align: center">
                                         <span title="删除" style="cursor: pointer" class="glyphicon glyphicon-trash"
-                                              th:onclick="'javascript:del(&quot;'+${item.getUserid()}+'&quot;,&quot;'+${item.getUsername()}+'&quot;);'">
+                                              th:userid="${item.getUserid()}" th:username="${item.getUsername()}"
+                                              onclick="del(this.getAttribute('userid'), this.getAttribute('username'))">
                                         </span>
                                     </td>
 
@@ -138,23 +141,24 @@
 </script>
 
 <script th:inline="javascript">
-    function del(userid,username){
-        dName=/*[[${department}]]*/;
-        var ret=confirm("确认把 \""+username+"\" 从 \""+dName+"\" 中删除吗?");
-        if (ret==true){
+    function del(userid, username) {
+        dName =/*[[${department}]]*/;
+        var ret = confirm("确认把 \"" + username + "\" 从 \"" + dName + "\" 中删除吗?");
+        if (ret == true) {
             $.ajax({
-			    type: 'POST',
-			    url: '/employee/deleteDepEmp',
-			    data: {"userid": userid,
-			           "dID": /*[[${dID}]]*/
-			          },
-			    success: function(data) {
-			    	location.reload();
-			    },
-			    error: function(xhr, type) {
-			    	window.alert('删除失败！');
-			    }
-			})
+                type: 'POST',
+                url: '/employee/deleteDepEmp',
+                data: {
+                    "userid": userid,
+                    "dID": /*[[${dID}]]*/
+                },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (xhr, type) {
+                    window.alert('删除失败！');
+                }
+            })
         }
     }
 

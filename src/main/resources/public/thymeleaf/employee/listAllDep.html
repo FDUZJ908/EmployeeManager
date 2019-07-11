@@ -35,8 +35,7 @@
                                         <label class="col-sm-2 control-label">选择部门查询</label>
                                         <div class="col-sm-10" style="width: 300px">
                                             <input type="text" list="departmentlist" name="department"
-                                                   class="form-control" th:value="${searchDepart}"
-                                                   id="searchDepart" maxlength="20"/>
+                                                   class="form-control" id="searchDepart" maxlength="20"/>
                                             <datalist id="departmentlist">
                                                 <option th:each="depar:${departmentList}"
                                                         th:text="${depar.getDname()}"></option>
@@ -107,11 +106,10 @@
 
                                     <td style="text-align: center">
                                         <span title="删除" style="cursor: pointer" class="glyphicon glyphicon-trash"
-                                              th:onclick="'javascript:del(&quot;'+${item.getDname()}+'&quot;);'">
+                                              th:dname="${item.getDname()}"
+                                              onclick="del(this.getAttribute('dname'))">
                                         </span>
                                     </td>
-
-
                                 </tr>
                                 </tbody>
                             </table>
