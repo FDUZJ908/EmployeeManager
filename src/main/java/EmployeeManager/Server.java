@@ -114,9 +114,9 @@ public class Server {
 
     public String id2name(String ids, String delimiter) {
         if (ids.length() == 0) return "";
-        String[] argvs = ids.split(delimiter);
-        String sql = "SELECT userName FROM user WHERE userID IN " + getRepeatQMark(1, argvs.length);
-        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, argvs);
+        String[] args = ids.split(delimiter);
+        String sql = "SELECT userName FROM user WHERE userID IN " + getRepeatQMark(1, args.length);
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, (Object[]) args);
         if (res == null) return "";
 
         StringBuffer names = new StringBuffer();
@@ -131,9 +131,9 @@ public class Server {
 
     public String name2id(String names, String delimiter) {
         if (names.length() == 0) return "";
-        String[] argvs = names.split(",");
-        String sql = "SELECT userID FROM user WHERE userName IN " + getRepeatQMark(1, argvs.length);
-        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, argvs);
+        String[] args = names.split(",");
+        String sql = "SELECT userID FROM user WHERE userName IN " + getRepeatQMark(1, args.length);
+        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, (Object[]) args);
         if (res == null) return "";
 
         StringBuffer ids = new StringBuffer();
@@ -187,14 +187,14 @@ public class Server {
         return jdbcTemplate.query("SELECT * FROM privilege", BeanPropertyRowMapper.newInstance(Privilege.class));
     }
 
-    public String getUsersByPriviledges(Integer[] privileges) {
-        if (privileges == null || privileges.length == 0) return "";
+    public String getUsersByPriviledges(Integer[] privileges, String delimiter) { //Integer[] can be cast into Object[]
+        if (privileges.length == 0) return "";
         String sql = "SELECT userID FROM user WHERE privilege IN " + getRepeatQMark(1, privileges.length);
-        List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, privileges);
+        List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, (Object[]) privileges); // avoid confusion
         StringBuffer userIDs = new StringBuffer();
         int i = 0;
         for (Map<String, Object> user : users) {
-            if (i > 0) userIDs.append("|");
+            if (i > 0) userIDs.append(delimiter);
             userIDs.append(user.get("userID").toString());
             i++;
         }
@@ -528,7 +528,7 @@ public class Server {
             return 0;
         String[] userids = users.split(",");
         String sql = "UPDATE user SET s_score=s_score + " + score + " WHERE userID IN " + getRepeatQMark(1, userids.length);
-        return jdbcTemplate.update(sql, userids);
+        return jdbcTemplate.update(sql, (Object[]) userids);
     }
 
     public QRCode getQRCode(String userID) {
@@ -601,7 +601,9 @@ public class Server {
     }
 */
 
-    public void sendMessage(String members, String content, boolean byName, int agentID) throws Exception {
+    public String sendMessage(String members, String content, boolean byName, int agentID) throws Exception {
+        if (members.length() == 0) return "No member";
+
         HTTPRequest httpReq = new HTTPRequest();
         String token = getAccessToken(Variable.corpsecret.get(agentID), false);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
@@ -616,7 +618,7 @@ public class Server {
         jsonObject.put("text", text);
 
         jsonObject = httpReq.sendPost(url, jsonObject);
-        System.out.println(jsonObject.toString());
+        return jsonObject.toString();
     }
 
 

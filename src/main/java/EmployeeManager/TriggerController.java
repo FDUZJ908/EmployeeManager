@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,10 +52,10 @@ public class TriggerController {
         int i = 0, hour = Util.getHour();
         for (Privilege privilege : privilegeList) {
             if ((privilege.getWeekday() & weekday) > 0 && Util.getHour(privilege.getPushTime()) == hour)
-                privileges[i] = privilege.getPrivilege();
-            i++;
+                privileges[i++] = privilege.getPrivilege();
         }
-        String userIDs = server.getUsersByPriviledges(privileges);
+
+        String userIDs = server.getUsersByPriviledges(Arrays.copyOf(privileges, i), "|");
         try {
             server.sendMessage(userIDs, Variable.mesgForReport, false, Variable.AgentID);
         } catch (Exception e) {
