@@ -76,11 +76,11 @@
             </div>
 
 
-            <div class="report_boxb">
+            <div class="report_box">
                 <label>任务类型:</label>
                 <select name="type" id="type">
-                    <div th:each="reportType:${reportType}">
-                        <option th:value="${reportType.getTypeName()}" th:text="${reportType.getTypeName()}"></option>
+                    <div th:each="item:${typelist}">
+                        <option th:value="${item.getTypeName()}" th:text="${item.getTypeName()}"></option>
                     </div>
                 </select>
             </div>

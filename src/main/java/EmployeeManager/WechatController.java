@@ -31,7 +31,7 @@ public class WechatController {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
         }
-        List<ReportType> reportType = server.getReportType();
+        List<ReportType> typelist = server.getReportType();
         // Department-Leader-LeaderID
         List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         String userName = server.getUserName(UserId);
@@ -39,7 +39,7 @@ public class WechatController {
         model.addAttribute("userName", userName);
         model.addAttribute("UserId", UserId);
         model.addAttribute("list", DLeaders);
-        model.addAttribute("reportType", reportType);
+        model.addAttribute("typelist", typelist);
         return "templates/GeneralReport";
     }
 
