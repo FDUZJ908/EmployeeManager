@@ -3,6 +3,7 @@ package EmployeeManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -12,6 +13,7 @@ import static EmployeeManager.cls.User.userKeys;
 /**
  * Created by lsh on 03/03/2018.
  */
+@Component
 public class SyncService {
 
     @Autowired
@@ -26,24 +28,36 @@ public class SyncService {
             return null;
         }
 
-        Map<Integer, String> departName = new HashMap<>();
+        List<Map<String, Object>> departs = new ArrayList<>();
+        Map<Integer, String> department = new TreeMap<>();
         JSONArray departList = jsonRes.getJSONArray("department");
         int departNum = departList.length();
         for (int i = 0; i < departNum; i++) {
             JSONObject depart = departList.getJSONObject(i);
+            Map<String, Object> departMap = new TreeMap<>();
             int dID = depart.getInt("id");
             String dName = depart.getString("name");
-            String sql = "select * from department where dID=" + dID + " and dName='" + dName + "' limit 1";
-            List<Map<String, Object>> res = server.jdbcTemplate.queryForList(sql);
-            if (res.isEmpty()) {
-                server.jdbcTemplate.update("update department set dName='" + dName + "' where dID=" + dID);
-            }
-            departName.put(dID, dName);
+            departMap.put("dID", dID);
+            departMap.put("dName", dName);
+            departs.add(departMap);
+            department.put(dID, dName);
         }
-        return departName;
+
+        departs.sort(new Comparator<Map<String, Object>>() {
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                int a = (int) o1.get("dID"), b = (int) o2.get("dID");
+                if (a == b) return 0;
+                if (a < b) return -1;
+                else return 1;
+            }
+        });
+
+        server.jdbcTemplate.update("DELETE FROM ministry"); //foreign key cascade with department table
+        server.insertMapList(departs, "ministry", false);
+        return department;
     }
 
-    public void syncUser(Map<Integer, String> departName) throws Exception {
+    public void syncUser(Map<Integer, String> department) throws Exception {
         HTTPRequest httpReq = new HTTPRequest();
         String token = server.getAccessToken(Variable.contactSecret, true);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=" + token + "&department_id=1&fetch_child=1";
@@ -52,65 +66,32 @@ public class SyncService {
             return;
         }
 
+        List<Map<String, Object>> users = new ArrayList<>();
+        List<Map<String, Object>> userDeps = new ArrayList<>();
         JSONArray userList = jsonRes.getJSONArray("userlist");
-        int userNum = userList.length(), keyNum = userKeys.length, argc = 0;
-        Object[] args = new Object[userNum * keyNum];
-        String values = "values";
+        int userNum = userList.length(), keyNum = userKeys.length;
         for (int i = 0; i < userNum; i++) {
             JSONObject user = userList.getJSONObject(i);
-            if (i > 0) values += ",(";
-            else values += "(";
-            for (int j = 0; j < keyNum; j++) {
-                if (!user.has(userKeys[j])) args[argc++] = null;
-                else {
-                    Object argv = user.get(userKeys[j]);
-                    if (argv.getClass() == String.class) argv = argv.toString().replace(" ", "");
-                    args[argc++] = argv;
-                }
-                if (j > 0) values += ",?";
-                else values += "?";
-            }
-            values += ")";
-        }
-        String sql = "insert into user(";
-        String update = " on duplicate key update ";
-        for (int i = 0; i < keyNum; i++) {
-            if (i > 0) {
-                sql += ",";
-                update += ",";
-            }
-            sql += userAttrs[i];
-            update += userAttrs[i] + "=values(" + userAttrs[i] + ")";
-        }
-        sql += ") " + values + update;
-        server.jdbcTemplate.update(sql, args);
+            Map<String, Object> userMap = new TreeMap<>();
+            for (int j = 0; j < keyNum; j++)
+                userMap.put(userAttrs[j], user.getString(userKeys[j]));
+            users.add(userMap);
 
-        for (int i = 0; i < userNum; i++) {
-            JSONObject user = userList.getJSONObject(i);
-            String userID = user.getString("userid");
-            Set<Integer> dIDs_sql = new HashSet<Integer>();
-            sql = "select dID from department where userID='" + userID + "'";
-            List<Map<String, Object>> res = server.jdbcTemplate.queryForList(sql);
-            for (Map<String, Object> map : res) {
-                dIDs_sql.add(Integer.parseInt(map.get("dID").toString()));
-            }
-            Set<Integer> dIDs_json = new HashSet<Integer>();
-            JSONArray departs = user.getJSONArray("department");
-            int departNum = departs.length();
-            for (int j = 0; j < departNum; j++) {
-                dIDs_json.add(departs.getInt(j));
-            }
-            for (int dID : dIDs_json) {
-                if (!dIDs_sql.contains(dID)) {
-                    sql = "insert into department(dID,userID,dName) values(?,?,?)";
-                    args = new Object[]{dID, userID, departName.get(dID)};
-                    server.jdbcTemplate.update(sql, args);
-                } else dIDs_sql.remove(dID);
-            }
-            for (int dID : dIDs_sql) {
-                sql = "delete from department where userID='" + userID + "' and dID=" + dID;
-                server.jdbcTemplate.update(sql);
+            JSONArray depList = user.getJSONArray("department");
+            JSONArray isLeaderList = user.getJSONArray("is_leader_in_dept");
+            for (int j = 0; j < depList.length(); j++) {
+                Map<String, Object> userDepMap = new TreeMap<>();
+                int dID = depList.getInt(j);
+                userDepMap.put("dID", dID);
+                userDepMap.put("userID", user.getString("userid"));
+                userDepMap.put("dName", department.get(dID));
+                userDepMap.put("isLeader", isLeaderList.getInt(j));
+                userDeps.add(userDepMap);
             }
         }
+
+        server.jdbcTemplate.update("DELETE FROM user"); //foreign key cascade with department table
+        server.insertMapList(users, "user", false);
+        server.insertMapList(userDeps, "department", false);
     }
 }

@@ -2,6 +2,7 @@ package EmployeeManager;
 
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.cls.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,29 @@ public class Server {
     @Value("${web.upload-path}")
     private String path;
 
+    public int insertMapList(List<Map<String, Object>> mapList, String table, boolean onUpdate) throws Exception {
+        int n = mapList.size(), m = 0;
+        if (n == 0) return 0;
+        StringBuffer cols = new StringBuffer();
+        StringBuffer update = new StringBuffer(" ON DUPLICATE KEY UPDATE ");
+        for (Map.Entry<String, Object> entry : mapList.get(0).entrySet()) {
+            if (m > 0) {
+                cols.append(",");
+                update.append(",");
+            }
+            cols.append(entry.getKey());
+            update.append(entry.getKey()).append("=VALUES(").append(entry.getKey()).append(")");
+            m++;
+        }
+        Object[] args = new Object[n * m];
+
+        int j = 0;
+        for (Map<String, Object> map : mapList)
+            for (Map.Entry<String, Object> entry : map.entrySet())
+                args[j++] = entry.getValue();
+        String sql = "INSERT INTO " + table + "(" + cols + ") VALUES" + getRepeatQMark(n, m) + (onUpdate ? update : " ");
+        return jdbcTemplate.update(sql, args);
+    }
 
     public int insertMap(Map<String, Object> map, String table) throws Exception {
         StringBuffer cols = new StringBuffer();
@@ -71,6 +95,20 @@ public class Server {
         }
     }
 
+    public String getUserId(String code, String corpsecret) {
+        String UserId;
+        String token = getAccessToken(corpsecret, false);
+        HTTPRequest http = new HTTPRequest();
+        try {
+            String url = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + token + "&code=" + code;
+            JSONObject jsonObject = http.sendGET(url);
+            UserId = jsonObject.getString("UserId");
+        } catch (Exception e) {
+            return "failure";
+        }
+        return UserId;
+    }
+
     public boolean updateUser(String userID, String corpsecret) {
         String token = getAccessToken(corpsecret, false);
         HTTPRequest http = new HTTPRequest();
@@ -90,25 +128,10 @@ public class Server {
         }
     }
 
-    public String getUserId(String code, String corpsecret) {
-        String UserId;
-        String token = getAccessToken(corpsecret, false);
-        HTTPRequest http = new HTTPRequest();
-        try {
-            String url = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + token + "&code=" + code;
-            JSONObject jsonObject = http.sendGET(url);
-            UserId = jsonObject.getString("UserId");
-        } catch (Exception e) {
-            return "failure";
-        }
-        return UserId;
-    }
-
     public boolean isUser(String userID) {
         if (userID == "failure") return false;
         String sql = "select * from user where userID=? limit 1";
-        List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, userID);
-        if (res.size() == 0) return updateUser(userID, Variable.Secret);
+        if (jdbcTemplate.queryForList(sql, userID).size() == 0) return updateUser(userID, Variable.Secret);
         return true;
     }
 

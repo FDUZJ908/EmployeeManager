@@ -128,7 +128,8 @@
 <div th:replace="script"></div>
 
 <!-- page script -->
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
     $(document).ready(function () {
         $('#dataTable').DataTable({
             "paging": true,
@@ -140,7 +141,9 @@
             "autoWidth": true,
             "aaSorting": []
         });
+        // $("#dataTable").DataTable().page(0);
     });
+    /*]]>*/
 </script>
 
 <script>

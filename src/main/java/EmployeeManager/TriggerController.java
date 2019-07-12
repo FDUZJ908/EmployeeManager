@@ -21,16 +21,19 @@ public class TriggerController {
 
     @Autowired
     Server server;
-/*
+
+    @Autowired
+    SyncService sync;
+
     @RequestMapping("/synchronizer")
     @ResponseBody
     public String Synchronizer() throws Exception {
         logger.info("Synchronization starts!"); //log
-        server.syncUser(server.syncDepartment());
+        sync.syncUser(sync.syncDepartment());
         logger.info("Synchronization succeed!"); //log
         return "Synchronization succeed!";
     }
-*/
+
 
     @RequestMapping("/refresh")
     @ResponseBody

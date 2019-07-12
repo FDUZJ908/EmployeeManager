@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/wechat/**");
         web.ignoring().antMatchers("/bootstrap/**", "/css/**", "/dist/**", "/images/**", "/js/**", "/plugins/**");
         web.ignoring().antMatchers("/**/*.js", "/**/*.css", "/**/*.jpg", "/**/*.jpeg", "/**/*.png", "/**/*.txt");
+        web.ignoring().antMatchers("/**/error.html", "/**/error/**");
     }
 
     @Autowired
