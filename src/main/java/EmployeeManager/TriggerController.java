@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/wechat")
 public class TriggerController {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -27,17 +29,26 @@ public class TriggerController {
 
     @RequestMapping("/synchronizer")
     @ResponseBody
-    public String Synchronizer() throws Exception {
+    public String Synchronizer(@RequestParam(value = "password") String password) throws Exception {
+        if (!password.equals(System.getenv("AdminPassword"))) {
+            logger.info("Wrong Password!");
+            return "Synchronization failed!";
+        }
+
         logger.info("Synchronization starts!"); //log
         sync.syncUser(sync.syncDepartment());
         logger.info("Synchronization succeed!"); //log
         return "Synchronization succeed!";
     }
 
-
     @RequestMapping("/refresh")
     @ResponseBody
-    public String refresh() throws Exception {
+    public String refresh(@RequestParam(value = "password") String password) throws Exception {
+        if (!password.equals(System.getenv("AdminPassword"))) {
+            logger.info("Wrong Password!");
+            return "refresh failed!";
+        }
+
         logger.info("Refresh starts!"); //log
         Variable.generalCount.clear();
         Variable.leaderCount.clear();

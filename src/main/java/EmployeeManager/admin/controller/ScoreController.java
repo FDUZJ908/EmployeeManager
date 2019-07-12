@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/score")
 public class ScoreController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     protected ScoreService scoreService;
 

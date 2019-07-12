@@ -23,7 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/privilege")
 public class PrivilegeController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected PrivilegeService privilegeService;

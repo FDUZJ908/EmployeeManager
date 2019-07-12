@@ -26,9 +26,6 @@ public class AdminQRCode {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
-
-    @Autowired
     Server server;
 
 
@@ -41,7 +38,7 @@ public class AdminQRCode {
 
     @RequestMapping(method = RequestMethod.GET)
     public String adminQRCode(Model model) {
-        List<QRCode> QRCodes = jdbcTemplate.query(sqls, new Mapper<QRCode>(QRCode.class));
+        List<QRCode> QRCodes = server.jdbcTemplate.query(sqls, new Mapper<QRCode>(QRCode.class));
         for (QRCode qrcode : QRCodes)
             qrcode.managers = server.id2name(qrcode.managers);
         List<String> AllUsers = server.getAllUsers();
@@ -64,7 +61,7 @@ public class AdminQRCode {
             Integer token = Math.abs(new Random().nextInt());
             Object args[] = new Object[]{startdate + " " + starttime + ":00",
                     enddate + " " + endtime + ":00", token, managers, value};
-            jdbcTemplate.update(sqli, args);
+            server.jdbcTemplate.update(sqli, args);
         }
         return "redirect:/adminQRCode";
     }
@@ -84,9 +81,9 @@ public class AdminQRCode {
 
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public String detail(@RequestParam("id") String id, Model model) {
-        QRCode qrcode = jdbcTemplate.queryForObject(sqlq, new Object[]{id}, new Mapper<QRCode>(QRCode.class));
+        QRCode qrcode = server.jdbcTemplate.queryForObject(sqlq, new Object[]{id}, new Mapper<QRCode>(QRCode.class));
         qrcode.managers = server.id2name(qrcode.managers);
-        List<QRCheckers> checkers = jdbcTemplate.query(sqlc, new Object[]{id}, new Mapper<QRCheckers>(QRCheckers.class));
+        List<QRCheckers> checkers = server.jdbcTemplate.query(sqlc, new Object[]{id}, new Mapper<QRCheckers>(QRCheckers.class));
         model.addAttribute("qrcode", qrcode);
         model.addAttribute("checkers", checkers);
         return "adminQRCode/detail";
