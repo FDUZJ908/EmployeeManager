@@ -38,7 +38,7 @@ public class AdminQRCode {
 
     @RequestMapping(method = RequestMethod.GET)
     public String adminQRCode(Model model) {
-        List<QRCode> QRCodes = server.jdbcTemplate.query(sqls, new Mapper<QRCode>(QRCode.class));
+        List<QRCode> QRCodes = server.jdbcTemplate.query(sqls, new Mapper<>(QRCode.class));
         for (QRCode qrcode : QRCodes)
             qrcode.managers = server.id2name(qrcode.managers);
         List<String> AllUsers = server.getAllUsers();

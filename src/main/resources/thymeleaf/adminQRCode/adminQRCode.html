@@ -123,11 +123,8 @@
                                     <td th:text="${item.managers}"></td>
                                     <td th:text="${item.value}"></td>
                                     <td style="text-align: center">
-                                        <a th:href="@{/adminQRCode/stop/(id=${item.QRID})}" onclick="checktime()">
-                                            <span
-                                                    class="glyphicon glyphicon-off"
-                                                    title="立即结束">
-                                            </span>
+                                        <a th:qrid="${item.QRID}" onclick="stop(this.getAttribute('qrid'))">
+                                            <span class="glyphicon glyphicon-off" style="cursor: pointer" title="立即结束"></span>
                                         </a>
                                     </td>
                                 </tr>
@@ -220,16 +217,27 @@
     }
 
 </script>
+
 <script>
-    function checktime() {
-        var msg = "您真的确定要停止吗？\n\n请确认！";
-        if (confirm(msg) == true) {
-            return true;
-        } else {
-            return false;
+    function stop(qrid) {
+        var msg = "确认要停止二维码吗？";
+        if (confirm(msg)) {
+            $.ajax({
+                type: 'GET',
+                url: '/adminQRCode/stop',
+                data: {"id": qrid},
+
+                success: function (data) {
+                    window.location.href = "/adminQRCode";
+                },
+                error: function (xhr, type) {
+                    window.alert('停止失败！');
+                }
+            })
         }
     }
 </script>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     function ready() {
@@ -315,7 +323,7 @@
     }
 
     function addMembers(memberName) {
-        var member = document.getElementById(memberName.value);
+        var member = document.getElementById(memberName);
         addCheckBox(member.value);
         memberSearch();
     }
@@ -360,14 +368,13 @@
                 members = document.createElement("input");
                 members.setAttribute("type", "button");
                 members.setAttribute("value", matchedMembers[j]);
-                memberID = "addMembers(" + matchedMembers[j] + ")";
+                memberID = "addMembers('" + matchedMembers[j] + "')";
                 members.setAttribute("onclick", memberID);
                 members.setAttribute("id", matchedMembers[j]);
                 addMemberList.appendChild(members);
             }
         }
     }
-
     /*]]>*/
 </script>
 

@@ -147,8 +147,8 @@
 
 <script>
     function del(userid, username) {
-        var ret = confirm("确认删除人员 \"" + username + "\" 吗?");
-        if (ret == true) {
+        var msg="确认删除人员 \"" + username + "\" 吗?"
+        if (confirm(msg)) {
             $.ajax({
                 type: 'POST',
                 url: '/employee/deleteEmp',
