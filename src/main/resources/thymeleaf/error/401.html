@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>未认证 </title>
+    <div th:replace="head"></div>
+</head>
+<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+<body class="hold-transition skin-blue layout-top-nav">
+<div class="wrapper">
+
+
+    <!-- Full Width Column -->
+    <div class="content-wrapper">
+        <div class="container">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <section class="content">
+                <div class="error-page">
+                    <h2 class="headline text-yellow"> 401</h2>
+
+                    <div class="error-content">
+                        <br/> <br/>
+                        <h3><i class="fa fa-warning text-yellow"></i> Oops! un authenticed.</h3>
+
+                    </div>
+                    <!-- /.error-content -->
+                </div>
+                <!-- /.error-page -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-wrapper -->
+    <div th:replace="footer"></div>
+    <footer class="main-footer" th:remove="all">
+        <div class="container">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 2.3.8
+            </div>
+            <strong>Copyright &copy; 2014-2016 <a href="https://github.com/jonsychen">jonsychen</a>.</strong> All
+            rights
+            reserved.
+        </div>
+        <!-- /.container -->
+    </footer>
+</div>
+<!-- ./wrapper -->
+<div th:replace="script"></div>
+</body>
+</html>
