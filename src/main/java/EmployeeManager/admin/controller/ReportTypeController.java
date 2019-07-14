@@ -23,25 +23,24 @@ public class ReportTypeController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String reportType(Model model) {
-        Map<String, Object> defValue = new HashMap<String, Object>();
+        Map<String, Object> defValue = new HashMap<>();
         List<Map<String, Object>> list;
         String sql = "select * from reportType";
-        List<reportType> rptTypeList = new ArrayList<reportType>();
         Object args[] = new Object[]{};
-        rptTypeList = server.jdbcTemplate.query(sql, args, new Mapper<reportType>(reportType.class, defValue));
+        List<reportType> rptTypeList = server.jdbcTemplate.query(sql, args, new Mapper<>(reportType.class, defValue));
         model.addAttribute("list", rptTypeList);
-        return "reportType/reportType";
+        return "reportType/listReportType";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/add")
-    public String typeAdd() {
-        return "reportType/typeAdd";
+    public String add() {
+        return "reportType/formAdd";
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/addReport")
-    public String typeAdd(@RequestParam("name") String name,
-                          @RequestParam("value") String value,
-                          @RequestParam("remark") String remark) {
+    public String modifyAdd(@RequestParam("name") String name,
+                            @RequestParam("value") String value,
+                            @RequestParam("remark") String remark) {
         Object args[] = new Object[]{name, Integer.parseInt(value), remark};
         try {
             server.jdbcTemplate.update("insert into reportType (typeName, typeValue, typeRemark)" +
@@ -53,20 +52,20 @@ public class ReportTypeController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/modify")
-    public String typeModify(@RequestParam(value = "id", required = false) String id,
-                             Model model) {
-        Map<String, Object> defValue = new HashMap<String, Object>();
+    public String edit(@RequestParam(value = "id", required = false) String id,
+                       Model model) {
+        Map<String, Object> defValue = new HashMap<>();
         String sql = "select * from reportType where typeName = ?";
         List<Map<String, Object>> list;
         Object args[] = new Object[]{id};
-        reportType rpt = server.jdbcTemplate.queryForObject(sql, args, new Mapper<reportType>(reportType.class, defValue));
+        reportType rpt = server.jdbcTemplate.queryForObject(sql, args, new Mapper<>(reportType.class, defValue));
         model.addAttribute("rpt", rpt);
 
-        return "reportType/modify";
+        return "reportType/formEdit";
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/modifyReport")
-    public String typeModify(@RequestParam(value = "id", required = false) String id,
+    public String modifyEdit(@RequestParam(value = "id", required = false) String id,
                              @RequestParam("name") String name,
                              @RequestParam("value") String value,
                              @RequestParam("remark") String remark) {
@@ -83,7 +82,7 @@ public class ReportTypeController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/delete")
-    public String typeDelete(@RequestParam(value = "id", required = false) String id,
+    public String delete(@RequestParam(value = "id", required = false) String id,
                              Model model) {
 
 

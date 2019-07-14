@@ -3,8 +3,6 @@ package EmployeeManager.admin.controller;
 import EmployeeManager.admin.service.ScoreService;
 import EmployeeManager.admin.model.Score;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,22 +24,22 @@ public class ScoreController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("list", scoreService.list());
-        return "score/list";
+        return "score/listScore";
     }
 
     @RequestMapping(value = "/form", method = RequestMethod.GET)
-    public String toform(@RequestParam(value = "userid", required = false) String userid, Model model) {
+    public String edit(@RequestParam(value = "userid", required = false) String userid, Model model) {
         String api = "";
         if (StringUtils.isNotBlank(userid)) {
             model.addAttribute("score", scoreService.get(userid));
             api = "/score/" + userid + "/modify";
         }
         model.addAttribute("api", api);
-        return "score/form";
+        return "score/formEdit";
     }
 
     @RequestMapping(value = "/{userid}/modify", method = RequestMethod.POST)
-    public String modify(@PathVariable("userid") String userid, Score score) {
+    public String modifyEdit(@PathVariable("userid") String userid, Score score) {
         score.setUserid(userid);
         scoreService.modify(score);
         return "redirect:/score";

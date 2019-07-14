@@ -3,8 +3,6 @@ package EmployeeManager.admin.controller;
 import EmployeeManager.admin.service.PrivilegeService;
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.admin.model.WeekDay;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +28,7 @@ public class PrivilegeController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("list", privilegeService.list());
-        return "privilege/list";
+        return "privilege/listPrivilege";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
