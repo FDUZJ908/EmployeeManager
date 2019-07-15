@@ -42,7 +42,7 @@ public class AdminQRCode {
         List<String> AllUsers = server.getAllUsers();
         model.addAttribute("QRCodes", QRCodes);
         model.addAttribute("AllUsers", AllUsers);
-        model.addAttribute("managers", QRCodes.get(QRCodes.size() - 1).managers);
+        if (QRCodes.size() > 0) model.addAttribute("managers", QRCodes.get(QRCodes.size() - 1).managers);
         return "adminQRCode/adminQRCode";
     }
 
