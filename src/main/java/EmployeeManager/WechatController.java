@@ -173,8 +173,8 @@ public class WechatController {
 
     @RequestMapping("/LeaderReport")
     public String LeaderReport(@RequestParam("code") String CODE,
-                             @RequestParam("state") String STATE,
-                             Model model) {
+                               @RequestParam("state") String STATE,
+                               Model model) {
         String UserId = server.getUserId(CODE, Variable.Secret);
         logger.info("Request LeaderReport: " + UserId); //log
         if (!server.isUser(UserId)) {
@@ -200,13 +200,13 @@ public class WechatController {
     @PostMapping(value = "/LeaderReport")
     @ResponseBody
     public ResponseMsg LeaderPost(@RequestParam("members") String members,
-                                      @RequestParam("UserId") String UserId,
-                                      @RequestParam("content") String content,
-                                      @RequestParam("type") String type,
-                                      @RequestParam("score_type") int scoreType,
-                                      @RequestParam("score") int score,
-                                      @RequestParam("file") MultipartFile file,
-                                      Model model) {
+                                  @RequestParam("UserId") String UserId,
+                                  @RequestParam("content") String content,
+                                  @RequestParam("type") String type,
+                                  @RequestParam("score_type") int scoreType,
+                                  @RequestParam("score") int score,
+                                  @RequestParam("file") MultipartFile file,
+                                  Model model) {
         logger.info("Post LeaderReport: " + UserId); //log
 
         if (!Variable.leaderCount.containsKey(UserId))
@@ -259,7 +259,7 @@ public class WechatController {
         //"3"为领导干部
         String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + "3" + " order by s_score desc";
 
-        List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
+        List<User> users = server.jdbcTemplate.query(sql, new Mapper<>(User.class));
         model.addAttribute("list", users);
         model.addAttribute("selected_type", 1);
 
@@ -280,7 +280,6 @@ public class WechatController {
             List<User> usersSearch = new ArrayList<>();
             String target = "";
             for (User user : users) {
-                target = "";
                 target = user.getDuty() + user.getUsername() + user.getScore() + user.getTitle();
                 if (target.contains(userInput))
                     usersSearch.add(user);
@@ -649,7 +648,7 @@ public class WechatController {
 
         String sql = "select avatarURL from user where userID=? limit 1";
         Map<String, Object> result = server.jdbcTemplate.queryForMap(sql, userID);
-        String avatarURL = (result == null) ? "" : result.get("avatarURL").toString();
+        String avatarURL = (result.size() == 0) ? "" : result.get("avatarURL").toString();
         if (avatarURL.length() > 4 && !avatarURL.substring(0, 4).equals("http"))
             avatarURL = "/" + avatarURL;
 
@@ -669,11 +668,10 @@ public class WechatController {
                                     @RequestParam("srcURL") String srcURL
     ) {
         logger.info("Post UploadAvatar: " + userID); //log
-        String suffix = "png";
+        String suffix = "jpeg";
         String avatarURL = userID + "/" + userID + "." + suffix;
-        String avatarURLSub = userID + "/" + userID + "sub." + suffix;
+        String avatarURLSub = userID + "/" + userID + "Sub" + Util.getTimestamp() + "." + suffix;
         String srcURLFile = srcURL.substring(srcURL.indexOf(",") + 1);
-
 
         server.mkDir(userID);
         if (server.base64ToImg(srcURLFile, avatarURL)) {

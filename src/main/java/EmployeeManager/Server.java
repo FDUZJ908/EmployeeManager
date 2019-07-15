@@ -2,6 +2,7 @@ package EmployeeManager;
 
 import EmployeeManager.admin.model.Privilege;
 import EmployeeManager.cls.*;
+import net.coobird.thumbnailator.Thumbnails;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -655,18 +656,10 @@ public class Server {
                     b[i] += 256;
                 }
             }
-            //生成图片
             avatarURL = path + "/" + avatarURL;
-            File file = new File(avatarURL);
-
-            if (file.exists()) {
-                file.delete();
-            }
-
-            OutputStream out = new FileOutputStream(avatarURL);
-            out.write(b);
-            out.flush();
-            out.close();
+            int maxImgSize = 100 * 1024;
+            if (b.length > maxImgSize)
+                Thumbnails.of(new ByteArrayInputStream(b)).scale(1f).outputQuality(0.3f).toFile(avatarURL);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -702,7 +695,7 @@ public class Server {
             ImageIO.write(bi, suffix, new File(avatarURLSub));
             return true;
         } catch (Exception e) {
-
+            logger.error(e.getMessage());
             return false;
         }
     }

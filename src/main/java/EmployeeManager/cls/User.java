@@ -42,13 +42,6 @@ public class User {
             }
         }
     }
-/*
-    User(Object userName, Object Score, int rank, Object avatarURL) {
-        this.username = String.valueOf(userName);
-        this.score = String.valueOf(Score);
-        this.rank = String.valueOf(rank);
-        this.avatarURL = String.valueOf(avatarURL);
-    }*/
 
     public User(Object userName, Object Score) {
         this.userName = String.valueOf(userName);
