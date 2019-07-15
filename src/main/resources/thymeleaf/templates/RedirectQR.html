@@ -2,30 +2,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"></meta>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache"/>
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"/>
+    <meta HTTP-EQUIV="expires" CONTENT="0"/>
+
     <title>二维码</title>
 </head>
 
 <body>
 
-</body>
+<script th:src=@{/js/gps.js}></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // function getLocation() {
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(function (pos) {
-    //             window.alert("经度：" + pos.coords.longitude + "纬度：" + pos.coords.latitude)
-    //         })
-    //     } else {
-    //         window.alert("当前系统不支持GPS API")
-    //     }
-    // }
-
-    getLocation();
-    var state = /*[[${state}]]*/;
-    self.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&redirect_uri=https%3A%2F%2Fphxxz.shiftlin.top%2Fwechat%2FCheckin&response_type=code&scope=snsapi_base&state=' + state + '#wechat_redirect';
+    getLocation(function (lat, lng) {
+        var manager = /*[[${manager}]]*/;
+        var manalatlng = /*[[${manalatlng}]]*/;
+        var userlatlng = lat + '-' + lng;
+        var state = /*[[${state}]]*/;
+        state = state + '-' + manager + '-' + userlatlng + '-' + manalatlng;
+        var link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7635106ee1705d6d&' +
+            'redirect_uri=https%3A%2F%2Fphxxz.shiftlin.top%2Fwechat%2FCheckin' +
+            '&response_type=code&scope=snsapi_base&state=' + state + '#wechat_redirect';
+        window.alert(link);
+        self.location.href = link;
+    });
     /*]]>*/
 </script>
 
+</body>
 
 </html>

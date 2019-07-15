@@ -32,8 +32,7 @@ public class Util {
     public static String currentTime() {
         Date date = new Date();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = format.format(date);
-        return time;
+        return format.format(date);
     }
 
     public static int getWeekday() {
@@ -81,10 +80,21 @@ public class Util {
 
     public static String AddOneDay(String date) {
         try {
-            String datetime=stampToDate(dateToStamp(date+" 12:00:00")+86400000);
-            return datetime.substring(0,datetime.indexOf(' '));
+            String datetime = stampToDate(dateToStamp(date + " 12:00:00") + 86400000);
+            return datetime.substring(0, datetime.indexOf(' '));
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static double Radius = 6371;
+
+    public static double getDistance(double lat1, double lng1, double lat2, double lng2) {
+        lat1 = Math.toRadians(lat1);
+        lng1 = Math.toRadians(lng1);
+        lat2 = Math.toRadians(lat2);
+        lng2 = Math.toRadians(lng2);
+        double C = Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng1 - lng2) + Math.sin(lat1) * Math.sin(lat2);
+        return Radius * Math.acos(C);
     }
 }

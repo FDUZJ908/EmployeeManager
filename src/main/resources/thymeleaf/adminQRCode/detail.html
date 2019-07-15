@@ -74,12 +74,20 @@
                                 <tr>
                                     <th>姓名</th>
                                     <th>扫码时间</th>
+                                    <th>用户坐标（纬度，经度）</th>
+                                    <th>管理人员</th>
+                                    <th>管理人员坐标（纬度，经度）</th>
+                                    <th>距离（千米）</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="item:${checkers}">
                                     <td th:text="${item.userName}"></td>
                                     <td th:text="${item.checkTime}"></td>
+                                    <td th:text="${item.userLatLng}"></td>
+                                    <td th:text="${item.manager}"></td>
+                                    <td th:text="${item.manaLatLng}"></td>
+                                    <td th:text="${item.distance}"></td>
                                 </tr>
 
                                 </tbody>

@@ -1,15 +1,13 @@
 package EmployeeManager.admin.controller;
 
 import EmployeeManager.Server;
-import EmployeeManager.Variable;
-import EmployeeManager.admin.model.QRCheckers;
+import EmployeeManager.admin.model.QRChecker;
 import EmployeeManager.cls.Mapper;
 import EmployeeManager.cls.QRCode;
 import EmployeeManager.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,9 +79,12 @@ public class AdminQRCode {
 
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public String detail(@RequestParam("id") String id, Model model) {
-        QRCode qrcode = server.jdbcTemplate.queryForObject(sqlq, new Object[]{id}, new Mapper<QRCode>(QRCode.class));
+        QRCode qrcode = server.jdbcTemplate.queryForObject(sqlq, new Object[]{id}, new Mapper<>(QRCode.class));
+        if (qrcode == null) return "redirect:/adminQRCode";
         qrcode.managers = server.id2name(qrcode.managers);
-        List<QRCheckers> checkers = server.jdbcTemplate.query(sqlc, new Object[]{id}, new Mapper<QRCheckers>(QRCheckers.class));
+        List<QRChecker> checkers = server.jdbcTemplate.query(sqlc, new Object[]{id}, new Mapper<>(QRChecker.class));
+        for (QRChecker checker : checkers)
+            checker.manager = server.id2name(checker.manager);
         model.addAttribute("qrcode", qrcode);
         model.addAttribute("checkers", checkers);
         return "adminQRCode/detail";

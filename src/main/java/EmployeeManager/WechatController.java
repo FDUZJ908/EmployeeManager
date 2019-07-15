@@ -585,16 +585,21 @@ public class WechatController {
 
         model.addAttribute("qrid", qrCode.QRID);
         model.addAttribute("token", qrCode.token);
+        model.addAttribute("manager", userID);
         return "templates/QRCode";
     }
 
     @RequestMapping("/RedirectQR")
     public String RedirectQR(@RequestParam("qrid") String QRID,
                              @RequestParam("token") String token,
+                             @RequestParam("manager") String manager,
+                             @RequestParam("manalatlng") String manalatlng,
                              Model model) {
         logger.info("Request redirectQR: " + QRID); //log
 
         model.addAttribute("state", QRID + "-" + token);
+        model.addAttribute("manager", manager);
+        model.addAttribute("manalatlng", manalatlng);
         return "templates/RedirectQR";
     }
 
@@ -609,9 +614,14 @@ public class WechatController {
             return "templates/failure";
         }
 
-        int p = STATE.indexOf("-");
-        int QRID = Integer.parseInt(STATE.substring(0, p));
-        int token = Integer.parseInt(STATE.substring(p + 1));
+        String[] args = STATE.split("-");
+        String manager = args[2];
+        double lat1 = Double.parseDouble(args[3]);
+        double lng1 = Double.parseDouble(args[4]);
+        double lat2 = Double.parseDouble(args[5]);
+        double lng2 = Double.parseDouble(args[6]);
+
+        int QRID = Integer.parseInt(args[0]), token = Integer.parseInt(args[1]);
         QRCode qrCode = server.getQRCode(QRID);
         String time = Util.currentTime();
 
@@ -620,7 +630,23 @@ public class WechatController {
             return "templates/failure";
         }
 
-        if (server.updateQRCodeCheckins(QRID, userID) != 0) {
+        if (Util.getDistance(lat1, lng1, lat2, lng2) > Variable.QRCodeDistLimitKM) {
+            model.addAttribute("errorNum", "07");
+            return "templates/failure";
+        }
+
+        Map<String, Object> qrCheckin = new TreeMap<>();
+        qrCheckin.put("QRID", QRID);
+        qrCheckin.put("userID", userID);
+        qrCheckin.put("checkTime", Util.currentTime());
+        qrCheckin.put("manager", manager);
+        qrCheckin.put("userLat", lat1);
+        qrCheckin.put("userLng", lng1);
+        qrCheckin.put("manaLat", lat2);
+        qrCheckin.put("manaLng", lng2);
+        try {
+            server.insertMap(qrCheckin, "QRCheckin");
+        } catch (Exception e) {
             model.addAttribute("errorNum", "02");
             return "templates/failure"; // avoid repeatedly scanning QR code
         }

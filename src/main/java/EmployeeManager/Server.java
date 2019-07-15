@@ -141,7 +141,7 @@ public class Server {
         String[] args = ids.split(delimiter);
         String sql = "SELECT userName FROM user WHERE userID IN " + getRepeatQMark(1, args.length);
         List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, (Object[]) args);
-        if (res == null) return "";
+        if (res.size() == 0) return "";
 
         StringBuffer names = new StringBuffer();
         int i = 0;
@@ -153,12 +153,16 @@ public class Server {
         return names.toString();
     }
 
+    public String id2name(String ids) {
+        return id2name(ids, ",");
+    }
+
     public String name2id(String names, String delimiter) {
         if (names.length() == 0) return "";
         String[] args = names.split(",");
         String sql = "SELECT userID FROM user WHERE userName IN " + getRepeatQMark(1, args.length);
         List<Map<String, Object>> res = jdbcTemplate.queryForList(sql, (Object[]) args);
-        if (res == null) return "";
+        if (res.size() == 0) return "";
 
         StringBuffer ids = new StringBuffer();
         int i = 0;
@@ -168,10 +172,6 @@ public class Server {
             i++;
         }
         return ids.toString();
-    }
-
-    public String id2name(String ids) {
-        return id2name(ids, ",");
     }
 
     public String name2id(String names) {
@@ -589,9 +589,9 @@ public class Server {
     }
     */
 
-    public int updateQRCodeCheckins(int QRID, String userID) {
+    public int updateQRCodeCheckins(int QRID, String userID, String manager, double userLat, double userLng, double manaLat, double manaLng) {
         try {
-            String sql = "INSERT INTO QRCheckin(QRID,userID,checkTime) VALUES(?,?,NOW())";
+            String sql = "INSERT INTO QRCheckin(QRID,userID,checkTime,manager,userLat) VALUES(?,?,NOW())";
             jdbcTemplate.update(sql, QRID, userID);
         } catch (Exception e) {
             return 1;

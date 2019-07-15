@@ -32,10 +32,10 @@ public class Mapper<T> implements RowMapper<T> {
 
     public T mapRow(ResultSet result, int rowNum) throws SQLException {
         try {
-            T obj = cls.newInstance();
+            T obj = cls.newInstance(); //Require T's default construction function
             Field field = cls.getDeclaredField("Attrs");
             String[] Attrs = (String[]) (field.get(obj));
-            Map<String, Object> argv = new HashMap<String, Object>();
+            Map<String, Object> argv = new HashMap<>();
             for (String attr : Attrs) {
                 try {
                     Object value = result.getObject(attr);

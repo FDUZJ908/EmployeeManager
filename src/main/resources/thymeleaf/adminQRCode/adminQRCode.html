@@ -294,7 +294,7 @@
     }
 
     function deleteObjCheckMemberDiv(value) {
-        var obj = document.getElementById(value.id);
+        var obj = document.getElementById(value);
         var div = document.getElementById("checkMemberDiv");
         div.removeChild(obj);
         memberSearch();
@@ -303,7 +303,7 @@
 
     function addCheckBox(value) {
         var b = document.createElement("input");
-        var delFunction = "deleteObjCheckMemberDiv(" + "checkMember" + value.toString() + ")";
+        var delFunction = "deleteObjCheckMemberDiv('" + "checkMember" + value.toString() + "')";
         b.setAttribute("value", value);
         b.setAttribute("type", "button");
         b.setAttribute("id", "checkMember" + value.toString());
