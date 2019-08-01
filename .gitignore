@@ -4,6 +4,8 @@ Log/
 target/
 */target/
 update.sh
+*.jks
+./src/main/resources/cert/
 
 # Compiled class file
 *.class

@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="head"></div>
-    <!-- DataTables -->
     <title>报告查询</title>
 </head>
 
@@ -216,20 +215,16 @@
     }
     /*]]>*/
 </script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    function exportTo() {
-        var name = '报告查询';
-        $('.table').tableExport({
-            filename: name,
-            format: 'xls',
-            cols: '1,2,3,4,5,6,7,8,9,10,11,12'
-        });
-    }
 
-    /*]]>*/
+<script src="https://cdn.bootcss.com/xlsx/0.14.4/xlsx.full.min.js"></script>
+<script th:inline="javascript">
+    function exportTo() {
+        var name = '报告查询' + document.getElementById('start').value + '至' + document.getElementById('end').value;
+        var table = document.getElementById('dataTable');
+        var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+        return XLSX.writeFile(wb, name + '.xls');
+    }
 </script>
-<script th:src="@{/js/tableExport.js}"></script>
 
 </body>
 </html>

@@ -46,7 +46,7 @@ public class TriggerController {
     public String refresh(@RequestParam(value = "password") String password) throws Exception {
         if (!password.equals(System.getenv("AdminPassword"))) {
             logger.info("Wrong Password!");
-            return "refresh failed!";
+            return "Refresh failed!";
         }
 
         logger.info("Refresh starts!"); //log

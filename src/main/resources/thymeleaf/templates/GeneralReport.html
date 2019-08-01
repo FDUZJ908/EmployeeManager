@@ -8,47 +8,47 @@
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-    $(document).ready(function(){
+        $(document).ready(function () {
 
-        $("#generalSubmit").click(function () {
+            $("#generalSubmit").click(function () {
 
-        var result = checkDL();
+                var result = checkDL();
 
-        if (result == false)
-            return false;
+                if (result == false)
+                    return false;
 
-        var generalForm = document.getElementById("generalForm");
-        var formData = new FormData(generalForm);
+                var generalForm = document.getElementById("generalForm");
+                var formData = new FormData(generalForm);
 
 
-        $.ajax({
-        url : "GeneralReport",
-        type : "POST",
-        data : formData,
-        // 告诉jQuery不要去处理发送的数据
-        processData : false,
-        // 告诉jQuery不要去设置Content-Type请求头
-        contentType : false,
-        beforeSend:function(){
-        $("#innerDiv").fadeIn("fast");
-        },
-        complete : function() {
-                    $("#innerDiv").fadeOut("fast");
-        },
-         success : function(responseMsg) {
-            alert(responseMsg.msg);
-            if(responseMsg.num == "1")
-                reset();
+                $.ajax({
+                    url: "GeneralReport",
+                    type: "POST",
+                    data: formData,
+                    // 告诉jQuery不要去处理发送的数据
+                    processData: false,
+                    // 告诉jQuery不要去设置Content-Type请求头
+                    contentType: false,
+                    beforeSend: function () {
+                        $("#innerDiv").fadeIn("fast");
+                    },
+                    complete: function () {
+                        $("#innerDiv").fadeOut("fast");
+                    },
+                    success: function (responseMsg) {
+                        alert(responseMsg.msg);
+                        if (responseMsg.num == "1")
+                            reset();
 
-        },
-        error : function(responseMsg) {
-            alert("error");
-        }
+                    },
+                    error: function (responseMsg) {
+                        alert("error");
+                    }
+                });
+
+            });
         });
-
-        });
-    });
-</script>
+    </script>
 
 </head>
 <body onload="loadDepartment()">
@@ -95,7 +95,7 @@
             </div>
 
             <div style="display:none">
-                <select id="department_hide" >
+                <select id="department_hide">
                     <div th:each="department:${list}">
                         <option th:value="${department.leader}" th:text="${department.department}"></option>
                     </div>
@@ -114,7 +114,7 @@
         </form>
     </div>
 </div>
-<div class="uploadProcess" id="innerDiv" >
+<div class="uploadProcess" id="innerDiv">
     <p>正在提交报告...</p>
 </div>
 </body>
@@ -122,7 +122,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    function checkDL () {
+    function checkDL() {
         var content = document.getElementById("content");
         var department = document.getElementById("department");
         var leader = document.getElementById("leader");
@@ -148,9 +148,10 @@
 
     }
 
-    function changeFile () {
-    		$("#att").text("已上传√");
+    function changeFile() {
+        $("#att").text("已上传√");
     }
+
     function departmentRedirect() {
         var department_hide = document.getElementById("department_hide");
         var department = document.getElementById("department");
@@ -160,7 +161,7 @@
         for (i = leader.length - 1; i >= 0; i--)
             leader.options.remove(i);
         for (i = 0; i < department_hide.length; i++) {
-            if (department_hide[i].text == selectedD  && userName != department_hide[i].value) {
+            if (department_hide[i].text == selectedD && userName != department_hide[i].value) {
                 leader.options.add(new Option(department_hide[i].value.toString(), department_hide[i].value.toString()));
             }
         }
@@ -169,11 +170,11 @@
 
     function loadDepartment() {
         var department = document.getElementById("department");
-        var i,j,n;
-        for (i = department.length-1; i >=0 ; i--) {
+        var i, j, n;
+        for (i = department.length - 1; i >= 0; i--) {
             j = i;
             for (n = 0; n < j; n++) {
-                if (department.options[n].text == department.options[j].text){
+                if (department.options[n].text == department.options[j].text) {
                     department.options.remove(j);
                     break;
                 }
@@ -184,36 +185,34 @@
     }
 
     function loadType() {
-    $("#type").val('日常工作');
+        $("#type").val('日常工作');
     }
 
 
     function reset() {
         var content = document.getElementById("content");
-            content.value = "";
+        content.value = "";
         var file = document.getElementById("file");
-         if (file.outerHTML) {
-             file.outerHTML = file.outerHTML;
-         } else {
-             file.value = "";
-         }
+        if (file.outerHTML) {
+            file.outerHTML = file.outerHTML;
+        } else {
+            file.value = "";
+        }
         $("#att").text("上传附件");
-         $("#department").get(0).selectedIndex = 0;
+        $("#department").get(0).selectedIndex = 0;
 
-         departmentRedirect();
+        departmentRedirect();
 
-         $("#leader").get(0).selectedIndex = 0;
+        $("#leader").get(0).selectedIndex = 0;
 
-         $("#score").val(null);
+        $("#score").val(null);
 
-         loadType();
+        loadType();
 
     }
 
 
-
     /*]]>*/
-
 
 
 </script>
