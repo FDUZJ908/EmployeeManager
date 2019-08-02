@@ -18,6 +18,9 @@ public class Variable {
     //public static final String submitSecret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
     //public static final String reportSecret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
     public static final String Secret = "oJHX1ituPjdSKDFaHVitOWqw-t9u16aG1UEZsn7cBA8";
+    public static final String callbackToken = "NmPyvUOxDwTFwQ5BHJJadPD02";
+    public static final String callbackEncodingAESKey = "2JYiuUvPlweUkNVrTcBCy4QL6VDUraSmxryDxaCryCG";
+
 
     public static final Map<Integer, String> corpsecret = new HashMap<>() {{
         //put(reportAgentID, reportSecret);

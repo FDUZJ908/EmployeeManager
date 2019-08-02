@@ -116,14 +116,11 @@ public class Server {
         try {
             String url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=" + token + "&userid=" + userID;
             JSONObject jsonObject = http.sendGET(url);
-            userID = jsonObject.getString("userid");
-            String userName = jsonObject.getString("name");
-            String gender = jsonObject.getString("gender");
-            String tel = jsonObject.getString("mobile");
-            String email = jsonObject.getString("email");
-            String sql = "UPDATE user SET userID=?,gender=?,tel=?,email=? WHERE userName=?";
-            int ret = jdbcTemplate.update(sql, userID, gender, tel, email, userName);
-            return ret > 0;
+
+            Map<String, Object> user = new HashMap<>();
+            user.put("userID", jsonObject.getString("userid"));
+            user.put("userName", jsonObject.getString("name"));
+            return insertMap(user, "user") > 0;
         } catch (Exception e) {
             return false;
         }
