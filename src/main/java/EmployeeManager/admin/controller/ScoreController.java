@@ -6,10 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by 11437 on 2017/10/14.
@@ -43,5 +42,17 @@ public class ScoreController {
         score.setUserid(userid);
         scoreService.modify(score);
         return "redirect:/score";
+    }
+
+    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    @ResponseBody
+    public String clear(@RequestParam(value = "password") String password, HttpServletResponse response) {
+        if (password.equals(System.getenv("ClearPassword")))
+            scoreService.clear();
+        else {
+            response.setStatus(403);
+            return "Fail!";
+        }
+        return "Succeed!";
     }
 }

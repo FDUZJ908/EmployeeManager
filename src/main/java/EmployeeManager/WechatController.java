@@ -247,7 +247,7 @@ public class WechatController {
 
         return new ResponseMsg("1", "领导批分提交成功！");
     }
-
+    
     //slected_type 为设置button点击后颜色准备
     @RequestMapping("/RankingList")
     public String RankingList(@RequestParam("state") String STATE,

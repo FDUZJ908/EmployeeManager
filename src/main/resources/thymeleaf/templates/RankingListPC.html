@@ -3,8 +3,13 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8"></meta>
     <title>积分榜</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--prevent from caching image-->
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache"/>
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"/>
+    <meta HTTP-EQUIV="expires" CONTENT="0"/>
+    
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
 </head>
 
@@ -58,31 +63,32 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    function changeBGC1(){
+    function changeBGC1() {
         var BGCnum = /*[[${selected_type}]]*/ "";
-        switch(BGCnum){
+        switch (BGCnum) {
             case 1 :
-                var B1=document.getElementById("B1");
-                B1.setAttribute("style","background-color:red;");
+                var B1 = document.getElementById("B1");
+                B1.setAttribute("style", "background-color:red;");
                 break;
             case 2 :
-                var B2=document.getElementById("B2");
-                B2.setAttribute("style","background-color:red;");
+                var B2 = document.getElementById("B2");
+                B2.setAttribute("style", "background-color:red;");
                 break;
             case 3 :
-                var B3=document.getElementById("B3");
-                B3.setAttribute("style","background-color:red;");
+                var B3 = document.getElementById("B3");
+                B3.setAttribute("style", "background-color:red;");
                 break;
             case 4 :
-                var B4=document.getElementById("B4");
-                B4.setAttribute("style","background-color:red;");
+                var B4 = document.getElementById("B4");
+                B4.setAttribute("style", "background-color:red;");
                 break;
             case 5 :
-                var B5=document.getElementById("B5");
-                B5.setAttribute("style","background-color:red;");
+                var B5 = document.getElementById("B5");
+                B5.setAttribute("style", "background-color:red;");
                 break;
         }
     }
+
     /*]]>*/
 </script>
 

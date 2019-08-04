@@ -30,4 +30,8 @@ public class ScoreRepository {
     public List<Score> list() {
         return jdbcTemplate.query("select userid,username,s_score,f_score from user", BeanPropertyRowMapper.newInstance(Score.class));
     }
+
+    public void clear() {
+        jdbcTemplate.update("update user set s_score=0,f_score=0 where 1=1");
+    }
 }

@@ -84,8 +84,9 @@ public class EmployeeController {
     //删除人员
     @RequestMapping(value = "/deleteEmp", method = RequestMethod.POST)
     @ResponseBody
-    public void deleteDep(@RequestParam("userid") String userid) {
+    public String deleteDep(@RequestParam("userid") String userid) {
         employeeService.deleteEmp(userid);//删除部门
+        return "Succeed!";
     }
 
     //编辑人员信息
@@ -190,9 +191,10 @@ public class EmployeeController {
     //删除部门成员
     @RequestMapping(value = "/deleteDepEmp", method = RequestMethod.POST)
     @ResponseBody
-    public void deleteDepEmp(@RequestParam("userid") String userid,
-                             @RequestParam("dID") int dID) {
+    public String deleteDepEmp(@RequestParam("userid") String userid,
+                               @RequestParam("dID") int dID) {
         employeeService.deleteEmpDep(userid, dID);//删除部门成员
+        return "Succeed!";
     }
 
     //编辑部门成员信息

@@ -16,15 +16,19 @@ public class ScoreService {
     @Autowired
     protected ScoreRepository scoreRepository;
 
-    public void modify(Score score){
+    public void modify(Score score) {
         scoreRepository.update(score);
     }
 
-    public Score get(String userid){
-       return scoreRepository.get(userid);
+    public Score get(String userid) {
+        return scoreRepository.get(userid);
     }
 
-    public List<Score> list(){
+    public List<Score> list() {
         return scoreRepository.list();
+    }
+
+    public void clear() {
+        scoreRepository.clear();
     }
 }
