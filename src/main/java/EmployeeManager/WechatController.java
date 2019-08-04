@@ -242,10 +242,10 @@ public class WechatController {
             if (scoreType == 0) score = -score;
             server.award(server.name2id(members, ","), score);
         } catch (Exception e) {
-            return new ResponseMsg("0", "领导批示提交失败！");
+            return new ResponseMsg("0", "领导批分提交失败！");
         }
 
-        return new ResponseMsg("1", "领导批示提交成功！");
+        return new ResponseMsg("1", "领导批分提交成功！");
     }
 
     //slected_type 为设置button点击后颜色准备
@@ -254,14 +254,13 @@ public class WechatController {
                               Model model) {
         logger.info("Request RankingList"); //log
 
-        //String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
 
         //"3"为领导干部
-        String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + "3" + " order by s_score desc";
+        String sql = "select userName,s_score+f_score as s_score,avatarURL,duty,title from user where position=1 order by s_score desc";
 
         List<User> users = server.jdbcTemplate.query(sql, new Mapper<>(User.class));
         model.addAttribute("list", users);
-        model.addAttribute("selected_type", 1);
+        model.addAttribute("selected_type", 4);
 
         if (STATE.equals("PC")) return "templates/RankingListPC";
         return "templates/RankingList";
@@ -274,8 +273,8 @@ public class WechatController {
                                   Model model) {
         logger.info("Post RankingList: " + type); //log
 
+        String sql = "select userName,s_score+f_score as s_score,avatarURL,duty,title from user order by s_score desc";
         if (!userInput.equals("")) {
-            String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             List<User> usersSearch = new ArrayList<>();
             String target = "";
@@ -289,7 +288,6 @@ public class WechatController {
             return "templates/RankingList";
         }
         if (type.equals("总排行")) {
-            String sql = "select userName,s_score,avatarURL,duty,title from user order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>((User.class)));
             model.addAttribute("selected_type", 3);
             model.addAttribute("list", users);
@@ -310,7 +308,7 @@ public class WechatController {
                 selectedType = "0";
                 model.addAttribute("selected_type", 5);
             }
-            String sql = "select userName,s_score,avatarURL,duty,title from user where position=" + selectedType + " order by s_score desc";
+            sql = "select userName,s_score+f_score as s_score,avatarURL,duty,title from user  where position=" + selectedType + " order by s_score desc";
             List<User> users = server.jdbcTemplate.query(sql, new Mapper<User>(User.class));
             model.addAttribute("list", users);
             if (STATE.equals("PC")) return "templates/RankingListPC";
