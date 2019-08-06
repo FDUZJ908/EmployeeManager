@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"></meta>
-    <title>领导批分提交</title>
+    <title>领导批办提交</title>
     <link href="/css/mystyle.css" rel="stylesheet" type="text/css" media="all"/>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 </head>
@@ -140,8 +140,10 @@
         var members = document.getElementById("members");
         var sub = "-";
         var scoreLimit = /*[[${scoreLimit}]]*/ "";
-        if (content.value.toString() == "") {
-            alert("报告内容不能为空！");
+        var minReportWordCount = /*[[${minReportWordCount}]]*/;
+
+        if (content.value.toString().replace(/ /g, "").length < minReportWordCount) {
+            alert("报告内容字数不得少于" + minReportWordCount);
             return false;
         }
 

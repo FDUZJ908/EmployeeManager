@@ -21,9 +21,10 @@ public class WechatController {
     Server server;
 
 
-    @RequestMapping("/GeneralReport")
+    @GetMapping("/GeneralReport")
     public String GeneralReport(@RequestParam("state") String STATE,
                                 @RequestParam("code") String code,
+                                // @RequestParam(value = "password", required = false) String password,
                                 Model model) {
         String UserId = server.getUserId(code, Variable.Secret);
         logger.info("Request GeneralReport: " + UserId); //log
@@ -40,6 +41,7 @@ public class WechatController {
         model.addAttribute("UserId", UserId);
         model.addAttribute("list", DLeaders);
         model.addAttribute("typelist", typelist);
+        model.addAttribute("minReportWordCount", Variable.minReportWordCount);
         return "templates/GeneralReport";
     }
 
@@ -93,7 +95,7 @@ public class WechatController {
         return new ResponseMsg("1", "一般报告提交成功！");
     }
 
-    @RequestMapping("/CaseReport")
+    @GetMapping("/CaseReport")
     public String CaseReport(@RequestParam("code") String CODE,
                              @RequestParam("state") String STATE,
                              Model model) {
@@ -120,6 +122,7 @@ public class WechatController {
         model.addAttribute("AllUsers", AllUsers);
         model.addAttribute("list", DLeaders);
         model.addAttribute("reportTypes", reportTypes);
+        model.addAttribute("minReportWordCount", Variable.minReportWordCount);
         return "templates/CaseReport";
     }
 
@@ -171,7 +174,7 @@ public class WechatController {
         return new ResponseMsg("1", "个案报告提交成功！");
     }
 
-    @RequestMapping("/LeaderReport")
+    @GetMapping("/LeaderReport")
     public String LeaderReport(@RequestParam("code") String CODE,
                                @RequestParam("state") String STATE,
                                Model model) {
@@ -181,19 +184,22 @@ public class WechatController {
             model.addAttribute("errorNum", "00");
             return "templates/failure";
         }
+        int userPrivilege = server.getUserPrivilege(UserId);
+        if (userPrivilege < server.getIntSysVar("leaderReportEntryLimit")) {
+            model.addAttribute("errorNum", "04");
+            return "templates/failure";
+        }
 
         List<ReportType> reportType = server.getReportType();
         String userName = server.getUserName(UserId);
-        int userPrivilege = server.getUserPrivilege(UserId);
         int scoreLimit = server.getLeaderScoreLimit(userPrivilege);
-        //List<DepartmentLeader> DLeaders = server.getUserDepartmentLeader(UserId);
         List<String> AllUsers = server.getAllDepartmentUsers(UserId, userPrivilege);
         model.addAttribute("UserId", UserId);
         model.addAttribute("userName", userName);
         model.addAttribute("AllUsers", AllUsers);
-        //model.addAttribute("list", DLeaders);
         model.addAttribute("scoreLimit", scoreLimit);
         model.addAttribute("reportType", reportType);
+        model.addAttribute("minReportWordCount", Variable.minReportWordCount);
         return "templates/LeaderReport";
     }
 
@@ -242,14 +248,14 @@ public class WechatController {
             if (scoreType == 0) score = -score;
             server.award(server.name2id(members, ","), score);
         } catch (Exception e) {
-            return new ResponseMsg("0", "领导批分提交失败！");
+            return new ResponseMsg("0", "领导批办提交失败！");
         }
 
-        return new ResponseMsg("1", "领导批分提交成功！");
+        return new ResponseMsg("1", "领导批办提交成功！");
     }
-    
+
     //slected_type 为设置button点击后颜色准备
-    @RequestMapping("/RankingList")
+    @GetMapping("/RankingList")
     public String RankingList(@RequestParam("state") String STATE,
                               Model model) {
         logger.info("Request RankingList"); //log
@@ -316,7 +322,7 @@ public class WechatController {
         }
     }
 
-    @RequestMapping("/ReportApproval")
+    @GetMapping("/ReportApproval")
     public String ReportApproval(@RequestParam("code") String CODE,
                                  @RequestParam("state") String STATE,
                                  Model model) {
@@ -434,7 +440,7 @@ public class WechatController {
         return ajax;
     }
 
-    @RequestMapping("/HistoryReport")
+    @GetMapping("/HistoryReport")
     public String HistoryReport(@RequestParam("code") String CODE,
                                 @RequestParam("state") String STATE,
                                 Model model) {
@@ -564,7 +570,7 @@ public class WechatController {
         return "templates/HistoryReport";
     }
 
-    @RequestMapping("/QRCode")
+    @GetMapping("/QRCode")
     public String QRCode(@RequestParam("code") String CODE,
                          @RequestParam("state") String REFRESH,
                          Model model) {
@@ -587,7 +593,7 @@ public class WechatController {
         return "templates/QRCode";
     }
 
-    @RequestMapping("/RedirectQR")
+    @GetMapping("/RedirectQR")
     public String RedirectQR(@RequestParam("qrid") String QRID,
                              @RequestParam("token") String token,
                              @RequestParam("manager") String manager,
@@ -658,7 +664,7 @@ public class WechatController {
         return "templates/success";
     }
 
-    @RequestMapping("/UploadAvatar")
+    @GetMapping("/UploadAvatar")
     public String UploadAvatar(@RequestParam("code") String CODE,
                                @RequestParam("state") String STATE,
                                Model model) {

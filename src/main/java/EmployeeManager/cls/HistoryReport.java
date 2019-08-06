@@ -56,7 +56,7 @@ public class HistoryReport {
 
         if ((typeNum & LEADER) > 0) {
             isPass = "通过";
-            typeName = "领导批分";
+            typeName = "领导批办";
         } else if ((typeNum & APPROVED) > 0) {
             isPass = (argv.get("isPass").toString().equals("true")) ? "通过" : "不通过";
         } else isPass = "待审批";

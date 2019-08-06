@@ -6,15 +6,24 @@
         <ul class="sidebar-menu">
 
             <!--Multilevel-->
+
             <li class="treeview">
-                <a th:href="@{/adminQRCode}">
-                    <span>二维码管理</span>
+                <a th:href="@{/employee}">
+                    <span>人员管理</span>
                     <span class="pull-right-container">
                        <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
             </li>
 
+            <li class="treeview">
+                <a th:href="@{/department}">
+                    <span>部门管理</span>
+                    <span class="pull-right-container">
+                       <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+            </li>
 
             <li class="treeview">
                 <a th:href="@{/reportQuery}">
@@ -44,24 +53,6 @@
             </li>
 
             <li class="treeview">
-                <a th:href="@{/employee}">
-                    <span>人员管理</span>
-                    <span class="pull-right-container">
-                       <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-
-            <li class="treeview">
-                <a th:href="@{/department}">
-                    <span>部门管理</span>
-                    <span class="pull-right-container">
-                       <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-
-            <li class="treeview">
                 <a th:href="@{/privilege}">
                     <span>权限管理</span>
                     <span class="pull-right-container">
@@ -80,8 +71,17 @@
             </li>
 
             <li class="treeview">
+                <a th:href="@{/adminQRCode}">
+                    <span>扫码管理</span>
+                    <span class="pull-right-container">
+                       <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+            </li>
+
+            <li class="treeview">
                 <a th:href="@{/sysVar}">
-                    <span>系统变量管理</span>
+                    <span>变量管理</span>
                     <span class="pull-right-container">
                        <i class="fa fa-angle-left pull-right"></i>
                     </span>

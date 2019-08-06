@@ -34,10 +34,13 @@ public class Variable {
     public static int maxGeneralReportCount = 1;
     public static int caseReportEntryLimit = 1;
     public static int caseReportCheckLimit = 1;
+    public static int leaderReportEntryLimit = 1;
+    public static int minReportWordCount = 10;
     public static Map<String, Integer> generalCount = new HashMap<>();
     public static Map<String, Integer> leaderCount = new HashMap<>();
 
     public static String mesgToLeader = "您有一份新报告需要审批，可进入 报告查询-审批报告 查看。";
     public static String mesgToSubordinate = "您有一份报告已被审批，可进入 报告查询-我的报告 查看。";
     public static String mesgForReport = "企业微信提醒您提交今日报告，如已提交请忽略本条消息。";
+
 }

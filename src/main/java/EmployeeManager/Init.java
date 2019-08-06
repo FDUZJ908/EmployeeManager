@@ -28,6 +28,12 @@ public class Init implements CommandLineRunner {
                 case "caseReportCheckLimit":
                     Variable.caseReportCheckLimit = (int) map.get("value");
                     break;
+                case "leaderReportEntryLimit":
+                    Variable.leaderReportEntryLimit = (int) map.get("value");
+                    break;
+                case "minReportWordCount":
+                    Variable.minReportWordCount = (int) map.get("value");
+                    break;
             }
         }
     }
