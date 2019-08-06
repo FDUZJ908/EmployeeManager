@@ -26,7 +26,7 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form class="form-horizontal" onsubmit="return checkDate()"
+                        <form class="form-horizontal" onsubmit="return Check()"
                               th:action="@{/adminQRCode/setTime}" method="post">
                             <div class="box-body">
 
@@ -84,6 +84,15 @@
                                                maxlength="50" required="required"/>
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">扫码原因</label>
+                                    <div class="col-sm-10" style="width: 800px">
+                                        <input type="text" name="content" class="form-control" id="content"
+                                               maxlength="150"/>
+                                    </div>
+                                </div>
+
                                 <input name="members" id="members" style="display: none" value=""/>
                                 <!-- /.box-body -->
                                 <div class="box-footer" style="text-align: center;">
@@ -106,7 +115,9 @@
                                     <th>结束时间</th>
                                     <th>管理人员</th>
                                     <th>分值</th>
+                                    <th>扫码原因</th>
                                     <th>结束</th>
+                                    <th>删除</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -119,11 +130,17 @@
                                     <td th:text="${item.e_time}"></td>
                                     <td th:text="${item.managers}"></td>
                                     <td th:text="${item.value}"></td>
+                                    <td th:text="${item.content}"></td>
                                     <td style="text-align: center">
                                         <a th:qrid="${item.QRID}" onclick="stop(this.getAttribute('qrid'))">
                                             <span class="glyphicon glyphicon-off" style="cursor: pointer"
                                                   title="立即结束"></span>
                                         </a>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <span title="删除" style="cursor: pointer" class="glyphicon glyphicon-trash"
+                                              th:qrid="${item.QRID}" onclick="del(this.getAttribute('qrid'))">
+                                        </span>
                                     </td>
                                 </tr>
 
@@ -166,10 +183,17 @@
         });
     });
 </script>
-<script th:src="@{/js/list-page.js}"></script>
+<!--<script th:src="@{/js/list-page.js}"></script>-->
 
-<script>
-    function checkDate() {
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function Check() {
+        var minReportWordCount = /*[[${minReportWordCount}]]*/;
+        if (document.getElementById("content").valueOf().value.replace(/ /g, "").length < minReportWordCount) {
+            alert("扫码原因字数不得少于" + minReportWordCount);
+            return false;
+        }
+
         var startdate = document.getElementById("startdate").valueOf().value.split("-");
         var enddate = document.getElementById("enddate").valueOf().value.split("-");
         var starttime = document.getElementById("starttime").valueOf().value.split(":");
@@ -214,6 +238,7 @@
         return true
     }
 
+    /*]]>*/
 </script>
 
 <script>
@@ -312,7 +337,7 @@
 
     function addDefaultManagers() {
         var managers = /*[[${managers}]]*/ "";
-        if (managers != "") {
+        if (managers != null && managers != "") {
             managers = managers.split(",");
             for (i = 0; i < managers.length; i++) {
                 addCheckBox(managers[i]);
@@ -375,6 +400,27 @@
     }
 
     /*]]>*/
+</script>
+
+
+<script>
+    function del(qrid) {
+        var msg = "确认删除二维码(id=" + qrid + ")吗?";
+        if (confirm(msg)) {
+            $.ajax({
+                type: 'POST',
+                url: '/adminQRCode/delete',
+                data: {"id": qrid},
+
+                success: function (data) {
+                    window.location.href = "/adminQRCode";
+                },
+                error: function (xhr, type) {
+                    window.alert('删除失败！');
+                }
+            })
+        }
+    }
 </script>
 
 </body>
