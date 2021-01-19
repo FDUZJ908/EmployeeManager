@@ -52,8 +52,8 @@ public class SyncService {
             }
         });
 
-        server.jdbcTemplate.update("DELETE FROM ministry"); //foreign key cascade with department table
-        server.insertMapList(departs, "ministry", false);
+        // server.jdbcTemplate.update("DELETE FROM ministry"); //foreign key cascade with department table
+        server.insertMapList(departs, "ministry", true);
         return department;
     }
 
@@ -90,8 +90,8 @@ public class SyncService {
             }
         }
 
-        server.jdbcTemplate.update("DELETE FROM user"); //foreign key cascade with department table
-        server.insertMapList(users, "user", false);
-        server.insertMapList(userDeps, "department", false);
+        // server.jdbcTemplate.update("DELETE FROM user"); //foreign key cascade with department table
+        server.insertMapList(users, "user", true);
+        server.insertMapList(userDeps, "department", true);
     }
 }
